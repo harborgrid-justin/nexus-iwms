@@ -1,3 +1,4 @@
+
 import React, { useState, Fragment } from 'react';
 import { 
   LayoutDashboard, Building2, Wrench, Leaf, Users, 
@@ -8,7 +9,7 @@ import {
   BookCheck, Coins, FolderArchive, MapPinned, Car, KeyRound,
   Presentation, Sigma, Wind, Trash2, Video, Banknote, GanttChartSquare,
   FileClock, Workflow, Receipt, ShoppingCart, LocateFixed, ArrowRightLeft,
-  BookCopy
+  BookCopy, Landmark, Siren, PieChart, Scroll, Link as LinkIcon, Target
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { NOTIFICATIONS } from '../services/mockData';
@@ -97,6 +98,33 @@ export const Layout: React.FC<LayoutProps> = ({ children, onAiToggle }) => {
           </div>
 
           <nav className="flex-1">
+            <NavGroup label="USACE REMIS" icon={Landmark} collapsed={collapsed} paths={['/usace/']}>
+              <NavItem icon={LayoutDashboard} label="REMIS Dashboard" path="/usace/dashboard" active={isActive('/usace/dashboard')} collapsed={collapsed} />
+              <NavItem icon={Building2} label="Real Property Inventory" path="/usace/inventory" active={isActive('/usace/inventory')} collapsed={collapsed} />
+              <NavItem icon={ArrowRightLeft} label="Acquisitions" path="/usace/acquisitions" active={isActive('/usace/acquisitions')} collapsed={collapsed} />
+              <NavItem icon={Trash2} label="Disposals" path="/usace/disposals" active={isActive('/usace/disposals')} collapsed={collapsed} />
+              <NavItem icon={LinkIcon} label="Instrument Linkages" path="/usace/linkages" active={isActive('/usace/linkages')} collapsed={collapsed} />
+              <NavItem icon={FileClock} label="Out-Grants & Leases" path="/usace/outgrants" active={isActive('/usace/outgrants')} collapsed={collapsed} />
+              <NavItem icon={DollarSign} label="Appraisals" path="/usace/appraisals" active={isActive('/usace/appraisals')} collapsed={collapsed} />
+              <NavItem icon={MapPinned} label="Geospatial Hub" path="/usace/gis" active={isActive('/usace/gis')} collapsed={collapsed} />
+              <NavItem icon={Leaf} label="Environmental" path="/usace/environmental" active={isActive('/usace/environmental')} collapsed={collapsed} />
+              <NavItem icon={Shield} label="Legal & Claims" path="/usace/legal" active={isActive('/usace/legal')} collapsed={collapsed} />
+              <NavItem icon={PieChart} label="Cost-Share Programs" path="/usace/cost-share" active={isActive('/usace/cost-share')} collapsed={collapsed} />
+              <NavItem icon={Scroll} label="Permits" path="/usace/permits" active={isActive('/usace/permits')} collapsed={collapsed} />
+              <NavItem icon={Siren} label="Mobilization" path="/usace/mobilization" active={isActive('/usace/mobilization')} collapsed={collapsed} />
+              <NavItem icon={Users} label="Relocation" path="/usace/relocation" active={isActive('/usace/relocation')} collapsed={collapsed} />
+              <NavItem icon={FileText} label="Solicitations" path="/usace/solicitations" active={isActive('/usace/solicitations')} collapsed={collapsed} />
+              <NavItem icon={Wrench} label="Encroachments" path="/usace/encroachments" active={isActive('/usace/encroachments')} collapsed={collapsed} />
+            </NavGroup>
+
+            <NavGroup label="USACE RFMIS" icon={Target} collapsed={collapsed} paths={['/rfmis']}>
+              <NavItem icon={LayoutDashboard} label="Recruiting Dashboard" path="/rfmis/dashboard" active={isActive('/rfmis/dashboard')} collapsed={collapsed} />
+              <NavItem icon={Building2} label="Facility Inventory" path="/rfmis/inventory" active={isActive('/rfmis/inventory')} collapsed={collapsed} />
+              <NavItem icon={FileClock} label="Lease Management" path="/rfmis/leases" active={isActive('/rfmis/leases')} collapsed={collapsed} />
+              <NavItem icon={HardHat} label="SRM Projects" path="/rfmis/projects" active={isActive('/rfmis/projects')} collapsed={collapsed} />
+              <NavItem icon={MapPinned} label="Readiness Map" path="/rfmis/map" active={isActive('/rfmis/map')} collapsed={collapsed} />
+            </NavGroup>
+
             <NavGroup label="Portfolio" icon={LandPlot} collapsed={collapsed} paths={['/real-estate', '/lease-admin', '/contracts', '/insurance', '/gis-map']}>
               <NavItem icon={Building2} label="Properties" path="/real-estate" active={isActive('/real-estate')} collapsed={collapsed} />
               <NavItem icon={FileClock} label="Lease Administration" path="/lease-admin" active={isActive('/lease-admin')} collapsed={collapsed} />

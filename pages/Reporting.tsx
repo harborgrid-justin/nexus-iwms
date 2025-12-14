@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, Plus, BarChart, PieChart, Calendar, Clock, Mail } from 'lucide-react';
+import { FileText, Plus, BarChart, PieChart, Calendar, Clock, Mail, Landmark } from 'lucide-react';
 
 const ReportCard = ({ title, description, icon: Icon, category }: any) => (
     <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-blue-400 transition-all flex flex-col">
@@ -53,6 +53,7 @@ export const Reporting: React.FC = () => {
                 <div>
                     <label className="text-sm font-medium text-slate-700">Report</label>
                     <select className="w-full mt-1 p-2 border rounded-lg bg-slate-50">
+                        <option>G2 Real Property Inventory Report</option>
                         <option>Work Order Costs by Category</option>
                         <option>Lease Expiration Report</option>
                         <option>Capital Project Budget vs. Actual</option>
@@ -83,6 +84,7 @@ export const Reporting: React.FC = () => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <ReportCard title="G2 Real Property Inventory" description="Standard DoD report detailing all real property assets, their value, and status." icon={Landmark} category="USACE REMIS" />
           <ReportCard title="Work Order Costs by Category" description="A summary of maintenance costs grouped by categories like HVAC, Plumbing, etc." icon={BarChart} category="Operations" />
           <ReportCard title="Lease Expiration Report" description="Lists all leases expiring in the next 90, 180, or 365 days with critical dates." icon={Calendar} category="Portfolio" />
           <ReportCard title="Space Utilization by Department" description="Visualizes space usage and vacancies allocated to each department." icon={PieChart} category="Workplace" />
@@ -90,7 +92,6 @@ export const Reporting: React.FC = () => {
           <ReportCard title="Asset Condition Summary" description="Provides a list of all assets with their current condition score and maintenance history." icon={FileText} category="Operations" />
           <ReportCard title="Vendor Performance Scorecard" description="Compares vendors based on cost, quality, and on-time completion rates." icon={FileText} category="Operations" />
           <ReportCard title="Energy Consumption Trend" description="Tracks energy usage and costs across the portfolio over the last 12 months." icon={BarChart} category="Sustainability" />
-          <ReportCard title="Compliance Status Report" description="An audit-ready report of all compliance tasks, statuses, and due dates." icon={FileText} category="Admin" />
       </div>
     </div>
   );

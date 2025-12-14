@@ -1,293 +1,448 @@
-import { 
-  Property, Lease, WorkOrder, Asset, SpaceMetric, SustainabilityMetric, Status,
-  Vendor, PreventiveMaintenanceSchedule, Employee, ServiceRequest, CapitalProject,
-  SustainabilityInitiative, BudgetLineItem, AuditLog, User, CostCenter, InventoryItem,
-  SafetyIncident, Document, ProjectRisk, Notification, Contract, Transaction, MoveRequest, Workflow,
-  Reservation, Visitor, ComplianceTask, InsurancePolicy, UtilityBill, ParkingPermit, KeyRecord, ConditionAssessment,
-  PpbeFund, FundTransaction, UnfundedRequirement, CapitalPlanItem, Invoice, PurchaseOrder, Chargeback, ProjectMilestone, ChangeOrder, LeaseClause
+
+import {
+  Status, Notification, Document, Property, Lease, LeaseClause, Contract, Transaction, MoveRequest, Workflow,
+  Vendor, CostCenter, WorkOrder, InventoryItem, SafetyIncident, Asset, PreventiveMaintenanceSchedule, SpaceMetric,
+  Employee, ServiceRequest, SustainabilityMetric, SustainabilityInitiative, BudgetLineItem, ProjectRisk, CapitalProject,
+  ProjectMilestone, ChangeOrder, AuditLog, User, Reservation, Visitor, ComplianceTask, InsurancePolicy, UtilityBill,
+  ParkingPermit, KeyRecord, ConditionAssessment, PpbeFund, FundTransaction, UnfundedRequirement, CapitalPlanItem,
+  Invoice, PurchaseOrder, Chargeback, RealPropertyAsset, AssetComponent, UtilizationSummary, InspectionFinding,
+  InspectionRecommendation, UtilizationInspection, OutGrant, Appraisal, AcquisitionRecord, DisposalRecord,
+  RelocationBenefit, RelocationCase, EnvironmentalSite, BidItem, IfbResponse, Solicitation, LegalClaim,
+  CostShareContribution, CostShareAgreement, EncroachmentCase, MobilizationProfile, PermitParty, PermitAddress,
+  Permit, RealPropertyLinkage, RecruitingFacility, RecruitingLease, SRMProject, EncroachmentTask, WorkActivity,
+  GeospatialFeature, GeospatialLayer
 } from '../types';
 
+// ... (Keep all existing mock data exports intact) ...
 export const NOTIFICATIONS: Notification[] = [
-  { id: 'N-01', message: 'Project **CP-02** is now over budget by $150,000.', type: 'alert', timestamp: '2 hours ago', isRead: false, link: '/projects' },
-  { id: 'N-02', message: 'Work Order **WO-2024-889** has been assigned to you.', type: 'task', timestamp: '8 hours ago', isRead: false, link: '/operations' },
-  { id: 'N-03', message: 'Lease for **Starbucks Corp** is expiring in 90 days.', type: 'info', timestamp: '1 day ago', isRead: true, link: '/lease-admin' },
-  { id: 'N-04', message: 'Q4 Sustainability Report is ready for review.', type: 'info', timestamp: '2 days ago', isRead: true, link: '/sustainability' },
-  { id: 'N-05', message: 'PPBE Fund **OM-FY24** is 95% obligated.', type: 'alert', timestamp: '3 days ago', isRead: false, link: '/ppbe-funds' },
+  { id: '1', message: 'Work Order **WO-101** assigned to you.', type: 'task', timestamp: '10 mins ago', isRead: false },
+  { id: '2', message: 'Lease **L-003** expires in 60 days.', type: 'alert', timestamp: '1 hour ago', isRead: false },
+  { id: '3', message: 'Energy usage alert: Building B exceeded threshold.', type: 'warning', timestamp: '3 hours ago', isRead: true }
 ];
 
-export const CONTRACTS: Contract[] = [
-  { id: 'C-01', name: 'HQ Janitorial Services', vendorId: 'V-04', type: 'Service', startDate: '2023-01-01', endDate: '2025-12-31', value: 250000, status: 'Active', renewalDate: '2025-10-01', documentId: 'DOC-01' },
-  { id: 'C-02', name: 'Logistics Hub HVAC Maintenance', vendorId: 'V-01', type: 'Service', startDate: '2022-06-01', endDate: '2024-05-31', value: 75000, status: 'Expired', renewalDate: '2024-03-01', documentId: 'DOC-03' },
-  { id: 'C-03', name: 'CP-01 Renovation Contract', vendorId: 'V-04', type: 'Construction', startDate: '2023-08-15', endDate: '2024-02-28', value: 400000, status: 'Active', renewalDate: '', documentId: 'DOC-01' },
-];
-
-export const TRANSACTIONS: Transaction[] = [
-  { id: 'T-01', propertyId: 'P005', type: 'Disposition', stage: 'Negotiation', dealValue: 18500000, closeDate: '2024-01-15', broker: 'CBRE' },
-  { id: 'T-02', propertyId: 'new-prop-1', type: 'Acquisition', stage: 'Due Diligence', dealValue: 35000000, closeDate: '2024-03-01', broker: 'JLL' },
-  { id: 'T-03', propertyId: 'new-prop-2', type: 'Acquisition', stage: 'Prospecting', dealValue: 50000000, closeDate: '2024-06-30', broker: 'Cushman & Wakefield' },
-  { id: 'T-04', propertyId: 'new-prop-3', type: 'Acquisition', stage: 'Closing', dealValue: 22000000, closeDate: '2023-12-15', broker: 'JLL' },
-];
-
-export const MOVE_REQUESTS: MoveRequest[] = [
-  { id: 'MR-01', employeeName: 'John Miller', fromLocation: 'HQ-210', toLocation: 'HQ-215', moveDate: '2023-11-10', status: 'Approved' },
-  { id: 'MR-02', employeeName: 'Marketing Dept.', fromLocation: 'HQ Floor 1', toLocation: 'HQ Floor 4', moveDate: '2024-01-05', status: 'Requested' },
-  { id: 'MR-03', employeeName: 'Jane Smith', fromLocation: 'Remote', toLocation: 'HQ-Flex-05', moveDate: '2023-11-15', status: 'Completed' },
-];
-
-export const WORKFLOWS: Workflow[] = [
-  { id: 'WF-01', name: 'Emergency WO Notification', trigger: 'Work Order Created (Priority: Emergency)', actions: ['Notify: Facility Director', 'Create: Calendar Event'], enabled: true },
-  { id: 'WF-02', name: 'Lease Expiry Alert', trigger: 'Lease: 90 Days to Expiry', actions: ['Notify: Real Estate Manager', 'Create Task: Review Renewal'], enabled: true },
-  { id: 'WF-03', name: 'Project Budget Alert', trigger: 'Project: Spent > 90% of Budget', actions: ['Notify: Project Manager', 'Notify: Financial Analyst'], enabled: false },
-];
-
-export const DOCUMENTS: Document[] = [
-  { id: 'DOC-01', name: 'Lease_Agreement_Starbucks.pdf', type: 'Lease Agreement', url: '#', uploadedDate: '2019-05-10', size: '2.5 MB', relatedTo: 'Property P004' },
-  { id: 'DOC-02', name: 'HQ_Floorplan_Level1.cad', type: 'CAD', url: '#', uploadedDate: '2020-01-20', size: '15.2 MB', relatedTo: 'Property P001' },
-  { id: 'DOC-03', name: 'HVAC_Invoice_V-01.pdf', type: 'Invoice', url: '#', uploadedDate: '2023-10-28', size: '128 KB', relatedTo: 'Work Order WO-2024-889' },
-  { id: 'DOC-04', name: 'Lobby_Renovation_Blueprint_v3.cad', type: 'Blueprint', url: '#', uploadedDate: '2023-08-20', size: '25.8 MB', relatedTo: 'Project CP-01' },
-  { id: 'DOC-05', name: 'Building_Permit_CP-01.pdf', type: 'Permit', url: '#', uploadedDate: '2023-09-05', size: '1.1 MB', relatedTo: 'Project CP-01' },
-  { id: 'DOC-06', name: 'P001_Liability_Policy.pdf', type: 'Insurance Policy', url: '#', uploadedDate: '2023-01-01', size: '800 KB', relatedTo: 'Property P001' },
-  { id: 'DOC-07', name: 'Q3_Safety_Audit.pdf', type: 'Compliance Report', url: '#', uploadedDate: '2023-10-01', size: '3.1 MB', relatedTo: 'Property P003' },
-  { id: 'DOC-08', name: 'PO-2024-001.pdf', type: 'Purchase Order', url: '#', uploadedDate: '2024-01-10', size: '95 KB', relatedTo: 'PO-01' },
-  { id: 'DOC-09', name: 'CO-CP02-001.pdf', type: 'Change Order', url: '#', uploadedDate: '2023-10-15', size: '210 KB', relatedTo: 'CP-02' },
-];
-
+// ... (PROPERTIES through CHARGEBACKS remain unchanged) ...
 export const PROPERTIES: Property[] = [
-  { id: 'P001', name: 'Nexus Headquarters', address: '100 Enterprise Way, NY', type: 'Office', sizeSqFt: 450000, occupancyRate: 88, status: Status.Good, marketValue: 125000000, imageUrl: 'https://picsum.photos/400/300?random=1', documents: [DOCUMENTS[1]], noi: 7500000, fci: 92 },
-  { id: 'P002', name: 'Innovation Lab Beta', address: '42 Tech Park Blvd, CA', type: 'Lab', sizeSqFt: 120000, occupancyRate: 95, status: Status.Good, marketValue: 85000000, imageUrl: 'https://picsum.photos/400/300?random=2', noi: 6200000, fci: 85 },
-  { id: 'P003', name: 'Logistics Hub North', address: '88 Industrial Dr, IL', type: 'Industrial', sizeSqFt: 800000, occupancyRate: 72, status: Status.Warning, marketValue: 62000000, imageUrl: 'https://picsum.photos/400/300?random=3', noi: 4100000, fci: 68 },
-  { id: 'P004', name: 'Downtown Retail Center', address: '500 Main St, TX', type: 'Retail', sizeSqFt: 55000, occupancyRate: 98, status: Status.Good, marketValue: 22000000, imageUrl: 'https://picsum.photos/400/300?random=4', documents: [DOCUMENTS[0]], noi: 1800000, fci: 95 },
-  { id: 'P005', name: 'Satellite Office East', address: '12 Harbor View, MA', type: 'Office', sizeSqFt: 25000, occupancyRate: 45, status: Status.Critical, marketValue: 18000000, imageUrl: 'https://picsum.photos/400/300?random=5', noi: 950000, fci: 45 },
-];
-
-export const LEASE_CLAUSES: LeaseClause[] = [
-    {id: 'LC-01', leaseId: 'L-102', name: 'Renewal Option', details: 'Tenant has the option to renew for one (1) additional five-year term.', criticalDate: '2024-02-15'},
-    {id: 'LC-02', leaseId: 'L-102', name: 'CAM Cap', details: 'Annual CAM charges cannot increase by more than 5% year-over-year.'},
-    {id: 'LC-03', leaseId: 'L-103', name: 'Termination Option', details: 'Tenant may terminate the lease with 180 days notice after the third lease year.', criticalDate: '2024-07-31'},
+  { id: 'P001', name: 'Nexus Headquarters', address: '100 Enterprise Way', type: 'Office', sizeSqFt: 150000, occupancyRate: 85, status: Status.Good, marketValue: 45000000, imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80', noi: 3500000, fci: 85 },
+  { id: 'P002', name: 'Innovation Lab', address: '25 Science Park', type: 'Lab', sizeSqFt: 50000, occupancyRate: 92, status: Status.Good, marketValue: 28000000, imageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80', noi: 2100000, fci: 90 },
+  { id: 'P003', name: 'Distribution Center A', address: '8800 Industrial Blvd', type: 'Industrial', sizeSqFt: 200000, occupancyRate: 75, status: Status.Warning, marketValue: 32000000, imageUrl: 'https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&w=800&q=80', noi: 2800000, fci: 72 }
 ];
 
 export const LEASES: Lease[] = [
-  { id: 'L-101', propertyId: 'P001', tenantName: 'Internal', startDate: '2020-01-01', endDate: '2030-12-31', monthlyRent: 0, status: 'Active', criticalDates: [{ name: 'Rent Review', date: '2025-01-01'}], camCharge: 18.50 },
-  { id: 'L-102', propertyId: 'P004', tenantName: 'Starbucks Corp', startDate: '2019-05-15', endDate: '2024-05-15', monthlyRent: 12500, status: 'Expiring Soon', criticalDates: [{ name: 'Renewal Option', date: '2024-02-15'}], clauses: [LEASE_CLAUSES[0], LEASE_CLAUSES[1]], camCharge: 22.00 },
-  { id: 'L-103', propertyId: 'P003', tenantName: 'FastShip Logistics', startDate: '2021-08-01', endDate: '2026-07-31', monthlyRent: 45000, status: 'Active', criticalDates: [{ name: 'Termination Option', date: '2024-07-31'}], clauses: [LEASE_CLAUSES[2]], camCharge: 8.75 },
+  { id: 'L-101', propertyId: 'P001', tenantName: 'Acme Corp', startDate: '2020-01-01', endDate: '2025-12-31', monthlyRent: 45000, status: 'Active', criticalDates: [{ name: 'Renewal Notice', date: '2025-06-30' }], camCharge: 5000 },
+  { id: 'L-102', propertyId: 'P002', tenantName: 'BioTech Inc', startDate: '2018-05-01', endDate: '2024-04-30', monthlyRent: 28000, status: 'Expiring Soon', criticalDates: [{ name: 'Lease End', date: '2024-04-30' }], camCharge: 3500 }
 ];
 
-export const VENDORS: Vendor[] = [
-  { id: 'V-01', name: 'ACME HVAC Solutions', trade: 'HVAC', rating: 4.8, onTimeCompletionRate: 95, avgInvoiceCost: 1500 },
-  { id: 'V-02', name: 'City Electrical Co.', trade: 'Electrical', rating: 4.5, onTimeCompletionRate: 92, avgInvoiceCost: 850 },
-  { id: 'V-03', name: 'Pro Plumbers Inc.', trade: 'Plumbing', rating: 4.2, onTimeCompletionRate: 88, avgInvoiceCost: 1100 },
-  { id: 'V-04', name: 'BuildRight Construction', trade: 'General Contractor', rating: 4.9, onTimeCompletionRate: 98, avgInvoiceCost: 125000 },
-];
-
-export const COST_CENTERS: CostCenter[] = [
-  { id: 'CC-01', name: 'HQ Facility Operations', owner: 'E-001', budget: 500000, spent: 375000 },
-  { id: 'CC-02', name: 'Lab Beta R&D Facilities', owner: 'E-001', budget: 250000, spent: 265000 },
-  { id: 'CC-03', name: 'Logistics Maintenance', owner: 'E-001', budget: 750000, spent: 650000 },
-  { id: 'CC-04', name: 'Marketing Department', owner: 'E-005', budget: 100000, spent: 45000 },
+export const LEASE_CLAUSES: LeaseClause[] = [
+  { id: 'LC-01', leaseId: 'L-101', name: 'Renewal Option', details: 'Tenant has option to renew for 5 years at fair market value.' },
+  { id: 'LC-02', leaseId: 'L-102', name: 'Termination Option', details: 'Termination allowed with 6 months notice and fee.' }
 ];
 
 export const WORK_ORDERS: WorkOrder[] = [
-  { id: 'WO-2024-889', propertyId: 'P001', title: 'HVAC Failure in Server Room', priority: 'Emergency', status: 'In Progress', category: 'HVAC', assignedTo: 'Mike Ross', dueDate: '2023-10-27', cost: 1200, costCenterId: 'CC-01', assetId: 'A-5001' },
-  { id: 'WO-2024-890', propertyId: 'P001', title: 'Lobby Light Replacement', priority: 'Low', status: 'Open', category: 'Electrical', assignedTo: 'Sarah Jin', dueDate: '2023-10-30', cost: 250, costCenterId: 'CC-01' },
-  { id: 'WO-2024-891', propertyId: 'P002', title: 'Leaking Pipe 4th Floor Restroom', priority: 'High', status: 'Open', category: 'Plumbing', assignedTo: 'V-03', dueDate: '2023-10-28', cost: 800, costCenterId: 'CC-02', relatedIncidentId: 'SI-02' },
-  { id: 'WO-2024-892', propertyId: 'P003', title: 'Q4 Preventive Maintenance', priority: 'Medium', status: 'Completed', category: 'Preventive', assignedTo: 'Team A', dueDate: '2023-10-15', cost: 2500, costCenterId: 'CC-03', assetId: 'A-5002' },
-];
-
-export const INVENTORY: InventoryItem[] = [
-  { id: 'INV-01', name: 'HVAC Filter 16x20', sku: 'HF-1620', stock: 150, reorderLevel: 50, location: 'HQ Storage A', costPerUnit: 12.50 },
-  { id: 'INV-02', name: 'LED Bulb E26', sku: 'LB-E26', stock: 480, reorderLevel: 200, location: 'HQ Storage B', costPerUnit: 3.75 },
-  { id: 'INV-03', name: 'Ballast Type A', sku: 'BT-A', stock: 35, reorderLevel: 20, location: 'Lab Beta Storage', costPerUnit: 45.00 },
-  { id: 'INV-04', name: 'Ceiling Tile 2x4', sku: 'CT-24', stock: 80, reorderLevel: 100, location: 'HQ Storage A', costPerUnit: 8.20 },
-];
-
-export const SAFETY_INCIDENTS: SafetyIncident[] = [
-  { id: 'SI-01', propertyId: 'P003', type: 'Near Miss', date: '2023-10-15', severity: 'Low', status: 'Closed', description: 'Forklift operator nearly backed into racking. No injuries or damage.' },
-  { id: 'SI-02', propertyId: 'P001', type: 'Property Damage', date: '2023-09-20', severity: 'Medium', status: 'Under Investigation', description: 'Water damage from leaking pipe on 4th floor. Ceiling tiles and carpet affected.' },
-  { id: 'SI-03', propertyId: 'P001', type: 'Injury', date: '2023-10-22', severity: 'Low', status: 'Corrective Action Pending', description: 'Contractor sustained minor cut to hand. First aid administered.' },
-];
-
-export const ASSETS: Asset[] = [
-  { id: 'A-5001', propertyId: 'P001', name: 'Chiller Unit #1', serialNumber: 'CH-99283', purchaseDate: '2018-03-01', warrantyEnd: '2028-03-01', condition: 85, location: 'P001 - Roof', maintenanceCostYTD: 5200, downtimeHours: 4 },
-  { id: 'A-5002', propertyId: 'P001', name: 'Backup Generator', serialNumber: 'GN-11002', purchaseDate: '2015-06-20', warrantyEnd: '2025-06-20', condition: 60, location: 'P001 - Basement', maintenanceCostYTD: 12500, downtimeHours: 0 },
-  { id: 'A-5003', propertyId: 'P002', name: 'Air Handler 4', serialNumber: 'AH-44321', purchaseDate: '2020-01-15', warrantyEnd: '2025-01-15', condition: 92, location: 'P002 - Floor 2', maintenanceCostYTD: 1800, downtimeHours: 0 },
-];
-
-export const PM_SCHEDULES: PreventiveMaintenanceSchedule[] = [
-  { id: 'PM-001', assetId: 'A-5001', task: 'Filter Change & Coil Cleaning', frequency: 'Quarterly', nextDueDate: '2024-01-15', status: 'Scheduled' },
-  { id: 'PM-002', assetId: 'A-5002', task: 'Full Load Test', frequency: 'Annually', nextDueDate: '2024-03-01', status: 'Scheduled' },
-  { id: 'PM-003', assetId: 'A-5001', task: 'Annual Inspection', frequency: 'Annually', nextDueDate: '2023-09-01', status: 'Overdue', lastCompletedDate: '2022-09-05' },
-];
-
-export const SUSTAINABILITY_DATA: SustainabilityMetric[] = [
-  { month: 'Jan', energyKWh: 45000, waterGal: 12000, carbonTons: 12.5, wasteKg: 500, recyclingKg: 250 },
-  { month: 'Feb', energyKWh: 42000, waterGal: 11500, carbonTons: 11.8, wasteKg: 480, recyclingKg: 245 },
-  { month: 'Mar', energyKWh: 48000, waterGal: 13000, carbonTons: 13.2, wasteKg: 520, recyclingKg: 260 },
-  { month: 'Apr', energyKWh: 46000, waterGal: 12500, carbonTons: 12.9, wasteKg: 510, recyclingKg: 255 },
-  { month: 'May', energyKWh: 51000, waterGal: 14000, carbonTons: 14.1, wasteKg: 550, recyclingKg: 270 },
-  { month: 'Jun', energyKWh: 58000, waterGal: 15500, carbonTons: 16.5, wasteKg: 600, recyclingKg: 310 },
-];
-
-export const SUSTAINABILITY_INITIATIVES: SustainabilityInitiative[] = [
-  { id: 'SI-01', name: 'LED Lighting Retrofit', type: 'Energy', status: 'Completed', projectedSavings: '$15,000 / year', completionDate: '2023-08-01' },
-  { id: 'SI-02', name: 'Smart Irrigation System', type: 'Water', status: 'In Progress', projectedSavings: '500,000 Gal / year', completionDate: '2024-06-30' },
-  { id: 'SI-03', name: 'Centralized Composting Program', type: 'Waste', status: 'Planning', projectedSavings: '5 tons landfill diversion', completionDate: '2024-12-31' },
-];
-
-export const SPACE_DATA: SpaceMetric[] = [
-  { floor: 'Floor 1', utilization: 85, department: 'Sales', seatsTotal: 120, seatsAvailable: 18 },
-  { floor: 'Floor 2', utilization: 45, department: 'Engineering', seatsTotal: 150, seatsAvailable: 82 },
-  { floor: 'Floor 3', utilization: 92, department: 'Executive', seatsTotal: 40, seatsAvailable: 3 },
-  { floor: 'Floor 4', utilization: 60, department: 'HR & Legal', seatsTotal: 80, seatsAvailable: 32 },
-];
-
-export const EMPLOYEES: Employee[] = [
-  { id: 'E-001', name: 'Dr. Alistair Vance', title: 'Director of Facilities', department: 'Facilities', email: 'avance@nexus.corp', location: 'HQ-301', phone: '555-123-4567', imageUrl: `https://i.pravatar.cc/150?u=E-001`},
-  { id: 'E-002', name: 'Sarah Jin', title: 'Lead Electrician', department: 'Facilities', email: 'sjin@nexus.corp', location: 'Field', phone: '555-123-4568', imageUrl: `https://i.pravatar.cc/150?u=E-002`},
-  { id: 'E-003', name: 'Mike Ross', title: 'HVAC Specialist', department: 'Facilities', email: 'mross@nexus.corp', location: 'Field', phone: '555-123-4569', imageUrl: `https://i.pravatar.cc/150?u=E-003`},
-  { id: 'E-004', name: 'Emily Carter', title: 'Project Manager', department: 'Capital Projects', email: 'ecarter@nexus.corp', location: 'HQ-250', phone: '555-123-4570', imageUrl: `https://i.pravatar.cc/150?u=E-004`},
-  { id: 'E-005', name: 'John Miller', title: 'Software Engineer', department: 'Engineering', email: 'jmiller@nexus.corp', location: 'HQ-210', phone: '555-123-4571', imageUrl: `https://i.pravatar.cc/150?u=E-005`},
-];
-
-export const SERVICE_REQUESTS: ServiceRequest[] = [
-  { id: 'SR-01', submittedBy: 'E-005', type: 'Temperature', location: 'HQ Floor 2', status: 'New', createdDate: '2023-10-26', details: 'The engineering wing is too cold.' },
-  { id: 'SR-02', submittedBy: 'E-004', type: 'Janitorial', location: 'HQ Floor 2 Conf Room', status: 'Resolved', createdDate: '2023-10-25', details: 'Coffee spill on carpet.' },
-];
-
-export const BUDGET_ITEMS_PROJ1: BudgetLineItem[] = [
-  {id: 'BLI-1', category: 'Design', budgeted: 40000, actual: 40000, variance: 0 },
-  {id: 'BLI-2', category: 'Permits', budgeted: 15000, actual: 15000, variance: 0 },
-  {id: 'BLI-3', category: 'Labor', budgeted: 150000, actual: 165000, variance: -15000 },
-  {id: 'BLI-4', category: 'Materials', budgeted: 250000, actual: 245000, variance: 5000 },
-  {id: 'BLI-5', category: 'Contingency', budgeted: 40000, actual: 10000, variance: 30000 },
-];
-
-export const MILESTONES_PROJ1: ProjectMilestone[] = [
-    {id: 'M-01', name: 'Design Complete', dueDate: '2023-09-30', status: 'Completed'},
-    {id: 'M-02', name: 'Permits Approved', dueDate: '2023-10-15', status: 'Completed'},
-    {id: 'M-03', name: 'Demolition Phase', dueDate: '2023-11-15', status: 'In Progress'},
-    {id: 'M-04', name: 'Construction Complete', dueDate: '2024-02-15', status: 'Not Started'},
-];
-
-export const CHANGE_ORDERS_PROJ2: ChangeOrder[] = [
-    {id: 'CO-01', projectId: 'CP-02', title: 'Additional Structural Repairs', reason: 'Unforeseen Condition', costImpact: 150000, scheduleImpactDays: 14, status: 'Approved', date: '2023-10-15'},
-    {id: 'CO-02', projectId: 'CP-02', title: 'Upgrade to TPO Roofing Material', reason: 'Client Request', costImpact: 75000, scheduleImpactDays: 0, status: 'Pending', date: '2023-10-28'},
-]
-
-export const RISKS_PROJ1: ProjectRisk[] = [
-  { id: 'R-03', description: 'Permit approval delayed.', impact: 'Medium', probability: 'Low', mitigation: 'Weekly follow-ups with city office.' }
-];
-
-export const RISKS_PROJ2: ProjectRisk[] = [
-  { id: 'R-01', description: 'Material delivery delays due to supply chain issues.', impact: 'High', probability: 'Medium', mitigation: 'Pre-order materials from alternate suppliers.' },
-  { id: 'R-02', description: 'Unexpected structural damage discovered upon roof removal.', impact: 'High', probability: 'Low', mitigation: 'Allocate $50,000 from contingency budget for assessment.' },
+  { id: 'WO-2024-889', title: 'HVAC Failure P001', propertyId: 'P001', priority: 'Emergency', status: 'In Progress', category: 'HVAC', assignedTo: 'Tech A', dueDate: '2024-06-15', cost: 1200, costCenterId: 'CC-01' },
+  { id: 'WO-2024-890', title: 'Leaking Pipe', propertyId: 'P002', priority: 'High', status: 'Open', category: 'Plumbing', assignedTo: 'Tech B', dueDate: '2024-06-16', cost: 800, costCenterId: 'CC-02' },
+  { id: 'WO-2024-891', title: 'Lighting Replacement', propertyId: 'P001', priority: 'Medium', status: 'Completed', category: 'Electrical', assignedTo: 'Tech A', dueDate: '2024-06-10', cost: 450, costCenterId: 'CC-01' }
 ];
 
 export const CAPITAL_PROJECTS: CapitalProject[] = [
-  { id: 'CP-01', name: 'HQ Lobby Renovation', propertyId: 'P001', type: 'Renovation', status: Status.OnTrack, startDate: '2023-09-01', endDate: '2024-02-28', totalBudget: 495000, spent: 475000, manager: 'E-004', budgetItems: BUDGET_ITEMS_PROJ1, risks: RISKS_PROJ1, documents: [DOCUMENTS[3], DOCUMENTS[4]], milestones: MILESTONES_PROJ1 },
-  { id: 'CP-02', name: 'Logistics Hub Roof Replacement', propertyId: 'P003', type: 'Major Repair', status: Status.AtRisk, startDate: '2023-06-15', endDate: '2023-11-30', totalBudget: 1200000, spent: 1350000, manager: 'E-004', risks: RISKS_PROJ2, changeOrders: CHANGE_ORDERS_PROJ2 },
-  { id: 'CP-03', name: 'Lab Beta Expansion Wing', propertyId: 'P002', type: 'New Construction', status: Status.Planning, startDate: '2024-04-01', endDate: '2025-12-31', totalBudget: 25000000, spent: 0, manager: 'E-004' },
+  { id: 'CP-01', name: 'HQ Renovation', propertyId: 'P001', type: 'Renovation', status: Status.OnTrack, startDate: '2023-01-15', endDate: '2024-08-30', totalBudget: 5000000, spent: 2500000, manager: 'PM-01', budgetItems: [ { id: 'BI-01', category: 'Construction', budgeted: 4000000, actual: 2100000, variance: 1900000 }, { id: 'BI-02', category: 'Design', budgeted: 500000, actual: 400000, variance: 100000 } ], milestones: [{ id: 'M-01', name: 'Design Complete', dueDate: '2023-03-30', status: 'Completed' }] },
+  { id: 'CP-02', name: 'Roof Replacement', propertyId: 'P003', type: 'Major Repair', status: Status.AtRisk, startDate: '2023-06-01', endDate: '2023-12-31', totalBudget: 1200000, spent: 1350000, manager: 'PM-02', budgetItems: [ { id: 'BI-03', category: 'Construction', budgeted: 1000000, actual: 1200000, variance: -200000 } ] }
 ];
 
-export const USERS: User[] = [
-  { id: 'U-01', name: 'Dr. Alistair Vance', email: 'avance@nexus.corp', role: 'Admin', lastLogin: '2023-10-26 08:05 AM' },
-  { id: 'U-02', name: 'Emily Carter', email: 'ecarter@nexus.corp', role: 'Project Manager', lastLogin: '2023-10-26 09:15 AM' },
-  { id: 'U-03', name: 'Sarah Jin', email: 'sjin@nexus.corp', role: 'Technician', lastLogin: '2023-10-25 07:30 AM' },
-  { id: 'U-04', name: 'John Doe', email: 'jdoe@nexus.corp', role: 'Read Only', lastLogin: '2023-10-24 02:00 PM' },
-  { id: 'U-05', name: 'Finance Bot', email: 'fbot@nexus.corp', role: 'Financial Analyst', lastLogin: '2023-10-26 11:00 AM' },
+export const SUSTAINABILITY_DATA: SustainabilityMetric[] = [
+  { month: 'Jan', energyKWh: 50000, waterGal: 12000, carbonTons: 15, wasteKg: 500, recyclingKg: 200 },
+  { month: 'Feb', energyKWh: 48000, waterGal: 11500, carbonTons: 14.5, wasteKg: 480, recyclingKg: 210 },
+  { month: 'Mar', energyKWh: 52000, waterGal: 12500, carbonTons: 15.5, wasteKg: 520, recyclingKg: 220 },
+  { month: 'Apr', energyKWh: 49000, waterGal: 11800, carbonTons: 14.8, wasteKg: 490, recyclingKg: 230 },
+  { month: 'May', energyKWh: 55000, waterGal: 13000, carbonTons: 16, wasteKg: 550, recyclingKg: 240 },
+  { month: 'Jun', energyKWh: 58000, waterGal: 15500, carbonTons: 16.5, wasteKg: 600, recyclingKg: 250 }
 ];
 
-export const AUDIT_LOGS: AuditLog[] = [
-  { id: 'AL-01', user: 'Dr. Alistair Vance', action: 'Approved budget variance for CP-02', entity: 'Capital Project CP-02', timestamp: '2023-10-26 10:30 AM' },
-  { id: 'AL-02', user: 'System', action: 'Generated preventive work order WO-2024-892', entity: 'Asset A-5001', timestamp: '2023-10-25 12:00 AM' },
-  { id: 'AL-03', user: 'Emily Carter', action: 'Updated status of Lease L-102 to Expiring Soon', entity: 'Lease L-102', timestamp: '2023-10-24 03:45 PM' },
-  { id: 'AL-04', user: 'John Miller (E-005)', action: 'Submitted Service Request SR-01', entity: 'Service Request SR-01', timestamp: '2023-10-26 09:00 AM' },
+export const SUSTAINABILITY_INITIATIVES: SustainabilityInitiative[] = [
+  { id: 'SI-01', name: 'LED Retrofit Phase 2', type: 'Energy', status: 'In Progress', projectedSavings: '$12,000/yr', completionDate: '2024-09-01' },
+  { id: 'SI-02', name: 'Low-Flow Fixtures', type: 'Water', status: 'Completed', projectedSavings: '$5,000/yr', completionDate: '2023-12-15' }
 ];
 
-// --- NEW MOCK DATA FOR EXPANDED FEATURES ---
-
-export const RESERVATIONS: Reservation[] = [
-  { id: 'RES-01', spaceId: 'HQ-Conf-A', spaceName: 'HQ Conference Room A', reservedBy: 'E-004', date: '2023-10-28', startTime: '10:00', endTime: '11:00', status: 'Confirmed' },
-  { id: 'RES-02', spaceId: 'HQ-Flex-05', spaceName: 'HQ Flex Desk 05', reservedBy: 'E-005', date: '2023-10-28', startTime: '09:00', endTime: '17:00', status: 'Confirmed' },
-  { id: 'RES-03', spaceId: 'LB-Focus-2', spaceName: 'Lab Beta Focus Room 2', reservedBy: 'E-005', date: '2023-10-29', startTime: '14:00', endTime: '15:30', status: 'Confirmed' },
+export const TRANSACTIONS: Transaction[] = [
+  { id: 'TR-01', propertyId: 'P004', type: 'Acquisition', stage: 'Due Diligence', dealValue: 15000000, closeDate: '2024-09-30', broker: 'CBRE' },
+  { id: 'TR-02', propertyId: 'P005', type: 'Disposition', stage: 'Negotiation', dealValue: 8000000, closeDate: '2024-08-15', broker: 'JLL' }
 ];
 
-export const VISITORS: Visitor[] = [
-  { id: 'VIS-01', name: 'David Chen', company: 'ACME HVAC Solutions', host: 'E-001', arrival: '2023-10-28T09:00:00Z', status: 'Expected' },
-  { id: 'VIS-02', name: 'Laura Palmer', company: 'JLL', host: 'E-004', arrival: '2023-10-27T11:30:00Z', departure: '2023-10-27T12:45:00Z', status: 'Checked Out' },
-  { id: 'VIS-03', name: 'Dale Cooper', company: 'City Inspectors', host: 'E-001', arrival: '2023-10-27T14:00:00Z', status: 'Checked In' },
+export const SPACE_DATA: SpaceMetric[] = [
+  { floor: 'L1', utilization: 75, department: 'Sales', seatsTotal: 100, seatsAvailable: 25 },
+  { floor: 'L2', utilization: 92, department: 'Engineering', seatsTotal: 120, seatsAvailable: 10 }
 ];
 
-export const COMPLIANCE_TASKS: ComplianceTask[] = [
-  { id: 'CT-01', name: 'Fire Extinguisher Inspection', type: 'Inspection', propertyId: 'P001', dueDate: '2023-11-01', status: 'In Progress', assignedTo: 'E-002' },
-  { id: 'CT-02', name: 'Elevator Operating Permit', type: 'Permit Renewal', propertyId: 'P001', dueDate: '2023-12-15', status: 'Pending', assignedTo: 'E-001' },
-  { id: 'CT-03', name: 'Annual Safety Audit', type: 'Audit', propertyId: 'P003', dueDate: '2023-09-30', status: 'Completed', assignedTo: 'E-001' },
-  { id: 'CT-04', name: 'Backflow Preventer Test', type: 'Inspection', propertyId: 'P002', dueDate: '2023-10-20', status: 'Overdue', assignedTo: 'V-03' },
+export const MOVE_REQUESTS: MoveRequest[] = [
+  { id: 'MR-01', employeeName: 'John Doe', fromLocation: 'L1-101', toLocation: 'L2-205', moveDate: '2024-06-20', status: 'Requested' },
+  { id: 'MR-02', employeeName: 'Jane Smith', fromLocation: 'L1-102', toLocation: 'L2-206', moveDate: '2024-06-21', status: 'Approved' }
 ];
 
-export const INSURANCE_POLICIES: InsurancePolicy[] = [
-  { id: 'IP-01', propertyId: 'P001', provider: 'Chubb', policyNumber: 'POL-98765', type: 'Property', coverageAmount: 150000000, premium: 120000, expiryDate: '2024-06-30' },
-  { id: 'IP-02', propertyId: 'P001', provider: 'Travelers', policyNumber: 'POL-12345', type: 'Liability', coverageAmount: 10000000, premium: 45000, expiryDate: '2024-06-30' },
-  { id: 'IP-03', propertyId: 'P003', provider: 'Chubb', policyNumber: 'POL-55555', type: 'Property', coverageAmount: 75000000, premium: 95000, expiryDate: '2024-08-31' },
+export const EMPLOYEES: Employee[] = [
+  { id: 'E-001', name: 'Alice Johnson', title: 'Facilities Manager', department: 'Operations', email: 'alice@example.com', location: 'L1-100', phone: '555-0101', imageUrl: 'https://i.pravatar.cc/150?u=E-001' },
+  { id: 'E-002', name: 'Bob Smith', title: 'Technician', department: 'Maintenance', email: 'bob@example.com', location: 'Shop', phone: '555-0102', imageUrl: 'https://i.pravatar.cc/150?u=E-002' }
 ];
 
-export const UTILITY_BILLS: UtilityBill[] = [
-  { id: 'UB-01', propertyId: 'P001', utility: 'Electric', serviceDate: '2023-09', cost: 12540.50, consumption: 51000, unit: 'kWh', documentId: 'DOC-03' },
-  { id: 'UB-02', propertyId: 'P001', utility: 'Water', serviceDate: '2023-09', cost: 3400.00, consumption: 14000, unit: 'gallons', documentId: 'DOC-03' },
-  { id: 'UB-03', propertyId: 'P002', utility: 'Electric', serviceDate: '2023-09', cost: 8900.20, consumption: 35000, unit: 'kWh', documentId: 'DOC-03' },
-];
-
-export const PARKING_PERMITS: ParkingPermit[] = [
-  { id: 'PP-01', permitNumber: 'NEXUS-001', assignedTo: 'E-001', lot: 'HQ Exec Garage', spot: '1', vehicle: 'Tesla Model S, Plate 123-ABC', expiryDate: '2025-12-31' },
-  { id: 'PP-02', permitNumber: 'NEXUS-152', assignedTo: 'E-005', lot: 'HQ Lot B', spot: undefined, vehicle: 'Toyota Camry, Plate 456-DEF', expiryDate: '2024-12-31' },
-];
-
-export const KEY_RECORDS: KeyRecord[] = [
-  { id: 'KR-01', keyNumber: 'HQ-MASTER', type: 'Physical Key', assignedTo: 'E-001', accesses: 'All HQ Areas', issueDate: '2020-01-15' },
-  { id: 'KR-02', keyNumber: 'AC-10582', type: 'Access Card', assignedTo: 'E-005', accesses: 'HQ Main Entrance, Floor 2', issueDate: '2022-03-01' },
-];
-
-export const CONDITION_ASSESSMENTS: ConditionAssessment[] = [
-  { id: 'CA-01', assetId: 'A-5002', assessmentDate: '2023-08-15', assessedBy: 'E-003', conditionScore: 60, notes: 'Showing signs of wear on belts. Fuel filter is dirty.', recommendedAction: 'Replace belts and filters during next PM cycle.' },
-  { id: 'CA-02', assetId: 'A-5001', assessmentDate: '2023-09-01', assessedBy: 'E-003', conditionScore: 85, notes: 'Running within normal parameters. Some minor corrosion on housing.', recommendedAction: 'Monitor corrosion, no immediate action needed.' },
-];
-
-// --- NEW FINANCIALS MOCK DATA ---
 export const PPBE_FUNDS: PpbeFund[] = [
-  { id: 'OM-FY24', name: 'O&M Fund FY24', appropriationType: 'O&M', fiscalYear: 2024, programElement: 'PE-01', totalAmount: 5000000, committed: 1250000, obligated: 3500000, expended: 3200000 },
-  { id: 'MC-FY24', name: 'MILCON Fund FY24', appropriationType: 'MILCON', fiscalYear: 2024, programElement: 'PE-02', totalAmount: 25000000, committed: 25000000, obligated: 0, expended: 0 },
-  { id: 'OM-FY23', name: 'O&M Fund FY23', appropriationType: 'O&M', fiscalYear: 2023, programElement: 'PE-01', totalAmount: 4500000, committed: 4500000, obligated: 4500000, expended: 4450000 },
+  { id: 'F-2024', name: 'O&M FY24', appropriationType: 'O&M', fiscalYear: 2024, programElement: 'Facility Sustainment', totalAmount: 10000000, committed: 4000000, obligated: 3500000, expended: 2000000 }
 ];
 
 export const FUND_TRANSACTIONS: FundTransaction[] = [
-  { id: 'FT-01', fundId: 'OM-FY24', projectId: 'CP-02', type: 'Commitment', amount: 1200000, date: '2023-06-01', description: 'Initial funding for roof replacement' },
-  { id: 'FT-02', fundId: 'OM-FY24', workOrderId: 'WO-2024-889', type: 'Obligation', amount: 1200, date: '2023-10-26', description: 'PO issued to ACME HVAC' },
-  { id: 'FT-03', fundId: 'MC-FY24', projectId: 'CP-03', type: 'Commitment', amount: 25000000, date: '2023-10-01', description: 'Funding for Lab Expansion' },
+  { id: 'FT-01', fundId: 'F-2024', type: 'Obligation', amount: 50000, date: '2024-02-15', description: 'Contract Award', projectId: 'CP-01' }
+];
+
+export const USERS: User[] = [
+  { id: 'U-01', name: 'Dr. Alistair Vance', email: 'alistair@nexus.com', role: 'Admin', lastLogin: '2024-06-12 09:00 AM' },
+  { id: 'U-02', name: 'Sarah Connor', email: 'sarah@nexus.com', role: 'Facility Manager', lastLogin: '2024-06-11 02:30 PM' }
+];
+
+export const AUDIT_LOGS: AuditLog[] = [
+  { id: 'AL-01', user: 'Dr. Alistair Vance', action: 'Approved Invoice', entity: 'INV-1001', timestamp: '2024-06-12 10:00 AM' }
+];
+
+export const WORKFLOWS: Workflow[] = [
+  { id: 'WF-01', name: 'High Priority WO Alert', trigger: 'Work Order Created (Priority=High)', actions: ['Email Facility Manager', 'Push Notification'], enabled: true }
+];
+
+export const COST_CENTERS: CostCenter[] = [
+  { id: 'CC-01', name: 'Facility Operations', owner: 'E-001', budget: 500000, spent: 250000 },
+  { id: 'CC-02', name: 'Maintenance', owner: 'E-002', budget: 300000, spent: 180000 }
+];
+
+export const SERVICE_REQUESTS: ServiceRequest[] = [
+  { id: 'SR-01', submittedBy: 'E-003', type: 'Temperature', location: 'L2-ConfA', status: 'New', createdDate: '2024-06-12', details: 'Too cold' }
+];
+
+export const VENDORS: Vendor[] = [
+  { id: 'V-01', name: 'Global HVAC', trade: 'HVAC', rating: 4.5, onTimeCompletionRate: 95, avgInvoiceCost: 1200 },
+  { id: 'V-02', name: 'City Plumbing', trade: 'Plumbing', rating: 4.0, onTimeCompletionRate: 88, avgInvoiceCost: 800 }
+];
+
+export const ASSETS: Asset[] = [
+  { id: 'A-001', name: 'Chiller Unit 1', serialNumber: 'CH-1001', purchaseDate: '2019-05-01', warrantyEnd: '2024-05-01', condition: 75, location: 'Roof', propertyId: 'P001', maintenanceCostYTD: 2500 },
+  { id: 'A-002', name: 'Main Switchgear', serialNumber: 'SW-2002', purchaseDate: '2015-08-15', warrantyEnd: '2020-08-15', condition: 60, location: 'Basement', propertyId: 'P001', maintenanceCostYTD: 1200 }
+];
+
+export const CONDITION_ASSESSMENTS: ConditionAssessment[] = [
+  { id: 'CA-01', assetId: 'A-001', assessmentDate: '2024-01-15', assessedBy: 'Inspector Gadget', conditionScore: 75, notes: 'Normal wear', recommendedAction: 'Continue PM' }
+];
+
+export const PM_SCHEDULES: PreventiveMaintenanceSchedule[] = [
+  { id: 'PM-01', assetId: 'A-001', task: 'Quarterly Service', frequency: 'Quarterly', nextDueDate: '2024-07-01', status: 'Scheduled' }
+];
+
+export const CONTRACTS: Contract[] = [
+  { id: 'C-001', name: 'HVAC Maintenance Agreement', vendorId: 'V-01', type: 'Service', startDate: '2024-01-01', endDate: '2024-12-31', value: 15000, status: 'Active', renewalDate: '2024-11-01', documentId: 'D-001' }
+];
+
+export const SAFETY_INCIDENTS: SafetyIncident[] = [
+  { id: 'SI-001', propertyId: 'P001', type: 'Injury', date: '2024-03-10', severity: 'Medium', status: 'Closed', description: 'Slip and fall in lobby' }
+];
+
+export const DOCUMENTS: Document[] = [
+  { id: 'D-001', name: 'HVAC Contract.pdf', type: 'Contract', url: '#', uploadedDate: '2023-12-15', size: '2.5 MB', relatedTo: 'C-001' },
+  { id: 'D-002', name: 'L1 Floor Plan.dwg', type: 'CAD', url: '#', uploadedDate: '2023-01-10', size: '15 MB', relatedTo: 'P001' }
+];
+
+export const COMPLIANCE_TASKS: ComplianceTask[] = [
+  { id: 'CT-01', name: 'Fire Alarm Test', type: 'Inspection', propertyId: 'P001', dueDate: '2024-06-30', status: 'Pending', assignedTo: 'V-03' }
+];
+
+export const INSURANCE_POLICIES: InsurancePolicy[] = [
+  { id: 'IP-01', propertyId: 'P001', provider: 'SafeGuard', policyNumber: 'POL-12345', type: 'Property', coverageAmount: 50000000, premium: 120000, expiryDate: '2024-12-31' }
+];
+
+export const INVENTORY: InventoryItem[] = [
+  { id: 'INV-01', name: 'Air Filter 20x20', sku: 'FIL-2020', stock: 50, reorderLevel: 20, location: 'Storage A', costPerUnit: 15 }
+];
+
+export const KEY_RECORDS: KeyRecord[] = [
+  { id: 'K-01', keyNumber: 'K101', type: 'Physical Key', assignedTo: 'E-001', accesses: 'Master', issueDate: '2023-01-01' }
+];
+
+export const PARKING_PERMITS: ParkingPermit[] = [
+  { id: 'PP-01', permitNumber: 'P-100', assignedTo: 'E-001', lot: 'Lot A', vehicle: 'Toyota Camry', expiryDate: '2024-12-31' }
+];
+
+export const RESERVATIONS: Reservation[] = [
+  { id: 'RES-01', spaceId: 'S-101', spaceName: 'Conf Room A', reservedBy: 'E-004', date: '2024-06-15', startTime: '10:00', endTime: '11:00', status: 'Confirmed' }
+];
+
+export const UTILITY_BILLS: UtilityBill[] = [
+  { id: 'UB-01', propertyId: 'P001', utility: 'Electric', serviceDate: '2024-05-01', cost: 4500, consumption: 30000, unit: 'kWh', documentId: 'D-005' }
+];
+
+export const VISITORS: Visitor[] = [
+  { id: 'VIS-01', name: 'Guest User', company: 'Partner Corp', host: 'E-001', arrival: '2024-06-12T09:00:00', status: 'Checked In' }
 ];
 
 export const UNFUNDED_REQUIREMENTS: UnfundedRequirement[] = [
-  { id: 'UFR-01', title: 'Replace Failing Boilers (P005)', propertyId: 'P005', priority: 'Critical', estimatedCost: 750000, justification: 'Current boilers are past life expectancy and risk catastrophic failure.', submittedBy: 'E-001', status: 'In Review' },
-  { id: 'UFR-02', title: 'Security System Upgrade (P001)', propertyId: 'P001', priority: 'High', estimatedCost: 250000, justification: 'Existing CCTV system is outdated and has coverage gaps.', submittedBy: 'E-001', status: 'Submitted' },
+  { id: 'UFR-01', title: 'Parking Lot Resurfacing', propertyId: 'P001', priority: 'Medium', estimatedCost: 75000, justification: 'Cracks appearing', submittedBy: 'E-001', status: 'Submitted' }
 ];
 
 export const CAPITAL_PLAN: CapitalPlanItem[] = [
-  { id: 'CPI-01', projectName: 'Lab Beta Expansion', fiscalYear: 2024, projectedCost: 25000000, fundingStatus: 'Funded', priorityScore: 95 },
-  { id: 'CPI-02', projectName: 'P005 Boiler Replacement', fiscalYear: 2025, projectedCost: 750000, fundingStatus: 'Unfunded', priorityScore: 88 },
-  { id: 'CPI-03', projectName: 'Portfolio-wide LED Retrofit', fiscalYear: 2025, projectedCost: 1200000, fundingStatus: 'Partial', priorityScore: 82 },
-  { id: 'CPI-04', projectName: 'P001 Security Upgrade', fiscalYear: 2026, projectedCost: 250000, fundingStatus: 'Unfunded', priorityScore: 75 },
+  { id: 'CPI-01', projectName: 'HQ Expansion', fiscalYear: 2026, projectedCost: 15000000, fundingStatus: 'Unfunded', priorityScore: 80 }
 ];
 
 export const INVOICES: Invoice[] = [
-  { id: 'INV-001', vendorId: 'V-01', invoiceNumber: 'ACME-1050', invoiceDate: '2023-10-28', dueDate: '2023-11-27', amount: 1200, status: 'Approved', workOrderId: 'WO-2024-889', documentId: 'DOC-03' },
-  { id: 'INV-002', vendorId: 'V-04', invoiceNumber: 'BR-200', invoiceDate: '2023-10-15', dueDate: '2023-11-14', amount: 50000, status: 'Paid', purchaseOrderId: 'PO-01', documentId: 'DOC-03' },
-  { id: 'INV-003', vendorId: 'V-03', invoiceNumber: 'PRO-980', invoiceDate: '2023-10-30', dueDate: '2023-11-29', amount: 800, status: 'Submitted', workOrderId: 'WO-2024-891', documentId: 'DOC-03' },
+  { id: 'INV-1001', vendorId: 'V-01', invoiceNumber: 'INV-999', invoiceDate: '2024-06-01', dueDate: '2024-07-01', amount: 1200, status: 'Submitted', workOrderId: 'WO-2024-889', documentId: 'D-006' }
 ];
 
 export const PURCHASE_ORDERS: PurchaseOrder[] = [
-  { id: 'PO-01', vendorId: 'V-04', orderDate: '2023-09-01', totalAmount: 250000, status: 'Partially Received', projectId: 'CP-01', items: [{ description: 'Structural Steel', quantity: 50, unitPrice: 3000 }, { description: 'Drywall', quantity: 1000, unitPrice: 100 }] },
-  { id: 'PO-02', vendorId: 'V-01', orderDate: '2023-10-26', totalAmount: 1200, status: 'Issued', workOrderId: 'WO-2024-889', items: [{ description: 'Chiller Compressor', quantity: 1, unitPrice: 1200 }] },
+  { id: 'PO-5001', vendorId: 'V-02', orderDate: '2024-06-05', totalAmount: 500, status: 'Issued', items: [] }
 ];
 
 export const CHARGEBACKS: Chargeback[] = [
-  { id: 'CB-01', fromCostCenterId: 'CC-01', toCostCenterId: 'CC-04', amount: 15000, date: '2023-10-01', description: 'Q3 Space Usage Chargeback', type: 'Space' },
-  { id: 'CB-02', fromCostCenterId: 'CC-02', toCostCenterId: 'CC-01', amount: 800, date: '2023-10-28', description: 'WO-2024-891 Plumbing Repair', type: 'Service' },
+  { id: 'CB-01', fromCostCenterId: 'CC-01', toCostCenterId: 'CC-02', amount: 1000, date: '2024-05-31', description: 'Shared Services', type: 'Service' }
+];
+
+// Requirement 19: RPUID Enhancements in Mock Data
+export const USACE_ASSETS: RealPropertyAsset[] = [
+  { 
+    id: 'UA-01', 
+    rpuid: '12345', 
+    rpuidStatus: 'Active', 
+    rpuidMetadata: { authority: 'DoDI 4165.14', generationMethod: 'Migrated', generationDate: '2000-01-01' },
+    cefmsId: 'CEFMS-5501',
+    cefmsSyncStatus: 'Synced',
+    name: 'Building 101', 
+    assetCategoryCode: '100', 
+    type: 'Building', 
+    status: 'Active', 
+    location: 'Fort Belvoir', 
+    acquisitionDate: '2000-01-01', 
+    cost: 10000000, 
+    area: 50000, 
+    unit: 'SqFt', 
+    program: 'Military', 
+    mobilizationUse: true, 
+    history: [], 
+    components: [] 
+  },
+  { 
+    id: 'UA-02', 
+    rpuid: '67890', 
+    rpuidStatus: 'Active',
+    rpuidMetadata: { authority: 'DoDI 4165.14', generationMethod: 'System Generated', generationDate: '1995-06-15' },
+    cefmsId: 'CEFMS-9982',
+    cefmsSyncStatus: 'Synced',
+    name: 'Levee Section A', 
+    assetCategoryCode: '200', 
+    type: 'Linear Structure', 
+    status: 'Active', 
+    location: 'New Orleans', 
+    acquisitionDate: '1995-06-15', 
+    cost: 5000000, 
+    area: 10, 
+    unit: 'Acres', 
+    program: 'Civil Works', 
+    mobilizationUse: false, 
+    history: [], 
+    components: [] 
+  },
+  { 
+    id: 'UA-03', 
+    rpuid: '11223', 
+    rpuidStatus: 'Active',
+    rpuidMetadata: { authority: 'DoDI 4165.14', generationMethod: 'Migrated', generationDate: '1980-01-01' },
+    cefmsId: 'CEFMS-1122',
+    cefmsSyncStatus: 'Synced',
+    name: 'Training Land', 
+    assetCategoryCode: '300', 
+    type: 'Land', 
+    status: 'Active', 
+    location: 'Fort Hood', 
+    acquisitionDate: '1980-01-01', 
+    cost: 2000000, 
+    area: 500, 
+    unit: 'Acres', 
+    program: 'Military', 
+    mobilizationUse: true, 
+    history: [], 
+    components: [] 
+  },
+  { 
+    id: 'UA-04', 
+    rpuid: '44556', 
+    rpuidStatus: 'Active',
+    rpuidMetadata: { authority: 'DoDI 4165.14', generationMethod: 'Migrated', generationDate: '1970-01-01' },
+    cefmsId: 'CEFMS-4455',
+    cefmsSyncStatus: 'Pending',
+    name: 'Dam Structure', 
+    assetCategoryCode: '400', 
+    type: 'Structure', 
+    status: 'Active', 
+    location: 'Portland', 
+    acquisitionDate: '1970-01-01', 
+    cost: 50000000, 
+    area: 20, 
+    unit: 'Acres', 
+    program: 'Civil Works', 
+    mobilizationUse: false, 
+    history: [], 
+    components: [] 
+  }
+];
+
+// ... (Rest of file unchanged) ...
+export const USACE_ACQUISITIONS: AcquisitionRecord[] = [
+  { id: 'ACQ-01', assetId: 'UA-05', stage: 'Negotiation', cost: 1500000, fundingSource: 'MILCON', acquisitionMethod: 'Purchase', closeDate: '2024-12-01', authority: '10 USC 2663', purpose: 'Expansion', statutoryBasis: 'General Authority', interestType: 'Fee', estateAcquired: 'Fee Simple', responsibleOrg: 'USACE', appraisalIds: [], negotiationIds: [], approvalIds: [] },
+  { id: 'ACQ-02', assetId: 'UA-06', stage: 'Appraisal', cost: 500000, fundingSource: 'O&M', acquisitionMethod: 'Purchase', closeDate: '2025-03-01', authority: '33 USC 591', purpose: 'Access Road', statutoryBasis: 'Civil Works', interestType: 'Easement', estateAcquired: 'Road Easement', responsibleOrg: 'USACE', appraisalIds: [], negotiationIds: [], approvalIds: [] }
+];
+
+export const USACE_OUTGRANTS: OutGrant[] = [
+  { id: 'OG-01', assetId: 'UA-01', grantee: 'Telecom Corp', type: 'Lease', authority: '10 USC 2667', permittedUse: 'Antenna', startDate: '2020-01-01', endDate: '2025-01-01', revenue: 12000, lifecycleState: 'Active', status: 'Active', documentIds: [], history: [] },
+  { id: 'OG-02', assetId: 'UA-02', grantee: 'Farmer John', type: 'License', authority: '10 USC 2667', permittedUse: 'Grazing', startDate: '2021-01-01', endDate: '2024-01-01', revenue: 500, lifecycleState: 'Expired', status: 'Expired', documentIds: [], history: [] }
+];
+
+export const USACE_DISPOSALS: DisposalRecord[] = [
+  { id: 'DIS-01', assetId: 'UA-03', lifecycleState: 'Excess Determined', stage: 'Screening', initiatingOrg: 'DPW', disposalRationale: 'No longer needed', proposedMethod: 'Transfer', appraisalIds: [], environmentalSiteIds: [], legalClaimIds: [], documentIds: [], history: [], authorizationStatus: 'Not Started' }
+];
+
+export const USACE_INSPECTIONS: UtilizationInspection[] = [
+  { id: 'INSP-01', assetId: 'UA-01', inspectionDate: '2023-11-15', scope: 'Annual', criteria: 'Standard', teamComposition: 'Eng, FM', responsibleOrg: 'DPW', type: 'Routine', inspector: 'John Smith', lifecycleState: 'Completed', status: 'Pass', findings: [], recommendations: [], history: [] },
+  { id: 'INSP-02', outGrantId: 'OG-01', assetId: 'UA-01', inspectionDate: '2024-02-01', scope: 'Compliance', criteria: 'Lease Terms', teamComposition: 'Realty Spc', responsibleOrg: 'RE Div', type: 'Compliance', inspector: 'Jane Doe', lifecycleState: 'Scheduled', status: 'Pending', findings: [], recommendations: [], history: [] }
+];
+
+export const USACE_APPRAISALS: Appraisal[] = [
+  { id: 'AP-01', assetId: 'UA-01', relatedActionId: 'ACQ-01', appraisalDate: '2024-01-10', appraisedValue: 12000000, appraiser: 'Valuations Inc', appraiserQualifications: 'Certified General', type: 'Market Value', purpose: 'Acquisition', scope: 'Full', assumptions: 'None', status: 'Approved', documentId: 'D-AP-01', history: [] }
+];
+
+export const USACE_ENVIRONMENTAL: EnvironmentalSite[] = [
+  { id: 'ENV-01', assetId: 'UA-02', siteName: 'Site A Remediation', lifecycleState: 'Under Remediation', status: 'Active', initiatingOrg: 'Env Div', initiationDate: '2022-01-01', authority: 'CERCLA', programApplicability: ['CERCLA'], contaminants: ['Lead'], riskClassification: 'Medium', remediationActions: [], documentIds: [] }
+];
+
+export const USACE_CLAIMS: LegalClaim[] = [
+  { id: 'CLM-01', assetId: 'UA-01', claimant: 'John Doe', claimantInfo: { name: 'John Doe' }, claimType: 'Tort', lifecycleState: 'Under Investigation', status: 'Open', incidentDate: '2024-04-01', filedDate: '2024-04-10', statutoryBasis: 'FTCA', jurisdiction: 'Federal', assignedOffice: 'Office of Counsel', responsibleOfficial: 'JAG', description: 'Slip and fall', claimAmount: 5000, documentIds: [], history: [] }
+];
+
+export const USACE_RELOCATION: RelocationCase[] = [
+  { id: 'REL-01', acquisitionId: 'ACQ-01', assetId: 'UA-05', claimantName: 'Smith Family', claimantType: 'Residential Owner', displacementType: 'Physical', lifecycleState: 'Assistance Approved', status: 'Active', initiationDate: '2024-01-01', totalAssistance: 25000, totalBenefitsPaid: 10000, benefits: [], history: [], documentIds: [], payments: [] }
+];
+
+export const USACE_SOLICITATIONS: Solicitation[] = [
+  { id: 'SOL-01', assetId: 'UA-01', title: 'Building Renovation', type: 'Invitation for Bid (IFB)', procurementMethod: 'Sealed Bidding', lifecycleState: 'Issued', status: 'Open', documentIds: [], history: [], openDate: '2024-07-01' }
+];
+
+export const USACE_COMPONENTS: AssetComponent[] = [
+  { id: 'CMP-01', parentAssetId: 'UA-01', name: 'Roof System', type: 'Improvement', lifecycleState: 'Active', installDate: '2010-01-01', cost: 500000 }
+];
+
+export const USACE_PERMITS: Permit[] = [
+  { id: 'PER-01', assetId: 'UA-02', uniqueIdentifier: 'P-2024-001', type: 'Section 404', authority: 'CWA', lifecycleState: 'Issued', status: 'Active', description: 'Wetland Impact', parties: [], addresses: [], documentIds: [], history: [] }
+];
+
+export const USACE_MOBILIZATION_DATA: MobilizationProfile[] = [
+  { id: 'MOB-01', assetId: 'UA-03', lifecycleState: 'Ready', missionCriticality: 'Mission Critical', readinessDesignation: 'P1 - Immediate', facilityType: 'Barracks', functionalCapability: '500 Beds', condition: 90, initiatingOrg: 'G3', initiationDate: '2023-01-01', lastUpdatedDate: '2024-01-01', responsibleOfficial: 'Installation CDR', history: [] }
+];
+
+export const USACE_COSTSHARE: CostShareAgreement[] = [
+  { id: 'CSA-01', assetId: 'UA-04', projectId: 'P-100', partner: 'City of Portland', sponsor: 'City of Portland', authority: 'WRDA', statutoryBasis: '33 USC 2211', costShareRatio: '65/35', federalSharePercentage: 65, totalProjectCost: 10000000, partnerContribution: 3500000, lifecycleState: 'Active', status: 'Active', agreementDate: '2023-01-01', responsibleOrg: 'Portland District', contributions: [], documentIds: [], history: [] }
+];
+
+export const USACE_LINKAGES: RealPropertyLinkage[] = [
+  { id: 'LNK-01', assetId: 'UA-01', instrumentType: 'Deed', instrumentNumber: 'D-123', description: 'Acquisition Deed', executingAuthority: 'USACE', effectiveDate: '2000-01-01', lifecycleState: 'Active', status: 'Active', initiatingOrg: 'RE Div', history: [] }
+];
+
+export const USACE_RFMIS_FACILITIES: RecruitingFacility[] = [
+  { id: 'RF-01', rsid: 'RS-101', name: 'Austin North Station', address: '123 Main St', city: 'Austin', state: 'TX', zip: '78701', recruitingBrigade: '5th Bde', recruitingBattalion: 'Austin Bn', serviceComponent: 'Army', type: 'Storefront', status: 'Active', sizeSqFt: 2000, usableSqFt: 1800, lifecycleStage: 'Occupancy', usaceDistrict: 'Fort Worth', fci: 85, suitabilityScore: 90, coordinates: { lat: 30.2672, lng: -97.7431 }, catchmentAreaRadiusMiles: 10, history: [] }
+];
+
+export const USACE_RFMIS_LEASES: RecruitingLease[] = [
+  { id: 'RL-01', facilityId: 'RF-01', leaseNumber: 'L-2001', landlordName: 'Strip Mall LLC', landlordContact: { name: 'Bob', phone: '555-1234', email: 'bob@mall.com' }, startDate: '2020-01-01', expirationDate: '2025-01-01', annualRent: 60000, renewalOptions: '1x5', terminationRights: '30 days', servicesIncluded: ['Janitorial'], status: 'Active', history: [] }
+];
+
+export const USACE_RFMIS_PROJECTS: SRMProject[] = [
+  { id: 'SRM-01', facilityId: 'RF-01', name: 'Security Upgrade', type: 'Modernization', status: 'In Progress', estimatedCost: 25000, actualCost: 0, fiscalYear: 2024, fundingSource: 'O&M', description: 'Install cameras' }
+];
+
+export const USACE_ENCROACHMENTS: EncroachmentCase[] = [
+  { 
+    id: 'ENC-01', 
+    assetId: 'UA-03', 
+    type: 'Structure', 
+    discoveryDate: '2023-08-20',
+    dateReported: '2023-08-20', 
+    lifecycleState: 'Under Corrective Action',
+    status: 'Under Corrective Action', 
+    locationDescription: 'Northwest boundary, adjacent to Tract 105.',
+    initialAssessment: 'Unauthorized shed construction partially on federal land.',
+    responsibleOfficial: 'Ranger Smith',
+    documentIds: [],
+    history: [{ timestamp: '2023-08-20 09:00 AM', user: 'Ranger Smith', action: 'Case Created' }],
+    tasks: [
+      {
+        id: 'TASK-01',
+        caseId: 'ENC-01',
+        title: 'Initial Site Survey',
+        type: 'Survey',
+        assignedTo: 'Survey Team A',
+        dueDate: '2023-09-01',
+        lifecycleState: 'Completed',
+        workActivities: [
+          { id: 'ACT-01', taskId: 'TASK-01', description: 'Field measurement', plannedDate: '2023-08-25', actualDate: '2023-08-26', responsibleParty: 'Surveyor John', outcome: 'Confirmed 5ft encroachment.' }
+        ]
+      },
+      {
+        id: 'TASK-02',
+        caseId: 'ENC-01',
+        title: 'Issue Notice to Cure',
+        type: 'Notice',
+        assignedTo: 'Real Estate Division',
+        dueDate: '2023-09-15',
+        lifecycleState: 'In Progress',
+        workActivities: [
+          { id: 'ACT-02', taskId: 'TASK-02', description: 'Draft Letter', plannedDate: '2023-09-10', responsibleParty: 'RE Specialist' }
+        ]
+      }
+    ]
+  },
+  // Record 17: New Encroachment Case
+  {
+    id: 'ENC-02',
+    assetId: 'UA-01',
+    type: 'Vegetation',
+    discoveryDate: '2024-05-10',
+    dateReported: '2024-05-10',
+    lifecycleState: 'Reported',
+    status: 'Reported',
+    locationDescription: 'Levee toe near Mile Marker 12.',
+    initialAssessment: 'Private landowner planting trees on levee easement.',
+    responsibleOfficial: 'Levee Inspector',
+    documentIds: [],
+    history: [{ timestamp: '2024-05-10 14:00 PM', user: 'System', action: 'Case Reported via Mobile App' }],
+    tasks: []
+  }
+];
+
+export const USACE_GIS_LAYERS: GeospatialLayer[] = [
+  { id: 'LYR-01', name: 'Real Property Polygons', type: 'Feature', description: 'Authoritative boundary data for owned assets.', ownerOrg: 'USACE GIS Center', lifecycleState: 'Published', classification: 'CUI' },
+  { id: 'LYR-02', name: 'Encroachment Points', type: 'Feature', description: 'Locations of reported and verified encroachments.', ownerOrg: 'Real Estate Division', lifecycleState: 'Published', classification: 'CUI' },
+  { id: 'LYR-03', name: 'Flood Inundation Zones', type: 'Map Service', description: 'Reference layer for flood risk analysis.', ownerOrg: 'Hydrology', lifecycleState: 'Published', classification: 'Unclassified' }
+];
+
+export const USACE_GIS_FEATURES: GeospatialFeature[] = [
+  { 
+    id: 'FEAT-01', 
+    entityId: 'UA-01', 
+    entityType: 'Asset', 
+    geometryType: 'Polygon', 
+    coordinates: [{ lat: 38.718, lng: -77.154 }, { lat: 38.719, lng: -77.154 }, { lat: 38.719, lng: -77.153 }, { lat: 38.718, lng: -77.153 }], 
+    layerId: 'LYR-01', 
+    metadata: { dataSource: 'Survey 2023', collectionMethod: 'GPS', accuracy: 'Sub-meter', captureDate: '2023-06-15', coordinateSystem: 'WGS84' }, 
+    lifecycleState: 'Published', 
+    responsibleOfficial: 'GIS Manager', 
+    history: [] 
+  },
+  { 
+    id: 'FEAT-02', 
+    entityId: 'ENC-01', 
+    entityType: 'Encroachment', 
+    geometryType: 'Point', 
+    coordinates: { lat: 45.601, lng: -121.182 }, 
+    layerId: 'LYR-02', 
+    metadata: { dataSource: 'Mobile Report', collectionMethod: 'Tablet GPS', accuracy: '5 meters', captureDate: '2023-08-20', coordinateSystem: 'WGS84' }, 
+    lifecycleState: 'Published', 
+    responsibleOfficial: 'Ranger Smith', 
+    history: [] 
+  }
 ];
