@@ -1,0 +1,5 @@
+{
+  "name": "Nexus Core IWMS",
+  "description": "An enterprise-grade Integrated Workplace Management System (IWMS) competing with IBM Tririga. Features comprehensive Real Estate, Capital Projects, Facilities, Space Management, and Sustainability modules powered by Gemini AI.",
+  "requestFramePermissions": []
+}
