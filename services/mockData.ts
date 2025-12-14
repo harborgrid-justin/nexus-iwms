@@ -3,14 +3,16 @@ import {
   Vendor, PreventiveMaintenanceSchedule, Employee, ServiceRequest, CapitalProject,
   SustainabilityInitiative, BudgetLineItem, AuditLog, User, CostCenter, InventoryItem,
   SafetyIncident, Document, ProjectRisk, Notification, Contract, Transaction, MoveRequest, Workflow,
-  Reservation, Visitor, ComplianceTask, InsurancePolicy, UtilityBill, ParkingPermit, KeyRecord, ConditionAssessment
+  Reservation, Visitor, ComplianceTask, InsurancePolicy, UtilityBill, ParkingPermit, KeyRecord, ConditionAssessment,
+  PpbeFund, FundTransaction, UnfundedRequirement, CapitalPlanItem, Invoice, PurchaseOrder, Chargeback, ProjectMilestone, ChangeOrder, LeaseClause
 } from '../types';
 
 export const NOTIFICATIONS: Notification[] = [
   { id: 'N-01', message: 'Project **CP-02** is now over budget by $150,000.', type: 'alert', timestamp: '2 hours ago', isRead: false, link: '/projects' },
   { id: 'N-02', message: 'Work Order **WO-2024-889** has been assigned to you.', type: 'task', timestamp: '8 hours ago', isRead: false, link: '/operations' },
-  { id: 'N-03', message: 'Lease for **Starbucks Corp** is expiring in 90 days.', type: 'info', timestamp: '1 day ago', isRead: true, link: '/real-estate' },
+  { id: 'N-03', message: 'Lease for **Starbucks Corp** is expiring in 90 days.', type: 'info', timestamp: '1 day ago', isRead: true, link: '/lease-admin' },
   { id: 'N-04', message: 'Q4 Sustainability Report is ready for review.', type: 'info', timestamp: '2 days ago', isRead: true, link: '/sustainability' },
+  { id: 'N-05', message: 'PPBE Fund **OM-FY24** is 95% obligated.', type: 'alert', timestamp: '3 days ago', isRead: false, link: '/ppbe-funds' },
 ];
 
 export const CONTRACTS: Contract[] = [
@@ -46,6 +48,8 @@ export const DOCUMENTS: Document[] = [
   { id: 'DOC-05', name: 'Building_Permit_CP-01.pdf', type: 'Permit', url: '#', uploadedDate: '2023-09-05', size: '1.1 MB', relatedTo: 'Project CP-01' },
   { id: 'DOC-06', name: 'P001_Liability_Policy.pdf', type: 'Insurance Policy', url: '#', uploadedDate: '2023-01-01', size: '800 KB', relatedTo: 'Property P001' },
   { id: 'DOC-07', name: 'Q3_Safety_Audit.pdf', type: 'Compliance Report', url: '#', uploadedDate: '2023-10-01', size: '3.1 MB', relatedTo: 'Property P003' },
+  { id: 'DOC-08', name: 'PO-2024-001.pdf', type: 'Purchase Order', url: '#', uploadedDate: '2024-01-10', size: '95 KB', relatedTo: 'PO-01' },
+  { id: 'DOC-09', name: 'CO-CP02-001.pdf', type: 'Change Order', url: '#', uploadedDate: '2023-10-15', size: '210 KB', relatedTo: 'CP-02' },
 ];
 
 export const PROPERTIES: Property[] = [
@@ -56,10 +60,16 @@ export const PROPERTIES: Property[] = [
   { id: 'P005', name: 'Satellite Office East', address: '12 Harbor View, MA', type: 'Office', sizeSqFt: 25000, occupancyRate: 45, status: Status.Critical, marketValue: 18000000, imageUrl: 'https://picsum.photos/400/300?random=5', noi: 950000, fci: 45 },
 ];
 
+export const LEASE_CLAUSES: LeaseClause[] = [
+    {id: 'LC-01', leaseId: 'L-102', name: 'Renewal Option', details: 'Tenant has the option to renew for one (1) additional five-year term.', criticalDate: '2024-02-15'},
+    {id: 'LC-02', leaseId: 'L-102', name: 'CAM Cap', details: 'Annual CAM charges cannot increase by more than 5% year-over-year.'},
+    {id: 'LC-03', leaseId: 'L-103', name: 'Termination Option', details: 'Tenant may terminate the lease with 180 days notice after the third lease year.', criticalDate: '2024-07-31'},
+];
+
 export const LEASES: Lease[] = [
-  { id: 'L-101', propertyId: 'P001', tenantName: 'Internal', startDate: '2020-01-01', endDate: '2030-12-31', monthlyRent: 0, status: 'Active', criticalDates: [{ name: 'Rent Review', date: '2025-01-01'}] },
-  { id: 'L-102', propertyId: 'P004', tenantName: 'Starbucks Corp', startDate: '2019-05-15', endDate: '2024-05-15', monthlyRent: 12500, status: 'Expiring Soon', criticalDates: [{ name: 'Renewal Option', date: '2024-02-15'}] },
-  { id: 'L-103', propertyId: 'P003', tenantName: 'FastShip Logistics', startDate: '2021-08-01', endDate: '2026-07-31', monthlyRent: 45000, status: 'Active', criticalDates: [{ name: 'Termination Option', date: '2024-07-31'}] },
+  { id: 'L-101', propertyId: 'P001', tenantName: 'Internal', startDate: '2020-01-01', endDate: '2030-12-31', monthlyRent: 0, status: 'Active', criticalDates: [{ name: 'Rent Review', date: '2025-01-01'}], camCharge: 18.50 },
+  { id: 'L-102', propertyId: 'P004', tenantName: 'Starbucks Corp', startDate: '2019-05-15', endDate: '2024-05-15', monthlyRent: 12500, status: 'Expiring Soon', criticalDates: [{ name: 'Renewal Option', date: '2024-02-15'}], clauses: [LEASE_CLAUSES[0], LEASE_CLAUSES[1]], camCharge: 22.00 },
+  { id: 'L-103', propertyId: 'P003', tenantName: 'FastShip Logistics', startDate: '2021-08-01', endDate: '2026-07-31', monthlyRent: 45000, status: 'Active', criticalDates: [{ name: 'Termination Option', date: '2024-07-31'}], clauses: [LEASE_CLAUSES[2]], camCharge: 8.75 },
 ];
 
 export const VENDORS: Vendor[] = [
@@ -73,13 +83,14 @@ export const COST_CENTERS: CostCenter[] = [
   { id: 'CC-01', name: 'HQ Facility Operations', owner: 'E-001', budget: 500000, spent: 375000 },
   { id: 'CC-02', name: 'Lab Beta R&D Facilities', owner: 'E-001', budget: 250000, spent: 265000 },
   { id: 'CC-03', name: 'Logistics Maintenance', owner: 'E-001', budget: 750000, spent: 650000 },
+  { id: 'CC-04', name: 'Marketing Department', owner: 'E-005', budget: 100000, spent: 45000 },
 ];
 
 export const WORK_ORDERS: WorkOrder[] = [
-  { id: 'WO-2024-889', propertyId: 'P001', title: 'HVAC Failure in Server Room', priority: 'Emergency', status: 'In Progress', category: 'HVAC', assignedTo: 'Mike Ross', dueDate: '2023-10-27', cost: 1200, costCenterId: 'CC-01' },
+  { id: 'WO-2024-889', propertyId: 'P001', title: 'HVAC Failure in Server Room', priority: 'Emergency', status: 'In Progress', category: 'HVAC', assignedTo: 'Mike Ross', dueDate: '2023-10-27', cost: 1200, costCenterId: 'CC-01', assetId: 'A-5001' },
   { id: 'WO-2024-890', propertyId: 'P001', title: 'Lobby Light Replacement', priority: 'Low', status: 'Open', category: 'Electrical', assignedTo: 'Sarah Jin', dueDate: '2023-10-30', cost: 250, costCenterId: 'CC-01' },
-  { id: 'WO-2024-891', propertyId: 'P002', title: 'Leaking Pipe 4th Floor Restroom', priority: 'High', status: 'Open', category: 'Plumbing', assignedTo: 'V-03', dueDate: '2023-10-28', cost: 800, costCenterId: 'CC-02' },
-  { id: 'WO-2024-892', propertyId: 'P003', title: 'Q4 Preventive Maintenance', priority: 'Medium', status: 'Completed', category: 'Preventive', assignedTo: 'Team A', dueDate: '2023-10-15', cost: 2500, costCenterId: 'CC-03' },
+  { id: 'WO-2024-891', propertyId: 'P002', title: 'Leaking Pipe 4th Floor Restroom', priority: 'High', status: 'Open', category: 'Plumbing', assignedTo: 'V-03', dueDate: '2023-10-28', cost: 800, costCenterId: 'CC-02', relatedIncidentId: 'SI-02' },
+  { id: 'WO-2024-892', propertyId: 'P003', title: 'Q4 Preventive Maintenance', priority: 'Medium', status: 'Completed', category: 'Preventive', assignedTo: 'Team A', dueDate: '2023-10-15', cost: 2500, costCenterId: 'CC-03', assetId: 'A-5002' },
 ];
 
 export const INVENTORY: InventoryItem[] = [
@@ -143,11 +154,24 @@ export const SERVICE_REQUESTS: ServiceRequest[] = [
 ];
 
 export const BUDGET_ITEMS_PROJ1: BudgetLineItem[] = [
-  {id: 'BLI-1', category: 'Labor', budgeted: 150000, actual: 165000, variance: -15000 },
-  {id: 'BLI-2', category: 'Materials', budgeted: 250000, actual: 245000, variance: 5000 },
-  {id: 'BLI-3', category: 'Permits', budgeted: 15000, actual: 15000, variance: 0 },
-  {id: 'BLI-4', category: 'Contingency', budgeted: 40000, actual: 10000, variance: 30000 },
+  {id: 'BLI-1', category: 'Design', budgeted: 40000, actual: 40000, variance: 0 },
+  {id: 'BLI-2', category: 'Permits', budgeted: 15000, actual: 15000, variance: 0 },
+  {id: 'BLI-3', category: 'Labor', budgeted: 150000, actual: 165000, variance: -15000 },
+  {id: 'BLI-4', category: 'Materials', budgeted: 250000, actual: 245000, variance: 5000 },
+  {id: 'BLI-5', category: 'Contingency', budgeted: 40000, actual: 10000, variance: 30000 },
 ];
+
+export const MILESTONES_PROJ1: ProjectMilestone[] = [
+    {id: 'M-01', name: 'Design Complete', dueDate: '2023-09-30', status: 'Completed'},
+    {id: 'M-02', name: 'Permits Approved', dueDate: '2023-10-15', status: 'Completed'},
+    {id: 'M-03', name: 'Demolition Phase', dueDate: '2023-11-15', status: 'In Progress'},
+    {id: 'M-04', name: 'Construction Complete', dueDate: '2024-02-15', status: 'Not Started'},
+];
+
+export const CHANGE_ORDERS_PROJ2: ChangeOrder[] = [
+    {id: 'CO-01', projectId: 'CP-02', title: 'Additional Structural Repairs', reason: 'Unforeseen Condition', costImpact: 150000, scheduleImpactDays: 14, status: 'Approved', date: '2023-10-15'},
+    {id: 'CO-02', projectId: 'CP-02', title: 'Upgrade to TPO Roofing Material', reason: 'Client Request', costImpact: 75000, scheduleImpactDays: 0, status: 'Pending', date: '2023-10-28'},
+]
 
 export const RISKS_PROJ1: ProjectRisk[] = [
   { id: 'R-03', description: 'Permit approval delayed.', impact: 'Medium', probability: 'Low', mitigation: 'Weekly follow-ups with city office.' }
@@ -159,14 +183,14 @@ export const RISKS_PROJ2: ProjectRisk[] = [
 ];
 
 export const CAPITAL_PROJECTS: CapitalProject[] = [
-  { id: 'CP-01', name: 'HQ Lobby Renovation', propertyId: 'P001', type: 'Renovation', status: Status.OnTrack, startDate: '2023-09-01', endDate: '2024-02-28', totalBudget: 455000, spent: 435000, manager: 'E-004', budgetItems: BUDGET_ITEMS_PROJ1, risks: RISKS_PROJ1, documents: [DOCUMENTS[3], DOCUMENTS[4]] },
-  { id: 'CP-02', name: 'Logistics Hub Roof Replacement', propertyId: 'P003', type: 'Major Repair', status: Status.AtRisk, startDate: '2023-06-15', endDate: '2023-11-30', totalBudget: 1200000, spent: 1350000, manager: 'E-004', risks: RISKS_PROJ2 },
-  { id: 'CP-03', name: 'Lab Beta Expansion Wing', propertyId: 'P002', type: 'New Construction', status: Status.Pending, startDate: '2024-04-01', endDate: '2025-12-31', totalBudget: 25000000, spent: 0, manager: 'E-004' },
+  { id: 'CP-01', name: 'HQ Lobby Renovation', propertyId: 'P001', type: 'Renovation', status: Status.OnTrack, startDate: '2023-09-01', endDate: '2024-02-28', totalBudget: 495000, spent: 475000, manager: 'E-004', budgetItems: BUDGET_ITEMS_PROJ1, risks: RISKS_PROJ1, documents: [DOCUMENTS[3], DOCUMENTS[4]], milestones: MILESTONES_PROJ1 },
+  { id: 'CP-02', name: 'Logistics Hub Roof Replacement', propertyId: 'P003', type: 'Major Repair', status: Status.AtRisk, startDate: '2023-06-15', endDate: '2023-11-30', totalBudget: 1200000, spent: 1350000, manager: 'E-004', risks: RISKS_PROJ2, changeOrders: CHANGE_ORDERS_PROJ2 },
+  { id: 'CP-03', name: 'Lab Beta Expansion Wing', propertyId: 'P002', type: 'New Construction', status: Status.Planning, startDate: '2024-04-01', endDate: '2025-12-31', totalBudget: 25000000, spent: 0, manager: 'E-004' },
 ];
 
 export const USERS: User[] = [
   { id: 'U-01', name: 'Dr. Alistair Vance', email: 'avance@nexus.corp', role: 'Admin', lastLogin: '2023-10-26 08:05 AM' },
-  { id: 'U-02', name: 'Emily Carter', email: 'ecarter@nexus.corp', role: 'Facility Manager', lastLogin: '2023-10-26 09:15 AM' },
+  { id: 'U-02', name: 'Emily Carter', email: 'ecarter@nexus.corp', role: 'Project Manager', lastLogin: '2023-10-26 09:15 AM' },
   { id: 'U-03', name: 'Sarah Jin', email: 'sjin@nexus.corp', role: 'Technician', lastLogin: '2023-10-25 07:30 AM' },
   { id: 'U-04', name: 'John Doe', email: 'jdoe@nexus.corp', role: 'Read Only', lastLogin: '2023-10-24 02:00 PM' },
   { id: 'U-05', name: 'Finance Bot', email: 'fbot@nexus.corp', role: 'Financial Analyst', lastLogin: '2023-10-26 11:00 AM' },
@@ -225,4 +249,45 @@ export const KEY_RECORDS: KeyRecord[] = [
 export const CONDITION_ASSESSMENTS: ConditionAssessment[] = [
   { id: 'CA-01', assetId: 'A-5002', assessmentDate: '2023-08-15', assessedBy: 'E-003', conditionScore: 60, notes: 'Showing signs of wear on belts. Fuel filter is dirty.', recommendedAction: 'Replace belts and filters during next PM cycle.' },
   { id: 'CA-02', assetId: 'A-5001', assessmentDate: '2023-09-01', assessedBy: 'E-003', conditionScore: 85, notes: 'Running within normal parameters. Some minor corrosion on housing.', recommendedAction: 'Monitor corrosion, no immediate action needed.' },
+];
+
+// --- NEW FINANCIALS MOCK DATA ---
+export const PPBE_FUNDS: PpbeFund[] = [
+  { id: 'OM-FY24', name: 'O&M Fund FY24', appropriationType: 'O&M', fiscalYear: 2024, programElement: 'PE-01', totalAmount: 5000000, committed: 1250000, obligated: 3500000, expended: 3200000 },
+  { id: 'MC-FY24', name: 'MILCON Fund FY24', appropriationType: 'MILCON', fiscalYear: 2024, programElement: 'PE-02', totalAmount: 25000000, committed: 25000000, obligated: 0, expended: 0 },
+  { id: 'OM-FY23', name: 'O&M Fund FY23', appropriationType: 'O&M', fiscalYear: 2023, programElement: 'PE-01', totalAmount: 4500000, committed: 4500000, obligated: 4500000, expended: 4450000 },
+];
+
+export const FUND_TRANSACTIONS: FundTransaction[] = [
+  { id: 'FT-01', fundId: 'OM-FY24', projectId: 'CP-02', type: 'Commitment', amount: 1200000, date: '2023-06-01', description: 'Initial funding for roof replacement' },
+  { id: 'FT-02', fundId: 'OM-FY24', workOrderId: 'WO-2024-889', type: 'Obligation', amount: 1200, date: '2023-10-26', description: 'PO issued to ACME HVAC' },
+  { id: 'FT-03', fundId: 'MC-FY24', projectId: 'CP-03', type: 'Commitment', amount: 25000000, date: '2023-10-01', description: 'Funding for Lab Expansion' },
+];
+
+export const UNFUNDED_REQUIREMENTS: UnfundedRequirement[] = [
+  { id: 'UFR-01', title: 'Replace Failing Boilers (P005)', propertyId: 'P005', priority: 'Critical', estimatedCost: 750000, justification: 'Current boilers are past life expectancy and risk catastrophic failure.', submittedBy: 'E-001', status: 'In Review' },
+  { id: 'UFR-02', title: 'Security System Upgrade (P001)', propertyId: 'P001', priority: 'High', estimatedCost: 250000, justification: 'Existing CCTV system is outdated and has coverage gaps.', submittedBy: 'E-001', status: 'Submitted' },
+];
+
+export const CAPITAL_PLAN: CapitalPlanItem[] = [
+  { id: 'CPI-01', projectName: 'Lab Beta Expansion', fiscalYear: 2024, projectedCost: 25000000, fundingStatus: 'Funded', priorityScore: 95 },
+  { id: 'CPI-02', projectName: 'P005 Boiler Replacement', fiscalYear: 2025, projectedCost: 750000, fundingStatus: 'Unfunded', priorityScore: 88 },
+  { id: 'CPI-03', projectName: 'Portfolio-wide LED Retrofit', fiscalYear: 2025, projectedCost: 1200000, fundingStatus: 'Partial', priorityScore: 82 },
+  { id: 'CPI-04', projectName: 'P001 Security Upgrade', fiscalYear: 2026, projectedCost: 250000, fundingStatus: 'Unfunded', priorityScore: 75 },
+];
+
+export const INVOICES: Invoice[] = [
+  { id: 'INV-001', vendorId: 'V-01', invoiceNumber: 'ACME-1050', invoiceDate: '2023-10-28', dueDate: '2023-11-27', amount: 1200, status: 'Approved', workOrderId: 'WO-2024-889', documentId: 'DOC-03' },
+  { id: 'INV-002', vendorId: 'V-04', invoiceNumber: 'BR-200', invoiceDate: '2023-10-15', dueDate: '2023-11-14', amount: 50000, status: 'Paid', purchaseOrderId: 'PO-01', documentId: 'DOC-03' },
+  { id: 'INV-003', vendorId: 'V-03', invoiceNumber: 'PRO-980', invoiceDate: '2023-10-30', dueDate: '2023-11-29', amount: 800, status: 'Submitted', workOrderId: 'WO-2024-891', documentId: 'DOC-03' },
+];
+
+export const PURCHASE_ORDERS: PurchaseOrder[] = [
+  { id: 'PO-01', vendorId: 'V-04', orderDate: '2023-09-01', totalAmount: 250000, status: 'Partially Received', projectId: 'CP-01', items: [{ description: 'Structural Steel', quantity: 50, unitPrice: 3000 }, { description: 'Drywall', quantity: 1000, unitPrice: 100 }] },
+  { id: 'PO-02', vendorId: 'V-01', orderDate: '2023-10-26', totalAmount: 1200, status: 'Issued', workOrderId: 'WO-2024-889', items: [{ description: 'Chiller Compressor', quantity: 1, unitPrice: 1200 }] },
+];
+
+export const CHARGEBACKS: Chargeback[] = [
+  { id: 'CB-01', fromCostCenterId: 'CC-01', toCostCenterId: 'CC-04', amount: 15000, date: '2023-10-01', description: 'Q3 Space Usage Chargeback', type: 'Space' },
+  { id: 'CB-02', fromCostCenterId: 'CC-02', toCostCenterId: 'CC-01', amount: 800, date: '2023-10-28', description: 'WO-2024-891 Plumbing Repair', type: 'Service' },
 ];

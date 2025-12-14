@@ -37,14 +37,21 @@ import { EnergyDashboard } from './pages/EnergyDashboard';
 import { WasteDashboard } from './pages/WasteDashboard';
 import { CadViewer } from './pages/CadViewer';
 import { SupportCenter } from './pages/SupportCenter';
+import { PpbeFunds } from './pages/PpbeFunds';
+import { CapitalPlanning } from './pages/CapitalPlanning';
+import { Invoicing } from './pages/Invoicing';
+import { Procurement } from './pages/Procurement';
+import { Chargebacks } from './pages/Chargebacks';
+import { StrategicPortfolio } from './pages/StrategicPortfolio';
+import { LeaseAdmin } from './pages/LeaseAdmin';
 
 import { 
   PROPERTIES, LEASES, WORK_ORDERS, ASSETS, SUSTAINABILITY_DATA, 
   CAPITAL_PROJECTS, VENDORS, EMPLOYEES, COST_CENTERS, INVENTORY,
   SAFETY_INCIDENTS, SERVICE_REQUESTS, CONTRACTS, TRANSACTIONS, MOVE_REQUESTS,
-  // Import new mock data
   RESERVATIONS, VISITORS, COMPLIANCE_TASKS, INSURANCE_POLICIES, UTILITY_BILLS,
-  PARKING_PERMITS, KEY_RECORDS, CONDITION_ASSESSMENTS, PM_SCHEDULES, DOCUMENTS
+  PARKING_PERMITS, KEY_RECORDS, CONDITION_ASSESSMENTS, PM_SCHEDULES, DOCUMENTS,
+  PPBE_FUNDS, FUND_TRANSACTIONS, UNFUNDED_REQUIREMENTS, CAPITAL_PLAN, INVOICES, PURCHASE_ORDERS, CHARGEBACKS
 } from './services/mockData';
 
 const App: React.FC = () => {
@@ -67,7 +74,6 @@ const App: React.FC = () => {
     contracts: CONTRACTS,
     transactions: TRANSACTIONS,
     moveRequests: MOVE_REQUESTS,
-    // Add new data to context
     reservations: RESERVATIONS,
     visitors: VISITORS,
     complianceTasks: COMPLIANCE_TASKS,
@@ -77,48 +83,74 @@ const App: React.FC = () => {
     keyRecords: KEY_RECORDS,
     conditionAssessments: CONDITION_ASSESSMENTS,
     preventiveMaintenanceSchedules: PM_SCHEDULES,
-    documents: DOCUMENTS
+    documents: DOCUMENTS,
+    ppbeFunds: PPBE_FUNDS,
+    fundTransactions: FUND_TRANSACTIONS,
+    unfundedRequirements: UNFUNDED_REQUIREMENTS,
+    capitalPlan: CAPITAL_PLAN,
+    invoices: INVOICES,
+    purchaseOrders: PURCHASE_ORDERS,
+    chargebacks: CHARGEBACKS
   };
 
   return (
     <Router>
       <Layout onAiToggle={() => setIsAiOpen(true)}>
         <Routes>
-          {/* Existing Routes */}
+          {/* Main Hubs */}
           <Route path="/" element={<Dashboard />} />
           <Route path="/real-estate" element={<RealEstate />} />
-          <Route path="/contracts" element={<ContractManagement />} />
           <Route path="/operations" element={<Operations />} />
+          <Route path="/projects" element={<CapitalProjects />} />
+          <Route path="/financials" element={<Financials />} />
+          
+          {/* Portfolio */}
+          <Route path="/lease-admin" element={<LeaseAdmin />} />
+          <Route path="/contracts" element={<ContractManagement />} />
+          <Route path="/insurance" element={<Insurance />} />
+          <Route path="/gis-map" element={<GisMap />} />
+
+          {/* Finance */}
+          <Route path="/budgeting" element={<Budgeting />} />
+          <Route path="/ppbe-funds" element={<PpbeFunds />} />
+          <Route path="/capital-planning" element={<CapitalPlanning />} />
+          <Route path="/invoicing" element={<Invoicing />} />
+          <Route path="/procurement" element={<Procurement />} />
+          <Route path="/chargebacks" element={<Chargebacks />} />
+
+          {/* Strategy */}
+          <Route path="/strategic-portfolio" element={<StrategicPortfolio />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/reporting" element={<Reporting />} />
+          <Route path="/condition-assessment" element={<ConditionAssessment />} />
+          
+          {/* Operations */}
           <Route path="/assets" element={<AssetRegistry />} />
           <Route path="/vendors" element={<VendorManagement />} />
-          <Route path="/space" element={<Space />} />
-          <Route path="/people" element={<People />} />
-          <Route path="/projects" element={<CapitalProjects />} />
-          <Route path="/sustainability" element={<Sustainability />} />
-          <Route path="/financials" element={<Financials />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/ehs" element={<EHS />} />
-          
-          {/* New Routes */}
-          <Route path="/documents" element={<DocumentCentral />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/preventive-maintenance" element={<PreventiveMaintenance />} />
+          <Route path="/key-management" element={<KeyManagement />} />
+
+          {/* Workplace */}
+          <Route path="/space" element={<Space />} />
+          <Route path="/people" element={<People />} />
           <Route path="/reservations" element={<Reservations />} />
           <Route path="/visitor-management" element={<VisitorManagement />} />
-          <Route path="/budgeting" element={<Budgeting />} />
-          <Route path="/condition-assessment" element={<ConditionAssessment />} />
-          <Route path="/compliance" element={<Compliance />} />
-          <Route path="/reporting" element={<Reporting />} />
-          <Route path="/mobile" element={<MobileWorkforce />} />
-          <Route path="/gis-map" element={<GisMap />} />
-          <Route path="/insurance" element={<Insurance />} />
-          <Route path="/utility-bills" element={<UtilityBills />} />
           <Route path="/parking" element={<Parking />} />
-          <Route path="/key-management" element={<KeyManagement />} />
+          
+          {/* Sustainability */}
+          <Route path="/sustainability" element={<Sustainability />} />
           <Route path="/energy" element={<EnergyDashboard />} />
           <Route path="/waste" element={<WasteDashboard />} />
+          <Route path="/utility-bills" element={<UtilityBills />} />
+          
+          {/* Administration */}
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/ehs" element={<EHS />} />
+          <Route path="/compliance" element={<Compliance />} />
+          <Route path="/documents" element={<DocumentCentral />} />
           <Route path="/cad-viewer" element={<CadViewer />} />
+          <Route path="/mobile" element={<MobileWorkforce />} />
           <Route path="/support" element={<SupportCenter />} />
           
           <Route path="*" element={<Navigate to="/" replace />} />

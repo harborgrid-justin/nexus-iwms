@@ -1,18 +1,32 @@
 import React, { useState } from 'react';
-import { Layers, Building, Search, Maximize } from 'lucide-react';
+import { Layers, Building, Search, Maximize, Shield, Users, Thermometer } from 'lucide-react';
 import { PROPERTIES } from '../services/mockData';
 import { Status } from '../types';
 
 export const GisMap: React.FC = () => {
-    const [selectedProperty, setSelectedProperty] = useState(PROPERTIES[0]);
+    const [activeLayer, setActiveLayer] = useState('status');
 
-    const getStatusColor = (status: Status) => {
-        switch (status) {
-            case Status.Good: return 'bg-green-500';
-            case Status.Warning: return 'bg-amber-500';
-            case Status.Critical: return 'bg-red-500';
-            default: return 'bg-slate-500';
+    const getPinColorForLayer = (property: typeof PROPERTIES[0], layer: string) => {
+        if (layer === 'status') {
+            switch (property.status) {
+                case Status.Good: return 'bg-green-500';
+                case Status.Warning: return 'bg-amber-500';
+                case Status.Critical: return 'bg-red-500';
+                default: return 'bg-slate-500';
+            }
         }
+        if (layer === 'occupancy') {
+            if (property.occupancyRate > 90) return 'bg-green-500';
+            if (property.occupancyRate > 70) return 'bg-blue-500';
+            return 'bg-amber-500';
+        }
+        if (layer === 'fci') {
+            if (property.fci > 90) return 'bg-green-500';
+            if (property.fci > 70) return 'bg-blue-500';
+            if (property.fci > 50) return 'bg-amber-500';
+            return 'bg-red-500';
+        }
+        return 'bg-slate-500';
     };
     
   return (
@@ -30,18 +44,22 @@ export const GisMap: React.FC = () => {
         >
             <div className="absolute inset-0 bg-slate-800/20"></div>
             {/* Mock property pins */}
-            <div title="P001" className="absolute top-[25%] left-[30%] w-3 h-3 bg-green-500 rounded-full ring-4 ring-white/50 animate-pulse"></div>
-            <div title="P002" className="absolute top-[50%] left-[50%] w-3 h-3 bg-green-500 rounded-full ring-4 ring-white/50"></div>
-            <div title="P003" className="absolute top-[40%] left-[70%] w-3 h-3 bg-amber-500 rounded-full ring-4 ring-white/50"></div>
-            <div title="P004" className="absolute top-[65%] left-[20%] w-3 h-3 bg-green-500 rounded-full ring-4 ring-white/50"></div>
-            <div title="P005" className="absolute top-[70%] left-[80%] w-3 h-3 bg-red-500 rounded-full ring-4 ring-white/50 animate-pulse"></div>
+            {PROPERTIES.map((p, i) => (
+                 <div key={p.id} title={p.name} className={`absolute w-3 h-3 ${getPinColorForLayer(p, activeLayer)} rounded-full ring-4 ring-white/50 animate-pulse`} style={{top: `${15 + i*15}%`, left: `${20 + i*12}%`}}></div>
+            ))}
         </div>
         
         {/* Map Controls */}
         <div className="absolute top-4 right-4 flex flex-col gap-2">
             <button className="bg-white p-3 rounded-lg shadow-md hover:bg-slate-100"><Layers size={20} className="text-slate-700" /></button>
-            <button className="bg-white p-3 rounded-lg shadow-md hover:bg-slate-100"><Building size={20} className="text-slate-700" /></button>
             <button className="bg-white p-3 rounded-lg shadow-md hover:bg-slate-100"><Maximize size={20} className="text-slate-700" /></button>
+        </div>
+
+        {/* Layer Controls */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border p-2 flex gap-2">
+            <button onClick={() => setActiveLayer('status')} className={`flex items-center gap-2 px-3 py-1 rounded text-sm font-medium ${activeLayer === 'status' ? 'bg-slate-800 text-white' : 'hover:bg-slate-100'}`}><Shield size={14}/> Status</button>
+            <button onClick={() => setActiveLayer('occupancy')} className={`flex items-center gap-2 px-3 py-1 rounded text-sm font-medium ${activeLayer === 'occupancy' ? 'bg-slate-800 text-white' : 'hover:bg-slate-100'}`}><Users size={14}/> Occupancy</button>
+            <button onClick={() => setActiveLayer('fci')} className={`flex items-center gap-2 px-3 py-1 rounded text-sm font-medium ${activeLayer === 'fci' ? 'bg-slate-800 text-white' : 'hover:bg-slate-100'}`}><Thermometer size={14}/> FCI</button>
         </div>
 
         {/* Info Panel */}
@@ -55,7 +73,7 @@ export const GisMap: React.FC = () => {
            <div className="flex-grow overflow-y-auto">
                 {PROPERTIES.map(p => (
                     <button key={p.id} className="w-full text-left p-3 flex items-center gap-3 hover:bg-slate-100 border-b last:border-0">
-                        <div className={`w-2 h-2 rounded-full flex-shrink-0 ${getStatusColor(p.status)}`}></div>
+                        <div className={`w-2 h-2 rounded-full flex-shrink-0 ${getPinColorForLayer(p, activeLayer)}`}></div>
                         <div>
                             <p className="font-semibold text-sm text-slate-800">{p.name}</p>
                             <p className="text-xs text-slate-500">{p.address}</p>

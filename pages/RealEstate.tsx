@@ -164,52 +164,6 @@ export const RealEstate: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Lease Administration Section */}
-      <div className="mt-12">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-slate-900">Lease Administration</h2>
-          <button className="text-sm text-blue-600 font-medium hover:underline flex items-center gap-1">
-            <Download size={14} /> Export Report
-          </button>
-        </div>
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-           <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 border-b border-slate-200">
-              <tr>
-                <th className="px-6 py-4 font-semibold text-slate-700">Lease ID</th>
-                <th className="px-6 py-4 font-semibold text-slate-700">Tenant</th>
-                <th className="px-6 py-4 font-semibold text-slate-700">Term End</th>
-                <th className="px-6 py-4 font-semibold text-slate-700">Next Critical Date</th>
-                <th className="px-6 py-4 font-semibold text-slate-700">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {LEASES.map(lease => (
-                <tr key={lease.id} className="hover:bg-slate-50/50">
-                  <td className="px-6 py-4 font-medium text-slate-900">{lease.id}</td>
-                  <td className="px-6 py-4 text-slate-600">{lease.tenantName}</td>
-                  <td className="px-6 py-4 text-slate-600">{lease.endDate}</td>
-                   <td className="px-6 py-4 text-slate-600">
-                     <div className="flex items-center gap-2">
-                       {lease.status === 'Expiring Soon' && <AlertTriangle size={16} className="text-amber-500" />}
-                       <div>
-                         <div>{lease.criticalDates[0].name}</div>
-                         <div className="text-xs text-slate-500">{lease.criticalDates[0].date}</div>
-                       </div>
-                     </div>
-                   </td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${lease.status === 'Active' ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800'}`}>
-                      {lease.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-           </table>
-        </div>
-      </div>
     </div>
   );
 };

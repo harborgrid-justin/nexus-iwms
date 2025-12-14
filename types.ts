@@ -26,7 +26,7 @@ export interface Notification {
 export interface Document {
   id: string;
   name: string;
-  type: 'PDF' | 'CAD' | 'Lease Agreement' | 'Invoice' | 'Permit' | 'Contract' | 'Blueprint' | 'Insurance Policy' | 'Compliance Report';
+  type: 'PDF' | 'CAD' | 'Lease Agreement' | 'Invoice' | 'Permit' | 'Contract' | 'Blueprint' | 'Insurance Policy' | 'Compliance Report' | 'Purchase Order' | 'Change Order';
   url: string;
   uploadedDate: string;
   size: string;
@@ -57,6 +57,16 @@ export interface Lease {
   monthlyRent: number;
   status: 'Active' | 'Expiring Soon' | 'Expired';
   criticalDates: { name: string; date: string }[];
+  camCharge: number;
+  clauses?: LeaseClause[];
+}
+
+export interface LeaseClause {
+  id: string;
+  leaseId: string;
+  name: 'Renewal Option' | 'Termination Option' | 'Rent Escalation' | 'CAM Cap';
+  details: string;
+  criticalDate?: string;
 }
 
 export interface Contract {
@@ -127,6 +137,8 @@ export interface WorkOrder {
   dueDate: string;
   cost: number;
   costCenterId: string;
+  assetId?: string; // Integration Point
+  relatedIncidentId?: string; // Integration Point
 }
 
 export interface InventoryItem {
@@ -221,7 +233,7 @@ export interface SustainabilityInitiative {
 
 export interface BudgetLineItem {
   id: string;
-  category: 'Labor' | 'Materials' | 'Contingency' | 'Permits' | 'Vendor';
+  category: 'Labor' | 'Materials' | 'Contingency' | 'Permits' | 'Vendor' | 'Design';
   budgeted: number;
   actual: number;
   variance: number;
@@ -249,6 +261,26 @@ export interface CapitalProject {
   budgetItems?: BudgetLineItem[];
   risks?: ProjectRisk[];
   documents?: Document[];
+  milestones?: ProjectMilestone[];
+  changeOrders?: ChangeOrder[];
+}
+
+export interface ProjectMilestone {
+  id: string;
+  name: string;
+  dueDate: string;
+  status: 'Not Started' | 'In Progress' | 'Completed';
+}
+
+export interface ChangeOrder {
+  id: string;
+  projectId: string;
+  title: string;
+  reason: 'Client Request' | 'Unforeseen Condition' | 'Design Change';
+  costImpact: number;
+  scheduleImpactDays: number;
+  status: 'Pending' | 'Approved' | 'Rejected';
+  date: string;
 }
 
 export interface AuditLog {
@@ -263,7 +295,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: 'Admin' | 'Facility Manager' | 'Technician' | 'Read Only' | 'Financial Analyst';
+  role: 'Admin' | 'Facility Manager' | 'Technician' | 'Read Only' | 'Financial Analyst' | 'Project Manager';
   lastLogin: string;
 }
 
@@ -350,4 +382,83 @@ export interface ConditionAssessment {
   conditionScore: number; // 0-100
   notes: string;
   recommendedAction: string;
+}
+
+// --- NEW FINANCIALS & PPBE INTERFACES ---
+
+export interface PpbeFund {
+  id: string;
+  name: string;
+  appropriationType: 'O&M' | 'MILCON' | 'RDT&E' | 'Procurement';
+  fiscalYear: number;
+  programElement: string;
+  totalAmount: number;
+  committed: number;
+  obligated: number;
+  expended: number;
+}
+
+export interface FundTransaction {
+  id: string;
+  fundId: string;
+  projectId?: string;
+  workOrderId?: string;
+  type: 'Commitment' | 'Obligation' | 'Expenditure';
+  amount: number;
+  date: string;
+  description: string;
+}
+
+export interface UnfundedRequirement {
+  id: string;
+  title: string;
+  propertyId: string;
+  priority: 'Critical' | 'High' | 'Medium' | 'Low';
+  estimatedCost: number;
+  justification: string;
+  submittedBy: string; // employeeId
+  status: 'Submitted' | 'In Review' | 'Approved for Funding' | 'Deferred';
+}
+
+export interface CapitalPlanItem {
+  id: string;
+  projectName: string;
+  fiscalYear: number;
+  projectedCost: number;
+  fundingStatus: 'Funded' | 'Partial' | 'Unfunded';
+  priorityScore: number;
+}
+
+export interface Invoice {
+  id: string;
+  vendorId: string;
+  invoiceNumber: string;
+  invoiceDate: string;
+  dueDate: string;
+  amount: number;
+  status: 'Draft' | 'Submitted' | 'Approved' | 'Paid' | 'Disputed';
+  purchaseOrderId?: string;
+  workOrderId?: string;
+  documentId: string;
+}
+
+export interface PurchaseOrder {
+  id: string;
+  vendorId: string;
+  orderDate: string;
+  totalAmount: number;
+  status: 'Draft' | 'Issued' | 'Partially Received' | 'Received' | 'Closed';
+  workOrderId?: string;
+  projectId?: string;
+  items: { description: string; quantity: number; unitPrice: number }[];
+}
+
+export interface Chargeback {
+  id: string;
+  fromCostCenterId: string;
+  toCostCenterId: string;
+  amount: number;
+  date: string;
+  description: string; // e.g. "Space Usage Q4", "WO-2024-891 Cost"
+  type: 'Space' | 'Service';
 }

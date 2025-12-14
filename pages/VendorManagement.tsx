@@ -28,7 +28,7 @@ export const VendorManagement: React.FC = () => {
             const vendorWOs = WORK_ORDERS.filter(wo => wo.assignedTo === vendor.id);
             const vendorContracts = CONTRACTS.filter(c => c.vendorId === vendor.id);
             return (
-                <div key={vendor.id} className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 hover:shadow-lg hover:border-blue-300 transition-all">
+                <div key={vendor.id} className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 hover:shadow-lg hover:border-blue-300 transition-all flex flex-col">
                     <div className="flex justify-between items-start">
                         <div>
                             <h3 className="text-lg font-bold text-slate-900">{vendor.name}</h3>
@@ -38,7 +38,7 @@ export const VendorManagement: React.FC = () => {
                            <Star size={12} /> {vendor.rating}
                         </span>
                     </div>
-                    <div className="grid grid-cols-2 gap-4 my-4 py-4 border-t border-b border-slate-100">
+                    <div className="grid grid-cols-2 gap-4 my-4 py-4 border-t border-b border-slate-100 flex-grow">
                         <div>
                             <div className="text-xs text-slate-500 uppercase font-semibold">On-Time Rate</div>
                             <div className="text-sm font-medium text-slate-900">{vendor.onTimeCompletionRate}%</div>
@@ -53,12 +53,17 @@ export const VendorManagement: React.FC = () => {
                         </div>
                          <div>
                             <div className="text-xs text-slate-500 uppercase font-semibold">Contracts</div>
-                            <button onClick={() => navigate('/contracts')} className="text-sm font-medium text-blue-600 hover:underline flex items-center gap-1">{vendorContracts.length} <FileText size={14} /></button>
+                            <button onClick={() => navigate('/contracts', { state: { vendorFilter: vendor.id } })} className="text-sm font-medium text-blue-600 hover:underline flex items-center gap-1">{vendorContracts.length} <FileText size={14} /></button>
                         </div>
                     </div>
-                    <button className="w-full mt-2 py-2 text-sm text-blue-600 font-medium bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
-                      View Profile
-                    </button>
+                    <div className="flex gap-2 mt-2">
+                        <button className="flex-1 py-2 text-sm text-blue-600 font-medium bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+                          View Profile
+                        </button>
+                        <button onClick={() => navigate('/analytics', { state: { vendorId: vendor.id } })} className="flex-1 py-2 text-sm text-slate-600 font-medium bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors flex items-center justify-center gap-2">
+                          <BarChart2 size={14} /> Performance
+                        </button>
+                    </div>
                 </div>
             )
         })}

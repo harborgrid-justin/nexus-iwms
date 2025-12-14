@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, Plus, BarChart, PieChart, Calendar } from 'lucide-react';
+import { FileText, Plus, BarChart, PieChart, Calendar, Clock, Mail } from 'lucide-react';
 
 const ReportCard = ({ title, description, icon: Icon, category }: any) => (
     <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-blue-400 transition-all flex flex-col">
@@ -13,9 +13,14 @@ const ReportCard = ({ title, description, icon: Icon, category }: any) => (
             <h3 className="font-bold text-slate-900">{title}</h3>
             <p className="text-sm text-slate-500 mt-1">{description}</p>
         </div>
-        <button className="mt-4 w-full py-2 text-sm text-blue-600 font-medium bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
-            Run Report
-        </button>
+        <div className="flex gap-2 mt-4">
+          <button className="flex-1 w-full py-2 text-sm text-blue-600 font-medium bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+              Run Now
+          </button>
+          <button className="py-2 px-3 text-sm text-slate-600 font-medium bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">
+              <Clock size={16} />
+          </button>
+        </div>
     </div>
 );
 
@@ -36,10 +41,40 @@ export const Reporting: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-blue-50 border-2 border-blue-200 border-dashed p-8 rounded-xl text-center">
-        <h2 className="text-xl font-bold text-blue-900">Custom Report Builder</h2>
-        <p className="text-blue-700 mt-2">Select data sources, choose columns, apply filters, and visualize your data. Your custom reports will be saved to your library.</p>
-        <button className="mt-4 bg-blue-600 text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-blue-700">Launch Builder</button>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-blue-50 border-2 border-blue-200 border-dashed p-8 rounded-xl text-center flex flex-col justify-center items-center">
+          <h2 className="text-xl font-bold text-blue-900">Custom Report Builder</h2>
+          <p className="text-blue-700 mt-2">Select data sources, choose columns, apply filters, and visualize your data.</p>
+          <button className="mt-4 bg-blue-600 text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-blue-700">Launch Builder</button>
+        </div>
+         <div className="bg-white p-6 rounded-xl border shadow-sm">
+          <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2"><Clock size={20} /> Report Scheduler</h2>
+           <form className="space-y-4">
+                <div>
+                    <label className="text-sm font-medium text-slate-700">Report</label>
+                    <select className="w-full mt-1 p-2 border rounded-lg bg-slate-50">
+                        <option>Work Order Costs by Category</option>
+                        <option>Lease Expiration Report</option>
+                        <option>Capital Project Budget vs. Actual</option>
+                    </select>
+                </div>
+                <div>
+                    <label className="text-sm font-medium text-slate-700">Frequency</label>
+                    <select className="w-full mt-1 p-2 border rounded-lg bg-slate-50">
+                        <option>Daily</option>
+                        <option>Weekly</option>
+                        <option>Monthly</option>
+                    </select>
+                </div>
+                <div>
+                    <label className="text-sm font-medium text-slate-700">Email To</label>
+                    <input type="email" placeholder="e.g., stakeholders@nexus.corp" className="w-full mt-1 p-2 border rounded-lg bg-slate-50"/>
+                </div>
+                <button type="button" className="w-full py-2.5 bg-slate-800 text-white font-semibold rounded-lg hover:bg-slate-700 flex items-center justify-center gap-2">
+                    <Plus size={16} /> Schedule Report
+                </button>
+           </form>
+        </div>
       </div>
 
       <div>

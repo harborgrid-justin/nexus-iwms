@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   AreaChart, Area 
 } from 'recharts';
-import { ArrowUpRight, ArrowDownRight, DollarSign, Building, AlertTriangle, Zap, Wrench } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, DollarSign, Building, AlertTriangle, Zap, Wrench, ChevronDown } from 'lucide-react';
 import { SUSTAINABILITY_DATA, WORK_ORDERS, PROPERTIES, CAPITAL_PROJECTS, LEASES } from '../services/mockData';
 import { Status } from '../types';
 import { useNavigate, Link } from 'react-router-dom';
@@ -32,6 +32,7 @@ const KpiCard = ({ title, value, change, trend, icon: Icon, color, subtleText, l
 };
 
 export const Dashboard: React.FC = () => {
+  const [currentRole, setCurrentRole] = useState('Executive');
   const activeWorkOrders = WORK_ORDERS.filter(wo => wo.status !== 'Completed').length;
   const portfolioValue = PROPERTIES.reduce((acc, curr) => acc + curr.marketValue, 0) / 1000000;
   const projectsAtRisk = CAPITAL_PROJECTS.filter(p => p.status === Status.AtRisk).length;
@@ -45,7 +46,19 @@ export const Dashboard: React.FC = () => {
           <h1 className="text-2xl font-bold text-slate-900">Executive Overview</h1>
           <p className="text-slate-500 mt-1">Real-time insights across your real estate portfolio.</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
+          <div className="relative">
+            <select
+              value={currentRole}
+              onChange={(e) => setCurrentRole(e.target.value)}
+              className="appearance-none cursor-pointer pl-3 pr-8 py-1 bg-white text-slate-700 text-xs font-semibold rounded-full border border-slate-200 hover:border-slate-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              <option>Executive</option>
+              <option>Financial Analyst</option>
+              <option>Facility Manager</option>
+            </select>
+            <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          </div>
            <span className="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full border border-blue-100">
              Q4 2023
            </span>
@@ -90,7 +103,7 @@ export const Dashboard: React.FC = () => {
           icon={Zap} 
           color="bg-purple-500"
           subtleText="Year to Date"
-          link="/sustainability"
+          link="/energy"
         />
         <KpiCard 
           title="Projects At Risk" 
@@ -160,7 +173,7 @@ export const Dashboard: React.FC = () => {
               </div>
             </Link>
             {expiringLease && (
-              <Link to="/contracts" state={{ filter: 'Expiring Soon' }} className="block p-3 bg-amber-50 rounded-lg border border-amber-100 hover:bg-amber-100">
+              <Link to="/lease-admin" state={{ filter: 'Expiring Soon' }} className="block p-3 bg-amber-50 rounded-lg border border-amber-100 hover:bg-amber-100">
                  <div className="flex gap-4 items-start">
                     <AlertTriangle size={20} className="text-amber-500 mt-0.5 flex-shrink-0" />
                     <div>

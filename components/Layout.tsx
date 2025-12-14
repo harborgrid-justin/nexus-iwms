@@ -6,7 +6,9 @@ import {
   ChevronDown, FileText, HardHat, LandPlot, Handshake, Shield, Map,
   Package, CalendarClock, BookUser, ClipboardCheck, FileQuestion,
   BookCheck, Coins, FolderArchive, MapPinned, Car, KeyRound,
-  Presentation, Sigma, Wind, Trash2, Video
+  Presentation, Sigma, Wind, Trash2, Video, Banknote, GanttChartSquare,
+  FileClock, Workflow, Receipt, ShoppingCart, LocateFixed, ArrowRightLeft,
+  BookCopy
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { NOTIFICATIONS } from '../services/mockData';
@@ -22,7 +24,7 @@ const NavItem = ({ icon: Icon, label, path, active, collapsed, isSubItem = false
     <button
       onClick={() => navigate(path)}
       className={`w-full flex items-center gap-3 pr-2 py-2 transition-colors duration-200
-        ${isSubItem ? 'pl-4' : 'pl-4'}
+        ${isSubItem ? 'pl-8' : 'pl-4'}
         ${active ? 'bg-slate-800/50 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}
       `}
     >
@@ -34,8 +36,14 @@ const NavItem = ({ icon: Icon, label, path, active, collapsed, isSubItem = false
 
 const NavGroup = ({ icon: Icon, label, children, collapsed, paths }: any) => {
   const location = useLocation();
-  const isActive = paths.some((path: string) => location.pathname.startsWith(path));
+  const isActive = paths.some((path: string) => location.pathname === path || (path !== '/' && location.pathname.startsWith(path)));
   const [isOpen, setIsOpen] = useState(isActive);
+
+  React.useEffect(() => {
+    if (isActive) {
+      setIsOpen(true);
+    }
+  }, [isActive]);
 
   return (
     <div className="border-b border-slate-800/50 last:border-b-0">
@@ -49,7 +57,7 @@ const NavGroup = ({ icon: Icon, label, children, collapsed, paths }: any) => {
       </button>
       {!collapsed && isOpen && (
         <div className="py-1 bg-black/20">
-          {React.Children.map(children, child => React.cloneElement(child, { isSubItem: true }))}
+          {children}
         </div>
       )}
     </div>
@@ -63,7 +71,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, onAiToggle }) => {
   const location = useLocation();
   const currentPath = location.pathname;
 
-  const isActive = (path: string) => currentPath.startsWith(path);
+  const isActive = (path: string) => currentPath === path || (path !== '/' && currentPath.startsWith(path));
 
   return (
     <div className="flex h-screen bg-slate-50 w-full overflow-hidden">
@@ -84,22 +92,40 @@ export const Layout: React.FC<LayoutProps> = ({ children, onAiToggle }) => {
         </div>
         
         <div className="flex-1 overflow-y-auto">
-          <div className="py-2 pl-4 pr-2">
+          <div className="py-2">
              <NavItem icon={LayoutDashboard} label="Dashboard" path="/" active={currentPath === '/'} collapsed={collapsed} />
           </div>
 
           <nav className="flex-1">
-            <NavGroup label="Portfolio" icon={LandPlot} collapsed={collapsed} paths={['/real-estate', '/contracts', '/transactions', '/insurance', '/gis-map']}>
+            <NavGroup label="Portfolio" icon={LandPlot} collapsed={collapsed} paths={['/real-estate', '/lease-admin', '/contracts', '/insurance', '/gis-map']}>
               <NavItem icon={Building2} label="Properties" path="/real-estate" active={isActive('/real-estate')} collapsed={collapsed} />
-              <NavItem icon={FileText} label="Leases & Contracts" path="/contracts" active={isActive('/contracts')} collapsed={collapsed} />
-              <NavItem icon={Coins} label="Transactions" path="/real-estate" active={isActive('/transactions')} collapsed={collapsed} />
+              <NavItem icon={FileClock} label="Lease Administration" path="/lease-admin" active={isActive('/lease-admin')} collapsed={collapsed} />
+              <NavItem icon={FileText} label="Contracts" path="/contracts" active={isActive('/contracts')} collapsed={collapsed} />
               <NavItem icon={Shield} label="Insurance" path="/insurance" active={isActive('/insurance')} collapsed={collapsed} />
               <NavItem icon={MapPinned} label="GIS Map View" path="/gis-map" active={isActive('/gis-map')} collapsed={collapsed} />
+            </NavGroup>
+            
+            <NavGroup label="Finance" icon={Banknote} collapsed={collapsed} paths={['/financials', '/budgeting', '/ppbe-funds', '/capital-planning', '/invoicing', '/chargebacks', '/procurement']}>
+              <NavItem icon={DollarSign} label="Financial Overview" path="/financials" active={isActive('/financials')} collapsed={collapsed} />
+              <NavItem icon={Coins} label="Budgeting" path="/budgeting" active={isActive('/budgeting')} collapsed={collapsed} />
+              <NavItem icon={GanttChartSquare} label="PPBE Funds" path="/ppbe-funds" active={isActive('/ppbe-funds')} collapsed={collapsed} />
+              <NavItem icon={Presentation} label="Capital Planning" path="/capital-planning" active={isActive('/capital-planning')} collapsed={collapsed} />
+              <NavItem icon={Receipt} label="Invoicing & Payables" path="/invoicing" active={isActive('/invoicing')} collapsed={collapsed} />
+              <NavItem icon={ShoppingCart} label="Procurement (POs)" path="/procurement" active={isActive('/procurement')} collapsed={collapsed} />
+              <NavItem icon={ArrowRightLeft} label="Chargebacks" path="/chargebacks" active={isActive('/chargebacks')} collapsed={collapsed} />
+            </NavGroup>
+
+            <NavGroup label="Strategy" icon={Sigma} collapsed={collapsed} paths={['/projects', '/strategic-portfolio', '/analytics', '/reporting', '/condition-assessment']}>
+              <NavItem icon={HardHat} label="Capital Projects" path="/projects" active={isActive('/projects')} collapsed={collapsed} />
+              <NavItem icon={LocateFixed} label="Strategic Planning" path="/strategic-portfolio" active={isActive('/strategic-portfolio')} collapsed={collapsed} />
+              <NavItem icon={BarChart3} label="Analytics & BI" path="/analytics" active={isActive('/analytics')} collapsed={collapsed} />
+              <NavItem icon={FileText} label="Reporting" path="/reporting" active={isActive('/reporting')} collapsed={collapsed} />
+               <NavItem icon={BookCheck} label="Condition Assessment" path="/condition-assessment" active={isActive('/condition-assessment')} collapsed={collapsed} />
             </NavGroup>
 
             <NavGroup label="Operations" icon={Wrench} collapsed={collapsed} paths={['/operations', '/assets', '/vendors', '/inventory', '/preventive-maintenance', '/key-management']}>
               <NavItem icon={ClipboardList} label="Work Hub" path="/operations" active={isActive('/operations')} collapsed={collapsed} />
-              <NavItem icon={HardHat} label="Asset Registry" path="/assets" active={isActive('/assets')} collapsed={collapsed} />
+              <NavItem icon={BookCopy} label="Asset Registry" path="/assets" active={isActive('/assets')} collapsed={collapsed} />
               <NavItem icon={CalendarClock} label="Preventive Maint." path="/preventive-maintenance" active={isActive('/preventive-maintenance')} collapsed={collapsed} />
               <NavItem icon={Package} label="Inventory" path="/inventory" active={isActive('/inventory')} collapsed={collapsed} />
               <NavItem icon={Handshake} label="Vendor Management" path="/vendors" active={isActive('/vendors')} collapsed={collapsed} />
@@ -113,15 +139,6 @@ export const Layout: React.FC<LayoutProps> = ({ children, onAiToggle }) => {
               <NavItem icon={Car} label="Parking" path="/parking" active={isActive('/parking')} collapsed={collapsed} />
               <NavItem icon={Briefcase} label="People & Services" path="/people" active={isActive('/people')} collapsed={collapsed} />
             </NavGroup>
-
-            <NavGroup label="Strategy" icon={Sigma} collapsed={collapsed} paths={['/projects', '/financials', '/budgeting', '/analytics', '/reporting', '/condition-assessment']}>
-              <NavItem icon={Presentation} label="Capital Projects" path="/projects" active={isActive('/projects')} collapsed={collapsed} />
-              <NavItem icon={DollarSign} label="Financials" path="/financials" active={isActive('/financials')} collapsed={collapsed} />
-              <NavItem icon={Coins} label="Budgeting" path="/budgeting" active={isActive('/budgeting')} collapsed={collapsed} />
-              <NavItem icon={BarChart3} label="Analytics & BI" path="/analytics" active={isActive('/analytics')} collapsed={collapsed} />
-              <NavItem icon={FileText} label="Reporting" path="/reporting" active={isActive('/reporting')} collapsed={collapsed} />
-               <NavItem icon={BookCheck} label="Condition Assessment" path="/condition-assessment" active={isActive('/condition-assessment')} collapsed={collapsed} />
-            </NavGroup>
             
             <NavGroup label="Sustainability" icon={Leaf} collapsed={collapsed} paths={['/sustainability', '/energy', '/waste', '/utility-bills']}>
               <NavItem icon={LayoutDashboard} label="ESG Overview" path="/sustainability" active={isActive('/sustainability')} collapsed={collapsed} />
@@ -131,7 +148,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, onAiToggle }) => {
             </NavGroup>
 
             <NavGroup label="Administration" icon={Settings} collapsed={collapsed} paths={['/admin', '/ehs', '/compliance', '/documents', '/support', '/mobile', '/cad-viewer']}>
-              <NavItem icon={Users} label="Users & Workflows" path="/admin" active={isActive('/admin')} collapsed={collapsed} />
+              <NavItem icon={Workflow} label="Users & Workflows" path="/admin" active={isActive('/admin')} collapsed={collapsed} />
               <NavItem icon={Shield} label="EHS & Safety" path="/ehs" active={isActive('/ehs')} collapsed={collapsed} />
               <NavItem icon={BookCheck} label="Compliance" path="/compliance" active={isActive('/compliance')} collapsed={collapsed} />
               <NavItem icon={FolderArchive} label="Document Central" path="/documents" active={isActive('/documents')} collapsed={collapsed} />
