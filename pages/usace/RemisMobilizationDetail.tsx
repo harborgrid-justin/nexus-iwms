@@ -58,111 +58,170 @@ export const RemisMobilizationDetail: React.FC = () => {
     const currentStateIndex = LIFECYCLE_STATES.indexOf(profile.lifecycleState);
 
     return (
-        <div className="space-y-6">
+        <div className="max-w-[1600px] mx-auto space-y-6">
             <MobilizationModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onSave={handleSave} profile={profile} />
-            <div>
-                <button onClick={() => navigate('/usace/mobilization')} className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 mb-2"><ArrowLeft size={16} /> Back to Dashboard</button>
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                        <div className="flex items-center gap-3">
-                            <h1 className="text-2xl font-bold text-slate-900">Mobilization: {asset?.name}</h1>
-                            <span className={`text-xs px-2 py-1 rounded-full font-bold border ${profile.missionCriticality === 'Mission Critical' ? 'bg-red-100 text-red-800 border-red-200' : 'bg-slate-100 text-slate-800 border-slate-200'}`}>{profile.missionCriticality}</span>
+            <div className="border-b border-slate-200 pb-6">
+                <button onClick={() => navigate('/usace/mobilization')} className="flex items-center gap-2 text-[10px] font-black text-slate-500 hover:text-blue-600 mb-4 transition-colors uppercase tracking-[0.2em] italic"><ArrowLeft size={14} /> Back to Mobilization Command</button>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="flex items-center gap-6">
+                        <div className="p-3 bg-slate-950 rounded shadow-xl shadow-black/20 text-white">
+                            <Siren size={32} className="animate-pulse text-red-500" />
                         </div>
-                        <p className="text-slate-500 font-mono">{profile.id} • Asset: {asset?.rpuid}</p>
+                        <div>
+                            <div className="flex items-center gap-3">
+                                <h1 className="text-2xl font-black text-slate-900 tracking-tighter uppercase leading-none italic">Asset Readiness: {asset?.name}</h1>
+                                <div className="pulse-mission" />
+                                <span className={`text-[9px] font-black px-2.5 py-1 rounded-sm border uppercase tracking-widest italic leading-none shadow-sm ${profile.missionCriticality === 'Mission Critical' ? 'bg-red-50 text-red-700 border-red-100' : 'bg-slate-50 text-slate-500 border-slate-100'}`}>
+                                    PRIORITY::{profile.missionCriticality.replace(' ', '_').toUpperCase()}
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-3 mt-2 italic">
+                                <span className="text-[10px] font-mono font-black text-slate-500 uppercase tracking-tighter">PROFILE_ID::{profile.id}</span>
+                                <div className="w-1 h-1 bg-slate-300 rounded-full" />
+                                <span className="text-[10px] font-mono font-black text-blue-600 uppercase tracking-tighter">NODE_ID::{asset?.rpuid}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <span className={`text-sm font-semibold px-3 py-1 rounded-full border ${profile.lifecycleState === 'Activated' ? 'bg-green-100 text-green-800 border-green-200' : 'bg-blue-100 text-blue-800 border-blue-200'}`}>{profile.lifecycleState}</span>
-                        <button onClick={() => setIsEditModalOpen(true)} className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 font-medium text-sm"><Edit size={16} /> Update Readiness</button>
-                        <RegulatoryBadge refs={['10']} />
+                    <div className="flex items-center gap-3">
+                        <div className="flex flex-col items-end mr-4 group cursor-help">
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Lifecycle State</span>
+                            <span className={`text-xs font-black px-3 py-1 uppercase tracking-widest leading-none border shadow-sm ${profile.lifecycleState === 'Activated' ? 'bg-emerald-600 border-emerald-500 text-white' : 'bg-slate-900 border-slate-800 text-white'}`}>
+                                {profile.lifecycleState}
+                            </span>
+                        </div>
+                        <button onClick={() => setIsEditModalOpen(true)} className="btn-pro-secondary flex items-center gap-2 px-4 py-2 h-auto text-[10px] font-black uppercase tracking-widest italic group">
+                            <Edit size={14} className="group-hover:text-blue-500" /> Modify Readiness Matrix
+                        </button>
+                        <RegulatoryBadge refs={['ER 405-1-12', 'V2.4']} />
                     </div>
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col">
-                <div className="px-6 border-b border-slate-200">
-                    <nav className="-mb-px flex gap-6" aria-label="Tabs">
-                        <button onClick={() => setActiveTab('overview')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'overview' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Readiness Overview</button>
-                        <button onClick={() => setActiveTab('lifecycle')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'lifecycle' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Lifecycle Management</button>
-                        <button onClick={() => setActiveTab('history')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'history' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Audit & Compliance</button>
+            <div className="pro-card flex flex-col bg-white overflow-hidden shadow-2xl border-slate-200">
+                <div className="px-6 border-b border-white/5 bg-[#0A0A0B]">
+                    <nav className="-mb-px flex gap-10" aria-label="Tabs">
+                        {[
+                            { id: 'overview', label: 'Tactical Readiness Overview' },
+                            { id: 'lifecycle', label: 'Command Lifecycle Management' },
+                            { id: 'history', label: 'Immutable Audit Ledger' }
+                        ].map(tab => (
+                            <button 
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)} 
+                                className={`shrink-0 border-b-2 px-1 py-5 text-[10px] font-black uppercase tracking-[0.3em] transition-all italic ${activeTab === tab.id ? 'border-blue-600 text-blue-400 opacity-100' : 'border-transparent text-white/30 hover:text-white/60 hover:border-white/10'}`}
+                            >
+                                {tab.label}
+                            </button>
+                        ))}
                     </nav>
                 </div>
 
-                <div className="p-6">
+                <div className="p-8">
                     {activeTab === 'overview' && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            <div className="space-y-6">
-                                <h3 className="font-bold text-slate-800 border-b pb-2">Operational Capacity</h3>
-                                <DetailItem label="Facility Type" value={profile.facilityType} icon={Building} />
-                                <DetailItem label="Functional Cap." value={profile.functionalCapability} icon={Activity} />
-                                <DetailItem label="Condition" value={`${profile.condition}/100`} icon={Layers} />
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                            <div className="space-y-8">
+                                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100 pb-3 italic">Operational Capacity Matrix</h3>
+                                <div className="space-y-4">
+                                    <DetailItem label="Tactical Facility Type" value={profile.facilityType} icon={Building} />
+                                    <DetailItem label="Functional Cap. Level" value={profile.functionalCapability} icon={Activity} />
+                                    <DetailItem label="Condition Index (CI)" value={`${profile.condition}/100 PRC`} icon={Layers} />
+                                </div>
                             </div>
-                            <div className="space-y-6">
-                                <h3 className="font-bold text-slate-800 border-b pb-2">Contingency Data</h3>
-                                <DetailItem label="Plan ID" value={profile.contingencyPlanId || 'None'} icon={FileText} />
-                                <DetailItem label="Designation" value={profile.readinessDesignation} icon={Target} />
-                                <DetailItem label="Req. ID" value={profile.operationalRequirement || 'N/A'} icon={Siren} />
+                            <div className="space-y-8">
+                                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100 pb-3 italic">Contingency Support Data</h3>
+                                <div className="space-y-4">
+                                    <DetailItem label="Strategic Plan ID" value={profile.contingencyPlanId || 'UNSET'} icon={FileText} />
+                                    <DetailItem label="Global Designation" value={profile.readinessDesignation} icon={Target} />
+                                    <DetailItem label="Operational Req. ID" value={profile.operationalRequirement || 'N/A'} icon={Siren} />
+                                </div>
                             </div>
-                            <div className="space-y-6">
-                                <h3 className="font-bold text-slate-800 border-b pb-2">Administrative</h3>
-                                <DetailItem label="Initiating Org" value={profile.initiatingOrg} icon={Building} />
-                                <DetailItem label="Initiation Date" value={profile.initiationDate} icon={Calendar} />
-                                <DetailItem label="Last Updated" value={profile.lastUpdatedDate} icon={Calendar} />
+                            <div className="space-y-8">
+                                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100 pb-3 italic">Command Administrative</h3>
+                                <div className="space-y-4">
+                                    <DetailItem label="Initiating Command" value={profile.initiatingOrg} icon={Building} />
+                                    <DetailItem label="Protocol Initiation" value={profile.initiationDate} icon={Calendar} />
+                                    <DetailItem label="Last Calibration" value={profile.lastUpdatedDate} icon={Calendar} />
+                                </div>
                             </div>
                         </div>
                     )}
 
                     {activeTab === 'lifecycle' && (
-                        <div>
-                            <div className="bg-slate-50 p-5 rounded-xl border mb-8 flex justify-between items-center">
-                                <div>
-                                    <h3 className="font-bold text-slate-900 text-lg">Current State: {profile.lifecycleState}</h3>
-                                    <p className="text-sm text-slate-600 mt-1">Responsible Official: {profile.responsibleOfficial}</p>
+                        <div className="space-y-8">
+                            <div className="pro-card p-6 bg-slate-50 border-slate-200 flex justify-between items-center shadow-md">
+                                <div className="flex items-center gap-6">
+                                    <div className="p-4 bg-slate-950 rounded shadow-md text-white">
+                                        <Target size={24} className="text-blue-400" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em] mb-1 italic">ACTIVE_PROTOCOL_STATE</h3>
+                                        <p className="text-xl font-black text-slate-900 uppercase tracking-tighter italic">{profile.lifecycleState}</p>
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Authenticated Official: {profile.responsibleOfficial}</p>
+                                    </div>
                                 </div>
-                                <div className="flex gap-2">
+                                <div className="flex gap-3">
                                     {currentStateIndex < LIFECYCLE_STATES.length - 1 && (
-                                        <button onClick={() => handleStateTransition(LIFECYCLE_STATES[currentStateIndex + 1])} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm shadow-sm">
+                                        <button onClick={() => handleStateTransition(LIFECYCLE_STATES[currentStateIndex + 1])} className="btn-pro-primary py-2 px-6 h-auto text-[10px] font-black uppercase tracking-widest italic group">
                                             Advance to {LIFECYCLE_STATES[currentStateIndex + 1]}
                                         </button>
                                     )}
                                     {profile.lifecycleState === 'Activated' && (
-                                        <button onClick={() => handleStateTransition('Deactivated')} className="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 font-medium text-sm shadow-sm">
-                                            Deactivate
+                                        <button onClick={() => handleStateTransition('Deactivated')} className="bg-red-600 text-white py-2 px-6 h-auto text-[10px] font-black uppercase tracking-widest italic hover:bg-red-700 transition-colors shadow-lg shadow-red-600/20 rounded-sm">
+                                            Emergency Deactivation
                                         </button>
                                     )}
                                 </div>
                             </div>
 
-                            <h3 className="font-bold text-slate-800 mb-6">State Progression</h3>
-                            <div className="flex items-center overflow-x-auto pb-4">
+                            <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.3em] italic mb-6 border-b border-slate-100 pb-3 mt-12">Readiness Progression Matrix</h3>
+                            <div className="flex items-center justify-between px-10 pt-4 overflow-x-auto">
                                 {LIFECYCLE_STATES.map((state, i) => (
                                     <React.Fragment key={state}>
-                                        <div className="flex flex-col items-center min-w-[80px]">
-                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors ${i <= currentStateIndex ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-300 text-slate-400'}`}>
-                                                {i < currentStateIndex ? <CheckCircle size={16}/> : <span className="text-xs font-bold">{i+1}</span>}
+                                        <div className="flex flex-col items-center group cursor-help relative min-w-[120px]">
+                                            <div className={`w-10 h-10 rounded-sm flex items-center justify-center border-2 transition-all shadow-sm ${i <= currentStateIndex ? 'bg-blue-600 border-blue-500 text-white' : 'bg-white border-slate-200 text-slate-300'}`}>
+                                                {i < currentStateIndex ? <CheckCircle size={18}/> : <span className="text-[13px] font-black font-mono tracking-tighter">{i+1}</span>}
                                             </div>
-                                            <p className={`text-xs mt-2 text-center font-medium ${i <= currentStateIndex ? 'text-blue-700' : 'text-slate-400'}`}>{state}</p>
+                                            <p className={`text-[9px] mt-4 text-center font-black uppercase tracking-widest italic transition-colors ${i <= currentStateIndex ? 'text-blue-700' : 'text-slate-400'}`}>{state}</p>
+                                            {i === currentStateIndex && <div className="absolute -top-1 w-full flex justify-center"><div className="w-1 h-1 bg-blue-600 rounded-full pulse-mission" /></div>}
                                         </div>
-                                        {i < LIFECYCLE_STATES.length - 1 && <div className={`flex-1 h-1 min-w-[40px] ${i < currentStateIndex ? 'bg-blue-600' : 'bg-slate-200'}`}></div>}
+                                        {i < LIFECYCLE_STATES.length - 1 && (
+                                            <div className="flex-1 px-4 min-w-[60px]">
+                                                <div className={`h-[1px] ${i < currentStateIndex ? 'bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.4)]' : 'bg-slate-200'}`} />
+                                            </div>
+                                        )}
                                     </React.Fragment>
                                 ))}
+                            </div>
+                            <div className="mt-12 p-4 bg-blue-50 border-l-4 border-blue-600 rounded-sm flex items-center gap-4 italic shadow-sm">
+                                <ShieldCheck size={18} className="text-blue-600" />
+                                <p className="text-[10px] font-black text-blue-800 uppercase tracking-tight">Compliance Statement: State transitions are synchronized with the Integrated Readiness Hub and the Strategic Command Authority.</p>
                             </div>
                         </div>
                     )}
 
                     {activeTab === 'history' && (
-                        <div>
-                            <div className="flex items-center justify-between mb-4">
-                                <h3 className="font-bold text-slate-800">Immutable Audit Trail</h3>
-                                <div className="flex items-center gap-1 text-xs text-slate-500"><Lock size={12} /> Securely Logged (Req 10.8)</div>
+                        <div className="space-y-8">
+                            <div className="flex items-center justify-between border-b border-slate-100 pb-4 italic">
+                                <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.3em] flex items-center gap-2">
+                                    <FileText size={14} className="text-blue-500" /> Strategic Audit Journal
+                                </h3>
+                                <div className="flex items-center gap-2 text-[9px] font-black text-slate-400 tracking-widest uppercase italic">
+                                    <Lock size={12} className="text-slate-300" /> Immutable Integrity Check Status::LOGGED_10.8
+                                </div>
                             </div>
-                            <div className="space-y-4">
+                            <div className="space-y-6 pt-2 pl-4 border-l-2 border-slate-100">
                                 {(profile.history || []).map((event, i) => (
-                                    <div key={i} className="flex gap-4">
-                                        <div className="flex flex-col items-center"><div className={`w-4 h-4 rounded-full ring-4 ${i === 0 ? 'bg-blue-500 ring-blue-100 animate-pulse' : 'bg-slate-300 ring-slate-100'} z-10`}></div><div className="w-0.5 flex-1 bg-slate-200"></div></div>
-                                        <div>
-                                            <p className="text-xs text-slate-500">{event.timestamp}</p>
-                                            <p className="font-medium text-slate-800">{event.action} by {event.user}</p>
-                                            {event.details && <p className="text-sm text-slate-600 mt-1 p-2 bg-slate-50 rounded-md border">{event.details}</p>}
+                                    <div key={i} className="flex gap-8 relative group">
+                                         <div className="absolute -left-[11px] top-1.5 w-4 h-4 rounded-full bg-white border-2 border-slate-200 flex items-center justify-center z-10 transition-all group-hover:border-blue-400">
+                                            <div className={`w-1.5 h-1.5 rounded-full ${i === 0 ? 'bg-blue-600 animate-pulse' : 'bg-slate-300'}`} />
+                                        </div>
+                                        <div className="pro-card p-4 bg-slate-50 border-slate-200 group-hover:border-blue-200 flex-1 transition-all shadow-sm">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <p className="text-[9px] font-black text-slate-400 font-mono tracking-tighter uppercase italic">{event.timestamp}</p>
+                                                <span className="text-[8px] font-black text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-sm uppercase tracking-widest italic">{event.action}</span>
+                                            </div>
+                                            <p className="font-black text-slate-900 text-[11px] uppercase tracking-tight leading-none mb-2 text-blue-900">CMD_OFFICER::{event.user}</p>
+                                            {event.details && <p className="text-[10px] text-slate-500 italic mt-2 border-t border-slate-200 pt-2 leading-relaxed">{event.details}</p>}
                                         </div>
                                     </div>
                                 ))}
@@ -170,6 +229,14 @@ export const RemisMobilizationDetail: React.FC = () => {
                         </div>
                     )}
                 </div>
+                <div className="px-6 py-5 bg-slate-950 border-t border-white/5 flex justify-between items-center text-[10px] font-black uppercase tracking-[0.3em] italic">
+                    <div className="flex items-center gap-3">
+                        <CheckCircle size={14} className="text-emerald-400" />
+                        Mobilization Integrity Protocol (PRC_G2.2) Verified & Command Authenticated
+                    </div>
+                </div>
+            </div>
+        </div>
             </div>
         </div>
     );

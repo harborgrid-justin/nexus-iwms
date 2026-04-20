@@ -69,164 +69,239 @@ export const RemisLegalDetail: React.FC = () => {
     const currentStateIndex = LIFECYCLE_STATES.indexOf(claim.lifecycleState);
 
     return (
-        <div className="space-y-6">
-            <LegalClaimModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onSave={handleSave} claim={claim} />
-            <div>
-                <button onClick={() => navigate('/usace/legal')} className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 mb-2"><ArrowLeft size={16} /> Back to Claims</button>
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="max-w-[1600px] mx-auto space-y-6">
+        <LegalClaimModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onSave={handleSave} claim={claim} />
+        <div className="border-b border-slate-200 pb-6">
+            <button onClick={() => navigate('/usace/legal')} className="flex items-center gap-2 text-[10px] font-black text-slate-500 hover:text-blue-600 mb-4 transition-colors uppercase tracking-[0.2em] italic"><ArrowLeft size={14} /> Back to Command Legal Ledger</button>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="flex items-center gap-6">
+                    <div className="p-3 bg-slate-950 rounded shadow-xl shadow-black/20 text-white">
+                        <Scale size={32} className="text-blue-400" />
+                    </div>
                     <div>
                         <div className="flex items-center gap-3">
-                            <h1 className="text-2xl font-bold text-slate-900">Claim: {claim.claimantInfo?.name}</h1>
-                            <span className="text-xs bg-red-100 text-red-800 border border-red-200 px-2 py-1 rounded-full font-bold">{claim.claimType}</span>
+                            <h1 className="text-2xl font-black text-slate-900 tracking-tighter uppercase leading-none italic">Claim: {claim.claimantInfo?.name?.replace(' ', '_')}</h1>
+                            <div className="pulse-mission" />
+                            <span className="text-[9px] font-black px-2.5 py-1 rounded-sm border uppercase tracking-widest italic leading-none bg-red-950 text-white border-red-900">
+                                TYPE::{claim.claimType.toUpperCase()}
+                            </span>
                         </div>
-                        <p className="text-slate-500 font-mono">{claim.id} • Asset: {asset?.rpuid}</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className={`text-sm font-semibold px-3 py-1 rounded-full border bg-blue-100 text-blue-800 border-blue-200`}>{claim.lifecycleState}</span>
-                        <button onClick={() => setIsEditModalOpen(true)} className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 font-medium text-sm"><Edit size={16} /> Update Claim</button>
-                        <RegulatoryBadge refs={['9']} />
-                    </div>
-                </div>
-            </div>
-
-            {!statuteCheck.allowed && (
-                <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-                    <AlertTriangle className="text-red-600 mt-0.5" size={20} />
-                    <div>
-                        <h4 className="font-bold text-red-800">Compliance Warning</h4>
-                        <p className="text-sm text-red-700">{statuteCheck.reason}</p>
+                        <div className="flex items-center gap-3 mt-2 italic">
+                            <span className="text-[10px] font-mono font-black text-slate-500 uppercase tracking-tighter">CLAIM_ID::{claim.id}</span>
+                            <div className="w-1 h-1 bg-slate-300 rounded-full" />
+                            <span className="text-[10px] font-mono font-black text-blue-600 uppercase tracking-tighter italic">ASSET_NODE::{asset?.rpuid || "ORPHANED_RECORD"}</span>
+                        </div>
                     </div>
                 </div>
-            )}
-
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col">
-                <div className="px-6 border-b border-slate-200">
-                    <nav className="-mb-px flex gap-6" aria-label="Tabs">
-                        <button onClick={() => setActiveTab('overview')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'overview' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Overview</button>
-                        <button onClick={() => setActiveTab('adjudication')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'adjudication' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Adjudication & Payments</button>
-                        <button onClick={() => setActiveTab('documents')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'documents' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Evidence & Docs</button>
-                        <button onClick={() => setActiveTab('history')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'history' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>History & Audit</button>
-                    </nav>
-                </div>
-
-                <div className="p-6">
-                    {activeTab === 'overview' && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            <div className="space-y-6">
-                                <h3 className="font-bold text-slate-800 border-b pb-2">Claimant Data</h3>
-                                <DetailItem label="Name" value={claim.claimantInfo?.name} icon={User} isProtected />
-                                <DetailItem label="Address" value={claim.claimantInfo?.address || '-'} icon={Building} isProtected />
-                                <DetailItem label="Phone" value={claim.claimantInfo?.phone || '-'} icon={User} isProtected />
-                            </div>
-                            <div className="space-y-6">
-                                <h3 className="font-bold text-slate-800 border-b pb-2">Lifecycle Status</h3>
-                                <div className="space-y-4">
-                                    {LIFECYCLE_STATES.map((state, i) => (
-                                        <div key={state} className={`flex items-center gap-3 ${i > currentStateIndex ? 'opacity-40' : ''}`}>
-                                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${i < currentStateIndex ? 'bg-green-500 text-white' : i === currentStateIndex ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-500'}`}>
-                                                {i < currentStateIndex ? <CheckCircle size={14} /> : i + 1}
-                                            </div>
-                                            <span className={`text-sm ${i === currentStateIndex ? 'font-bold text-blue-700' : 'text-slate-700'}`}>{state}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                                {currentStateIndex < LIFECYCLE_STATES.length - 1 && (
-                                    <button onClick={() => handleStateTransition(LIFECYCLE_STATES[currentStateIndex + 1])} className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm shadow-sm mt-4">
-                                        Advance to {LIFECYCLE_STATES[currentStateIndex + 1]}
-                                    </button>
-                                )}
-                            </div>
-                            <div className="space-y-6">
-                                <h3 className="font-bold text-slate-800 border-b pb-2">Incident & Basis</h3>
-                                <DetailItem label="Incident Date" value={claim.incidentDate} icon={Calendar} />
-                                <DetailItem label="Statutory Basis" value={claim.statutoryBasis} icon={Scale} />
-                                <DetailItem label="Jurisdiction" value={claim.jurisdiction} icon={Gavel} />
-                                <div className="mt-4 bg-slate-50 p-3 rounded border">
-                                    <p className="text-xs text-slate-500 font-bold uppercase mb-1">Description</p>
-                                    <p className="text-sm text-slate-800">{claim.description}</p>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {activeTab === 'adjudication' && (
-                        <div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                                <div className="bg-slate-50 p-5 rounded-xl border border-slate-200">
-                                    <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><Gavel size={18}/> Determination</h3>
-                                    <div className="space-y-4">
-                                        <DetailItem label="Assigned Office" value={claim.assignedOffice} icon={Building} />
-                                        <DetailItem label="Official" value={claim.responsibleOfficial} icon={User} />
-                                        <div className="flex justify-between items-center bg-white p-3 rounded border">
-                                            <span className="text-sm font-semibold">Claim Amount</span>
-                                            <span className="text-lg font-bold">${claim.claimAmount.toLocaleString()}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center bg-white p-3 rounded border border-blue-200">
-                                            <span className="text-sm font-semibold">Settlement Amount</span>
-                                            <span className="text-lg font-bold text-blue-700">${claim.settlementAmount?.toLocaleString() || '0.00'}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="bg-slate-50 p-5 rounded-xl border border-slate-200">
-                                    <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><DollarSign size={18}/> Payment Record (9.3.3)</h3>
-                                    {claim.paymentDetails ? (
-                                        <div className="space-y-4">
-                                            <DetailItem label="Paid Amount" value={`$${claim.paymentDetails.amount.toLocaleString()}`} icon={DollarSign} />
-                                            <DetailItem label="Payment Date" value={claim.paymentDetails.date} icon={Calendar} />
-                                            <DetailItem label="Authority" value={claim.paymentDetails.authority} icon={Scale} />
-                                            <DetailItem label="Transaction Ref" value={claim.paymentDetails.transactionReference} icon={FileText} />
-                                            <div className="mt-4 p-2 bg-green-100 text-green-800 text-xs rounded font-bold text-center">Payment Finalized</div>
-                                        </div>
-                                    ) : (
-                                        <div className="text-center py-8">
-                                            <p className="text-slate-500 text-sm mb-4">No payment recorded.</p>
-                                            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">Record Payment</button>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {activeTab === 'documents' && (
-                        <div className="space-y-4">
-                            <h3 className="font-bold text-slate-800">Legal Documents & Evidence</h3>
-                            {relatedDocs.length > 0 ? (
-                                <div className="grid gap-3">{relatedDocs.map(d => (
-                                    <div key={d.id} className="p-3 border rounded bg-slate-50 flex justify-between items-center">
-                                        <div className="flex items-center gap-3">
-                                            <FileText size={16} className="text-slate-600"/>
-                                            <div><p className="font-semibold text-sm">{d.name}</p><p className="text-xs text-slate-500">{d.type} • {d.uploadedDate}</p></div>
-                                        </div>
-                                        <button className="text-blue-600 text-sm hover:underline">View</button>
-                                    </div>
-                                ))}</div>
-                            ) : <p className="text-sm text-slate-500 italic">No documents attached.</p>}
-                        </div>
-                    )}
-
-                    {activeTab === 'history' && (
-                        <div>
-                            <div className="flex items-center justify-between mb-4">
-                                <h3 className="font-bold text-slate-800">Immutable Audit Trail</h3>
-                                <div className="flex items-center gap-1 text-xs text-slate-500"><Lock size={12} /> Securely Logged</div>
-                            </div>
-                            <div className="space-y-4">
-                                {(claim.history || []).map((event, i) => (
-                                    <div key={i} className="flex gap-4">
-                                        <div className="flex flex-col items-center"><div className={`w-4 h-4 rounded-full ring-4 ${i === 0 ? 'bg-blue-500 ring-blue-100 animate-pulse' : 'bg-slate-300 ring-slate-100'} z-10`}></div><div className="w-0.5 flex-1 bg-slate-200"></div></div>
-                                        <div>
-                                            <p className="text-xs text-slate-500">{event.timestamp}</p>
-                                            <p className="font-medium text-slate-800">{event.action} by {event.user}</p>
-                                            {event.details && <p className="text-sm text-slate-600 mt-1 p-2 bg-slate-50 rounded-md border">{event.details}</p>}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
+                <div className="flex items-center gap-3">
+                    <div className="flex flex-col items-end mr-4 group cursor-help italic">
+                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic leading-none">Lifecycle Phase</span>
+                        <span className="text-xs font-black px-3 py-1 bg-slate-950 text-white uppercase tracking-widest leading-none border border-white/5">{claim.lifecycleState.toUpperCase()}</span>
+                    </div>
+                    <button onClick={() => setIsEditModalOpen(true)} className="btn-pro-secondary flex items-center gap-2 px-4 py-2 h-auto text-[10px] font-black uppercase tracking-widest italic group animate-pulse-subtle">
+                        <Edit size={14} className="group-hover:text-amber-400" /> Modify Manifest Matrix
+                    </button>
+                    <RegulatoryBadge refs={['ER 405-1-12', 'Rule 39']} />
                 </div>
             </div>
         </div>
+
+        {!statuteCheck.allowed && (
+            <div className="p-4 bg-red-950 border border-red-900 rounded-sm flex items-start gap-4 animate-in fade-in slide-in-from-top-2 shadow-xl">
+                <AlertTriangle className="text-red-400 mt-0.5" size={20} />
+                <div>
+                    <h4 className="text-[11px] font-black text-red-400 uppercase tracking-widest mb-1 italic">STRATEGIC_COMPLIANCE_FAILURE::PROTOCOL_LOCK</h4>
+                    <p className="text-[11px] font-black text-white/80 uppercase tracking-tight leading-relaxed italic">{statuteCheck.reason}</p>
+                </div>
+            </div>
+        )}
+
+        <div className="pro-card flex flex-col bg-white overflow-hidden shadow-2xl border-slate-200">
+            <div className="px-6 border-b border-white/5 bg-[#0A0A0B]">
+                <nav className="-mb-px flex gap-10" aria-label="Tabs">
+                    {[
+                        { id: 'overview', label: 'Tactical Overview' },
+                        { id: 'adjudication', label: 'Adjudication Control' },
+                        { id: 'documents', label: 'Evidence Vault' },
+                        { id: 'history', label: 'Audit Transcript' }
+                    ].map(tab => (
+                        <button 
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)} 
+                            className={`shrink-0 border-b-2 px-1 py-5 text-[10px] font-black uppercase tracking-[0.3em] transition-all italic ${activeTab === tab.id ? 'border-blue-600 text-blue-400 opacity-100' : 'border-transparent text-white/30 hover:text-white/60 hover:border-white/10'}`}
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
+                </nav>
+            </div>
+
+            <div className="p-10">
+                {activeTab === 'overview' && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 italic">
+                        <div className="space-y-10">
+                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] border-b border-slate-100 pb-3 italic">Claimant Identification Node</h3>
+                            <div className="space-y-6">
+                                <DetailItem label="Full Name" value={claim.claimantInfo?.name} icon={User} isProtected />
+                                <DetailItem label="Legal Address" value={claim.claimantInfo?.address || '-'} icon={Building} isProtected />
+                                <DetailItem label="Comms Vector" value={claim.claimantInfo?.phone || '-'} icon={User} isProtected />
+                            </div>
+                        </div>
+                        <div className="space-y-10">
+                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] border-b border-slate-100 pb-3 italic">Procedural Workflow Chain</h3>
+                            <div className="space-y-4 relative pl-4">
+                                <div className="absolute left-0 top-2 bottom-2 w-0.5 bg-slate-100" />
+                                {LIFECYCLE_STATES.map((state, i) => (
+                                    <div key={state} className={`flex items-center gap-5 group transition-all ${i > currentStateIndex ? 'opacity-20' : 'opacity-100'}`}>
+                                        <div className={`w-8 h-8 rounded-none flex items-center justify-center text-[10px] font-black font-mono shadow-sm border transition-all ${i < currentStateIndex ? 'bg-emerald-600 border-emerald-500 text-white' : i === currentStateIndex ? 'bg-blue-600 border-blue-500 text-white scale-110 shadow-xl shadow-blue-500/20 animate-pulse' : 'bg-white border-slate-200 text-slate-400'}`}>
+                                            {i < currentStateIndex ? <CheckCircle size={16} /> : <span>{i + 1}</span>}
+                                        </div>
+                                        <span className={`text-[10px] font-black uppercase tracking-widest italic ${i === currentStateIndex ? 'text-blue-900 group-hover:text-blue-600 underline underline-offset-8 decoration-blue-400/30' : 'text-slate-500'}`}>{state}</span>
+                                    </div>
+                                ))}
+                            </div>
+                            {currentStateIndex < LIFECYCLE_STATES.length - 1 && (
+                                <button onClick={() => handleStateTransition(LIFECYCLE_STATES[currentStateIndex + 1])} className="btn-pro-primary w-full py-3 h-auto text-[10px] font-black uppercase tracking-[0.25em] italic mt-8 shadow-2xl shadow-blue-600/20 hover:scale-105 active:scale-95 transition-all">
+                                    ADVANCE_LIFECYCLE:: {LIFECYCLE_STATES[currentStateIndex + 1]}
+                                </button>
+                            )}
+                        </div>
+                        <div className="space-y-10">
+                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] border-b border-slate-100 pb-3 italic">Incident Basis & Statutory Basis</h3>
+                            <div className="space-y-6">
+                                <DetailItem label="Epoch Date" value={claim.incidentDate} icon={Calendar} />
+                                <DetailItem label="Statutory Source" value={claim.statutoryBasis} icon={Scale} />
+                                <DetailItem label="Active Jurisdiction" value={claim.jurisdiction} icon={Gavel} />
+                            </div>
+                            <div className="mt-8 p-6 bg-slate-900 border border-white/5 rounded-none italic shadow-2xl">
+                                <p className="text-[9px] text-blue-400 font-black uppercase tracking-[0.3em] mb-3">Incident_Log_Excerpt</p>
+                                <p className="text-[11px] font-black text-white/60 uppercase tracking-tighter leading-relaxed italic">{claim.description}</p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'adjudication' && (
+                    <div className="space-y-8 italic">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-8 italic">
+                            <div className="pro-card p-8 bg-slate-50 border-slate-200 shadow-xl italic font-black">
+                                <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.4em] mb-10 flex items-center gap-4 italic border-b border-slate-100 pb-4">
+                                    <Gavel size={20} className="text-blue-600" /> Official Determination Matrix
+                                </h3>
+                                <div className="space-y-8 italic">
+                                    <DetailItem label="Assigned Command Office" value={claim.assignedOffice} icon={Building} />
+                                    <DetailItem label="Investigating Official" value={claim.responsibleOfficial} icon={User} />
+                                    <div className="flex justify-between items-center bg-white p-5 border border-slate-200 rounded-none italic shadow-inner">
+                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Gross Claim Magnitude</span>
+                                        <span className="text-2xl font-black font-mono tracking-tighter text-slate-900">${claim.claimAmount.toLocaleString()}.00</span>
+                                    </div>
+                                    <div className="flex justify-between items-center bg-blue-950 p-5 border border-blue-900 rounded-none italic shadow-2xl relative overflow-hidden group">
+                                        <div className="absolute inset-0 bg-blue-600/5 group-hover:bg-blue-600/10 transition-colors pointer-events-none" />
+                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400 z-10">Settlement Calibration</span>
+                                        <span className="text-2xl font-black font-mono tracking-tighter text-blue-400 z-10 underline underline-offset-8 decoration-blue-400/20">${claim.settlementAmount?.toLocaleString() || '0.00'}.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="pro-card p-8 bg-white border-slate-200 shadow-xl italic font-black">
+                                <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.4em] mb-10 flex items-center gap-4 italic border-b border-slate-100 pb-4">
+                                    <DollarSign size={20} className="text-emerald-600" /> Strategic Fund Disbursement (9.3.3)
+                                </h3>
+                                {claim.paymentDetails ? (
+                                    <div className="space-y-8 italic">
+                                        <DetailItem label="Disbursed Sum" value={`$${claim.paymentDetails.amount.toLocaleString()}.00`} icon={DollarSign} />
+                                        <DetailItem label="Execution Epoch" value={claim.paymentDetails.date} icon={Calendar} />
+                                        <DetailItem label="Spending Authority" value={claim.paymentDetails.authority} icon={Scale} />
+                                        <div className="flex justify-between items-center bg-slate-50 p-4 border border-slate-200 rounded-none italic shadow-inner">
+                                            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400">TX_REF_NODE_UUID</span>
+                                            <span className="text-[10px] font-mono font-black text-blue-600 tracking-tighter">{claim.paymentDetails.transactionReference.toUpperCase()}</span>
+                                        </div>
+                                        <div className="mt-8 py-3 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-[0.4em] shadow-xl shadow-emerald-600/20 text-center italic border border-emerald-400">STATUS::MISSION_PAYMENT_FINALIZED</div>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col items-center justify-center py-16 text-center border-2 border-dashed border-slate-100 rounded-none h-full italic opacity-60">
+                                        <DollarSign size={48} className="text-slate-200 mb-6" />
+                                        <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em] mb-8 italic">DISBURSEMENT_RECORD::DATA_NULL</p>
+                                        <button className="btn-pro-primary h-auto py-3 px-10 text-[10px] uppercase font-black tracking-[0.3em] italic shadow-2xl shadow-blue-600/20">Init_Payment_Protocol</button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'documents' && (
+                    <div className="space-y-10 italic">
+                        <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.4em] flex items-center gap-3 italic border-b border-slate-100 pb-4 uppercase">
+                            <FileText size={18} className="text-blue-500" /> Sovereign Documentation & Evidentiary Vault
+                        </h3>
+                        {relatedDocs.length > 0 ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {relatedDocs.map(d => (
+                                    <div key={d.id} className="pro-card p-6 bg-slate-50 border-slate-200 hover:border-blue-500/50 flex justify-between items-center transition-all group cursor-pointer shadow-xl italic font-black">
+                                        <div className="flex items-center gap-6">
+                                            <div className="p-3 bg-slate-950 rounded-none shadow-2xl text-white group-hover:bg-blue-600 group-hover:scale-105 transition-all">
+                                                <FileText size={20}/>
+                                            </div>
+                                            <div>
+                                                <p className="font-black text-slate-900 text-[13px] uppercase tracking-tighter leading-none mb-2 group-hover:text-blue-700 transition-colors italic">{d.name.replace(' ', '_')}</p>
+                                                <div className="flex items-center gap-3 text-[9px] text-slate-400 font-black uppercase tracking-widest italic leading-none">
+                                                    <span className="text-blue-500">{d.type}</span>
+                                                    <div className="w-1 h-1 bg-slate-300 rounded-full" />
+                                                    <span>UPLOAD_TS::{d.uploadedDate.toUpperCase()}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button className="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] italic hover:text-blue-400 transition-colors border-b border-transparent hover:border-blue-400/30 pb-0.5">VIEW_INDEX</button>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="p-20 text-center border-2 border-dashed border-slate-100 rounded-none text-slate-300 italic uppercase font-black text-[11px] tracking-[0.5em] flex flex-col items-center">
+                                <FileText size={48} className="text-slate-100 mb-6" />
+                                EVIDENTIARY_ARCHIVE_DATA_EMPTY
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {activeTab === 'history' && (
+                    <div className="space-y-10 italic">
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-5 italic font-black">
+                            <h3 className="text-[11px] text-slate-900 uppercase tracking-[0.4em] flex items-center gap-3 italic">
+                                <FileText size={16} className="text-blue-500" /> Tactical Operational History Ledger
+                            </h3>
+                            <div className="flex items-center gap-3 text-[9px] text-slate-400 tracking-[0.3em] uppercase italic font-mono">
+                                <Lock size={12} className="text-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)]" /> SEC_AUDIT_LOCKED::ON
+                            </div>
+                        </div>
+                        <div className="space-y-8 pt-4 pl-6 border-l-2 border-slate-100">
+                            {(claim.history || []).map((event, i) => (
+                                <div key={i} className="flex gap-10 relative group italic font-black">
+                                     <div className="absolute -left-[13px] top-2 w-5 h-5 rounded-none bg-white border-2 border-slate-200 flex items-center justify-center z-10 transition-all group-hover:border-blue-400 shadow-sm group-hover:scale-110">
+                                        <div className={`w-2 h-2 rounded-none ${i === 0 ? 'bg-blue-600 animate-pulse' : 'bg-slate-300'}`} />
+                                    </div>
+                                    <div className="pro-card p-6 bg-slate-50 border-slate-200 group-hover:border-blue-200 group-hover:bg-blue-50/20 flex-1 transition-all shadow-xl italic">
+                                        <div className="flex justify-between items-start mb-4 italic">
+                                            <p className="text-[10px] font-black text-slate-400 font-mono tracking-tighter uppercase italic">{event.timestamp.toUpperCase()}</p>
+                                            <span className="text-[9px] font-black text-blue-700 bg-blue-50 border border-blue-100 px-3 py-1 uppercase tracking-widest italic shadow-sm">{event.action.replace(' ', '_')}</span>
+                                        </div>
+                                        <p className="font-black text-slate-900 text-[12px] uppercase tracking-tighter leading-none mb-3 italic">AUTHORIZED_PERSONNEL::{event.user.replace(' ', '_')}</p>
+                                        {event.details && <p className="text-[11px] text-slate-500 italic mt-3 border-t border-slate-200 pt-3 leading-relaxed tracking-tight">{event.details}</p>}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
+            <div className="px-6 py-5 bg-slate-950 border-t border-white/5 flex justify-between items-center text-[10px] font-black uppercase tracking-[0.5em] italic text-white/40">
+                <div className="flex items-center gap-3">
+                    <CheckCircle size={14} className="text-emerald-500 pulse-mission" />
+                    ACQUISITION_INTEGRITY_SHIELD_OPERATIONAL::LEGAL_L4
+                </div>
+                <div className="font-mono text-white/10 tracking-[0.2em] uppercase text-[9px]">TRACE_NODE::LEGAL_CLAIM_CMD_NODE_V1.2</div>
+            </div>
+        </div>
+    </div>
     );
 };

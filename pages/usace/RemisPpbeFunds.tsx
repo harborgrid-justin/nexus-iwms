@@ -10,20 +10,30 @@ export const RemisPpbeFunds: React.FC = () => {
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-start gap-4">
-                <div>
-                    <div className="flex items-center gap-4">
-                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">PPBE Fund Management & Programming</h1>
-                        <RegulatoryBadge refs={['ER 37-1-30', 'Title 31']} />
+            <div className="flex flex-col md:flex-row justify-between items-start gap-4 border-b border-slate-200 pb-6">
+                <div className="flex items-center gap-4">
+                    <div className="p-2 bg-slate-950 rounded-sm text-white shadow-sm">
+                        <Landmark size={24} />
                     </div>
-                    <p className="text-slate-500 mt-1 text-sm font-medium">Strategic orchestration of Planning, Programming, Budgeting, and Execution cycles for Real Property.</p>
+                    <div>
+                        <div className="flex items-center gap-3 mb-1">
+                            <h1 className="text-xl font-black text-slate-900 tracking-tight uppercase leading-none">PPBE Strategic Matrix</h1>
+                            <div className="pulse-mission" />
+                            <RegulatoryBadge refs={['ER 37-1-30', 'Title 31']} />
+                        </div>
+                        <div className="flex items-center gap-3 italic">
+                            <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest leading-none">Planning • Programming • Budgeting • Execution</span>
+                            <div className="w-1 h-1 bg-slate-300 rounded-full" />
+                            <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-tighter">Mission Lifecycle Control Terminal</span>
+                        </div>
+                    </div>
                 </div>
-                <div className="flex items-center gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 font-bold text-sm shadow-sm transition-all">
-                        <Download size={16} /> POM Export
+                <div className="flex items-center gap-2 w-full md:w-auto">
+                    <button className="btn-pro-secondary flex items-center gap-2 px-3 py-1.5 h-auto text-[10px] font-black uppercase tracking-widest italic group">
+                        <Download size={14} className="group-hover:text-blue-500" /> POM Export
                     </button>
-                    <button className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-bold text-sm shadow-lg shadow-blue-500/20 transition-all active:scale-95">
-                        <Plus size={18} /> New Appropriation
+                    <button className="btn-pro-primary flex items-center gap-2 px-3 py-1.5 h-auto text-[10px] font-black uppercase tracking-[0.2em] italic">
+                        <Plus size={14} /> New Appropriation
                     </button>
                 </div>
             </div>
@@ -114,41 +124,41 @@ export const RemisPpbeFunds: React.FC = () => {
                     <div className="flex-grow overflow-y-auto">
                         <div className="divide-y divide-slate-100">
                              {PPBE_FUNDS.map(fund => (
-                                <div key={fund.id} className="p-6 hover:bg-blue-50/30 transition-all group">
+                                <div key={fund.id} className="p-6 hover:bg-blue-50/30 transition-all group border-l-2 border-transparent hover:border-l-blue-600">
                                     <div className="flex justify-between items-start mb-4">
                                         <div>
-                                            <div className="text-[10px] font-bold text-blue-600 font-mono tracking-tighter uppercase mb-1">{fund.id}</div>
-                                            <h4 className="text-sm font-bold text-slate-900 tracking-tight">{fund.name}</h4>
-                                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{fund.appropriationType} • {fund.programElement}</p>
+                                            <div className="text-[10px] font-black text-blue-600 font-mono tracking-tighter uppercase mb-1 italic">FUND_NODE::{fund.id}</div>
+                                            <h4 className="text-[11px] font-black text-slate-900 tracking-tight uppercase leading-tight">{fund.name}</h4>
+                                            <p className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1 italic opacity-60">{fund.appropriationType} • {fund.programElement}</p>
                                         </div>
                                         <div className="text-right">
-                                            <p className="text-xs font-bold text-slate-900">FY{fund.fiscalYear}</p>
+                                            <div className="text-[10px] font-black text-slate-950 font-mono italic">FY{fund.fiscalYear}</div>
                                             <StatusBadge status="Authorized" />
                                         </div>
                                     </div>
                                     <div className="space-y-4">
-                                        <div className="grid grid-cols-3 gap-2">
-                                            <div className="bg-slate-50 p-3 rounded-2xl flex flex-col">
-                                                <span className="text-[9px] text-slate-500 font-bold uppercase">Total</span>
-                                                <span className="text-xs font-bold text-slate-900 font-mono">${(fund.totalAmount / 1000000).toFixed(1)}M</span>
+                                        <div className="grid grid-cols-3 gap-px bg-slate-200 border border-slate-100 overflow-hidden rounded-sm">
+                                            <div className="bg-white p-2.5 flex flex-col">
+                                                <span className="text-[8px] text-slate-400 font-black uppercase tracking-widest leading-none mb-1">ALLOC_TOTAL</span>
+                                                <span className="text-[12px] font-black text-slate-900 font-mono tracking-tighter">${(fund.totalAmount / 1000000).toFixed(1)}M</span>
                                             </div>
-                                            <div className="bg-blue-50 p-3 rounded-2xl flex flex-col">
-                                                <span className="text-[9px] text-blue-500 font-bold uppercase">Obligated</span>
-                                                <span className="text-xs font-bold text-blue-900 font-mono">${(fund.obligated / 1000000).toFixed(1)}M</span>
+                                            <div className="bg-white p-2.5 flex flex-col">
+                                                <span className="text-[8px] text-blue-500 font-black uppercase tracking-widest leading-none mb-1">OBLIGATED</span>
+                                                <span className="text-[12px] font-black text-blue-600 font-mono tracking-tighter">${(fund.obligated / 1000000).toFixed(1)}M</span>
                                             </div>
-                                            <div className="bg-emerald-50 p-3 rounded-2xl flex flex-col">
-                                                <span className="text-[9px] text-emerald-500 font-bold uppercase">Expended</span>
-                                                <span className="text-xs font-bold text-emerald-900 font-mono">${(fund.expended / 1000000).toFixed(1)}M</span>
+                                            <div className="bg-white p-2.5 flex flex-col">
+                                                <span className="text-[8px] text-emerald-500 font-black uppercase tracking-widest leading-none mb-1">EXPENDED</span>
+                                                <span className="text-[12px] font-black text-emerald-600 font-mono tracking-tighter">${(fund.expended / 1000000).toFixed(1)}M</span>
                                             </div>
                                         </div>
                                         <div className="relative pt-1">
-                                            <div className="flex mb-2 items-center justify-between">
-                                                <div><span className="text-[10px] font-bold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-100">Execution Progress</span></div>
-                                                <div className="text-right"><span className="text-xs font-bold inline-block text-blue-600">{Math.round((fund.expended / fund.totalAmount) * 100)}%</span></div>
+                                            <div className="flex mb-1.5 items-center justify-between">
+                                                <span className="text-[8px] font-black text-slate-400 uppercase tracking-[0.3em] italic">EXECUTION_VELOCITY</span>
+                                                <span className="text-[10px] font-black text-blue-600 font-mono">{Math.round((fund.expended / fund.totalAmount) * 100)}%</span>
                                             </div>
-                                            <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-50">
-                                                <div style={{ width: `${(fund.obligated / fund.totalAmount) * 100}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-300"></div>
-                                                <div style={{ width: `${(fund.expended / fund.totalAmount) * 100}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-600 -ml-1"></div>
+                                            <div className="overflow-hidden h-1 mb-4 flex bg-slate-100 border border-slate-200 rounded-full">
+                                                <div style={{ width: `${(fund.obligated / fund.totalAmount) * 100}%` }} className="shadow-none flex flex-col bg-blue-300"></div>
+                                                <div style={{ width: `${(fund.expended / fund.totalAmount) * 100}%` }} className="shadow-none flex flex-col bg-blue-600 -ml-1"></div>
                                             </div>
                                         </div>
                                     </div>

@@ -54,104 +54,149 @@ export const RemisPermitDetail: React.FC = () => {
     const currentStateIndex = LIFECYCLE_STATES.indexOf(permit.lifecycleState);
 
     return (
-        <div className="space-y-6">
+        <div className="max-w-[1600px] mx-auto space-y-6">
             <PermitModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onSave={handleSave} permit={permit} />
-            <div>
-                <button onClick={() => navigate('/usace/permits')} className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 mb-2"><ArrowLeft size={16} /> Back to Dashboard</button>
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                        <div className="flex items-center gap-3">
-                            <h1 className="text-2xl font-bold text-slate-900">{permit.uniqueIdentifier}</h1>
-                            <span className="text-xs bg-slate-100 px-2 py-1 rounded border text-slate-600 font-mono">{permit.type}</span>
+            <div className="border-b border-slate-200 pb-6">
+                <button onClick={() => navigate('/usace/permits')} className="flex items-center gap-2 text-[10px] font-black text-slate-500 hover:text-blue-600 mb-4 transition-colors uppercase tracking-[0.2em] italic"><ArrowLeft size={14} /> Back to Permit Command Hub</button>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="flex items-center gap-6">
+                        <div className="p-3 bg-slate-950 rounded shadow-xl shadow-black/20 text-white">
+                            <Scale size={32} className="text-blue-400" />
                         </div>
-                        <p className="text-slate-500 font-mono mt-1">Asset: {asset?.rpuid}</p>
+                        <div>
+                            <div className="flex items-center gap-3">
+                                <h1 className="text-2xl font-black text-slate-900 tracking-tighter uppercase leading-none italic">Permit Protocol: {permit.uniqueIdentifier}</h1>
+                                <div className="pulse-mission" />
+                                <span className="text-[10px] font-black px-2.5 py-1 bg-slate-900 text-white rounded-sm uppercase tracking-widest italic shadow-sm">
+                                    {permit.type.replace(' ', '_')}
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-3 mt-2 italic">
+                                <span className="text-[10px] font-mono font-black text-slate-500 uppercase tracking-tighter">PERMIT_ID::{permit.id}</span>
+                                <div className="w-1 h-1 bg-slate-300 rounded-full" />
+                                <span className="text-[10px] font-mono font-black text-blue-600 uppercase tracking-tighter">ASSET_NODE::{asset?.rpuid}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <span className={`text-sm font-semibold px-3 py-1 rounded-full border bg-blue-100 text-blue-800 border-blue-200`}>{permit.lifecycleState}</span>
-                        <button onClick={() => setIsEditModalOpen(true)} className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 font-medium text-sm"><Edit size={16} /> Update Permit</button>
-                        <RegulatoryBadge refs={['13']} />
+                    <div className="flex items-center gap-3">
+                        <div className="flex flex-col items-end mr-4 group cursor-help">
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Lifecycle State</span>
+                            <span className="text-xs font-black px-3 py-1 uppercase tracking-widest leading-none border shadow-sm bg-slate-900 border-slate-800 text-white">
+                                {permit.lifecycleState}
+                            </span>
+                        </div>
+                        <button onClick={() => setIsEditModalOpen(true)} className="btn-pro-secondary flex items-center gap-2 px-4 py-2 h-auto text-[10px] font-black uppercase tracking-widest italic group">
+                            <Edit size={14} className="group-hover:text-blue-500" /> Modify Regulatory Schema
+                        </button>
+                        <RegulatoryBadge refs={['ER 405-1-12', 'Sec 13']} />
                     </div>
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col">
-                <div className="px-6 border-b border-slate-200">
-                    <nav className="-mb-px flex gap-6" aria-label="Tabs">
-                        <button onClick={() => setActiveTab('overview')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'overview' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Overview</button>
-                        <button onClick={() => setActiveTab('parties')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'parties' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Parties & Addresses</button>
-                        <button onClick={() => setActiveTab('lifecycle')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'lifecycle' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Lifecycle</button>
-                        <button onClick={() => setActiveTab('history')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'history' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Audit & Compliance</button>
+            <div className="pro-card flex flex-col bg-white overflow-hidden shadow-2xl border-slate-200">
+                <div className="px-6 border-b border-white/5 bg-[#0A0A0B]">
+                    <nav className="-mb-px flex gap-10" aria-label="Tabs">
+                        {[
+                            { id: 'overview', label: 'Statutory Overview' },
+                            { id: 'parties', label: 'Entity Control Matrix' },
+                            { id: 'lifecycle', label: 'Procedural Lifecycle' },
+                            { id: 'history', label: 'Immutable Audit Ledger' }
+                        ].map(tab => (
+                            <button 
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)} 
+                                className={`shrink-0 border-b-2 px-1 py-5 text-[10px] font-black uppercase tracking-[0.3em] transition-all italic ${activeTab === tab.id ? 'border-blue-600 text-blue-400 opacity-100' : 'border-transparent text-white/30 hover:text-white/60 hover:border-white/10'}`}
+                            >
+                                {tab.label}
+                            </button>
+                        ))}
                     </nav>
                 </div>
 
-                <div className="p-6">
+                <div className="p-8">
                     {activeTab === 'overview' && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            <div className="space-y-6">
-                                <h3 className="font-bold text-slate-800 border-b pb-2">Authority & Asset</h3>
-                                <DetailItem label="Asset Name" value={asset?.name} icon={Building} />
-                                <DetailItem label="Authority" value={permit.authority} icon={Scale} />
-                                <DetailItem label="Permit Type" value={permit.type} icon={FileText} />
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                            <div className="space-y-8">
+                                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100 pb-3 italic">Authority & Asset Alignment</h3>
+                                <div className="space-y-4">
+                                    <DetailItem label="Strategic Asset" value={asset?.name} icon={Building} />
+                                    <DetailItem label="Legal Authority" value={permit.authority} icon={Scale} />
+                                    <DetailItem label="Permit Schematic" value={permit.type} icon={FileText} />
+                                </div>
                             </div>
-                            <div className="space-y-6">
-                                <h3 className="font-bold text-slate-800 border-b pb-2">Key Dates</h3>
-                                <DetailItem label="Issue Date" value={permit.issueDate || 'Pending'} icon={Calendar} />
-                                <DetailItem label="Effective Date" value={permit.effectiveDate || 'Pending'} icon={CheckCircle} />
-                                <DetailItem label="Expiration Date" value={permit.expirationDate || 'N/A'} icon={Calendar} />
+                            <div className="space-y-8">
+                                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100 pb-3 italic">Temporal Compliance Benchmarks</h3>
+                                <div className="space-y-4">
+                                    <DetailItem label="Issuance Epoch" value={permit.issueDate || 'PENDING'} icon={Calendar} />
+                                    <DetailItem label="Effective Protocol" value={permit.effectiveDate || 'PENDING'} icon={CheckCircle} />
+                                    <DetailItem label="Expiration Deadline" value={permit.expirationDate || 'N/A'} icon={Calendar} />
+                                </div>
                             </div>
-                            <div className="space-y-6">
-                                <h3 className="font-bold text-slate-800 border-b pb-2">Description</h3>
-                                <p className="text-sm text-slate-700 bg-slate-50 p-3 rounded border">{permit.description}</p>
+                            <div className="space-y-8">
+                                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100 pb-3 italic">Regulatory Disclosure</h3>
+                                <div className="p-4 bg-slate-50 border border-slate-200 rounded-sm italic shadow-inner">
+                                    <p className="text-[11px] font-black text-slate-700 uppercase tracking-tight leading-relaxed">{permit.description}</p>
+                                </div>
                             </div>
                         </div>
                     )}
 
                     {activeTab === 'parties' && (
-                        <div>
-                            <h3 className="font-bold text-slate-800 mb-4">Permit Parties</h3>
-                            <div className="bg-slate-50 rounded-lg border overflow-hidden mb-8">
-                                <table className="w-full text-sm text-left">
-                                    <thead className="bg-slate-100 border-b">
+                        <div className="space-y-8">
+                            <div className="flex items-center justify-between border-b border-slate-100 pb-3 italic">
+                                <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.3em] flex items-center gap-2">
+                                    <Users size={16} className="text-blue-500" /> Authorized Permit Stakeholders
+                                </h3>
+                            </div>
+                            <div className="pro-card border-slate-200 overflow-hidden shadow-md">
+                                <table className="w-full text-left">
+                                    <thead className="bg-[#1A1B1E] border-b border-white/5">
                                         <tr>
-                                            <th className="p-3 font-semibold">Role</th>
-                                            <th className="p-3 font-semibold">Name</th>
-                                            <th className="p-3 font-semibold">Email</th>
-                                            <th className="p-3 font-semibold">Phone</th>
+                                            <th className="px-6 py-4 pro-col-header text-white uppercase tracking-widest italic">ENTITY_ROLE</th>
+                                            <th className="px-6 py-4 pro-col-header text-white uppercase tracking-widest italic">LEGAL_IDENTITY</th>
+                                            <th className="px-6 py-4 pro-col-header text-white uppercase tracking-widest italic">COMMS_CHANNEL</th>
+                                            <th className="px-6 py-4 pro-col-header text-white uppercase tracking-widest italic text-right">VECTOR_ID</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y">
+                                    <tbody className="divide-y divide-slate-100">
                                         {permit.parties.map((p, idx) => (
-                                            <tr key={idx}>
-                                                <td className="p-3 font-medium text-blue-600">{p.role}</td>
-                                                <td className="p-3">{p.name}</td>
-                                                <td className="p-3 text-slate-600">{p.email || '-'}</td>
-                                                <td className="p-3 text-slate-600">{p.phone || '-'}</td>
+                                            <tr key={idx} className="pro-data-row group">
+                                                <td className="px-6 py-5">
+                                                    <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2.5 py-1 rounded-sm border border-blue-100 uppercase tracking-widest italic">
+                                                        {p.role.toUpperCase()}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-5 font-black text-slate-900 text-[12px] uppercase tracking-tight italic group-hover:text-blue-600 transition-colors">{p.name}</td>
+                                                <td className="px-6 py-5 text-[11px] font-black text-slate-500 uppercase tracking-tighter italic">{p.email || 'NULL'}</td>
+                                                <td className="px-6 py-5 text-right font-mono text-[11px] font-black text-slate-400 group-hover:text-slate-900 transition-colors uppercase italic">{p.phone || '-'}</td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
                             </div>
 
-                            <h3 className="font-bold text-slate-800 mb-4">Permit Addresses</h3>
-                            <div className="bg-slate-50 rounded-lg border overflow-hidden">
-                                <table className="w-full text-sm text-left">
-                                    <thead className="bg-slate-100 border-b">
+                            <div className="flex items-center justify-between border-b border-slate-100 pb-3 mt-12 italic">
+                                <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.3em] flex items-center gap-2">
+                                    <MapPin size={16} className="text-blue-500" /> Jurisdictional Address Matrix
+                                </h3>
+                            </div>
+                            <div className="pro-card border-slate-200 overflow-hidden shadow-md">
+                                <table className="w-full text-left">
+                                    <thead className="bg-slate-50 border-b border-slate-200">
                                         <tr>
-                                            <th className="p-3 font-semibold">Type</th>
-                                            <th className="p-3 font-semibold">Address</th>
-                                            <th className="p-3 font-semibold">City</th>
-                                            <th className="p-3 font-semibold">State</th>
-                                            <th className="p-3 font-semibold">Zip</th>
+                                            <th className="px-6 py-4 pro-col-header uppercase tracking-widest italic">LOC_TYPE</th>
+                                            <th className="px-6 py-4 pro-col-header uppercase tracking-widest italic">PHYSICAL_STREET_VECTOR</th>
+                                            <th className="px-6 py-4 pro-col-header uppercase tracking-widest italic">GEOGRAPHIC_NODE</th>
+                                            <th className="px-6 py-4 pro-col-header uppercase tracking-widest italic text-right">ZONAL_CODE</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y">
+                                    <tbody className="divide-y divide-slate-100">
                                         {permit.addresses.map((a, idx) => (
-                                            <tr key={idx}>
-                                                <td className="p-3 font-medium">{a.type}</td>
-                                                <td className="p-3">{a.addressLine1}</td>
-                                                <td className="p-3">{a.city}</td>
-                                                <td className="p-3">{a.state}</td>
-                                                <td className="p-3 font-mono">{a.zip}</td>
+                                            <tr key={idx} className="pro-data-row group">
+                                                <td className="px-6 py-5 font-black text-slate-600 text-[11px] uppercase tracking-widest italic">{a.type.toUpperCase()}</td>
+                                                <td className="px-6 py-5 font-black text-slate-900 text-[12px] uppercase tracking-tight italic">{a.addressLine1}</td>
+                                                <td className="px-6 py-5 text-[11px] font-black text-slate-500 uppercase tracking-tighter italic">{a.city}, {a.state}</td>
+                                                <td className="px-6 py-5 text-right font-mono text-[11px] font-black text-blue-600 group-hover:text-blue-900 transition-colors uppercase italic tracking-tighter">{a.zip}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -161,32 +206,43 @@ export const RemisPermitDetail: React.FC = () => {
                     )}
 
                     {activeTab === 'lifecycle' && (
-                        <div>
-                            <div className="bg-slate-50 p-5 rounded-xl border mb-8 flex justify-between items-center">
-                                <div>
-                                    <h3 className="font-bold text-slate-900 text-lg">Current State: {permit.lifecycleState}</h3>
-                                    <p className="text-sm text-slate-600 mt-1">Status: {permit.status}</p>
+                        <div className="space-y-8">
+                            <div className="pro-card p-6 bg-slate-50 border-slate-200 flex justify-between items-center shadow-md italic">
+                                <div className="flex items-center gap-6">
+                                    <div className="p-4 bg-slate-950 rounded shadow-md text-white">
+                                        <Activity size={24} className="text-blue-400" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em] mb-1">ACTIVE_PROTOCOL_STATE</h3>
+                                        <p className="text-xl font-black text-slate-900 uppercase tracking-tighter">{permit.lifecycleState}</p>
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2 leading-none">STRATEGIC_STATUS::{permit.status.toUpperCase()}</p>
+                                    </div>
                                 </div>
-                                <div className="flex gap-2">
+                                <div className="flex gap-3">
                                     {currentStateIndex < LIFECYCLE_STATES.length - 1 && (
-                                        <button onClick={() => handleStateTransition(LIFECYCLE_STATES[currentStateIndex + 1])} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm shadow-sm">
-                                            Advance to {LIFECYCLE_STATES[currentStateIndex + 1]}
+                                        <button onClick={() => handleStateTransition(LIFECYCLE_STATES[currentStateIndex + 1])} className="btn-pro-primary py-2 px-6 h-auto text-[10px] font-black uppercase tracking-widest italic group transition-all active:scale-[0.98]">
+                                            ELEVATE_TO:: {LIFECYCLE_STATES[currentStateIndex + 1]}
                                         </button>
                                     )}
                                 </div>
                             </div>
 
-                            <h3 className="font-bold text-slate-800 mb-6">State Progression</h3>
-                            <div className="flex items-center overflow-x-auto pb-4">
+                            <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.3em] italic mb-6 border-b border-slate-100 pb-3 mt-12">Regulatory Progression Matrix</h3>
+                            <div className="flex items-center justify-between px-10 pt-4 overflow-x-auto">
                                 {LIFECYCLE_STATES.map((state, i) => (
                                     <React.Fragment key={state}>
-                                        <div className="flex flex-col items-center min-w-[80px]">
-                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors ${i <= currentStateIndex ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-300 text-slate-400'}`}>
-                                                {i < currentStateIndex ? <CheckCircle size={16}/> : <span className="text-xs font-bold">{i+1}</span>}
+                                        <div className="flex flex-col items-center group cursor-help relative min-w-[120px]">
+                                            <div className={`w-10 h-10 rounded-sm flex items-center justify-center border-2 transition-all shadow-sm ${i <= currentStateIndex ? 'bg-blue-600 border-blue-500 text-white' : 'bg-white border-slate-200 text-slate-300'}`}>
+                                                {i < currentStateIndex ? <CheckCircle size={18}/> : <span className="text-[13px] font-black font-mono tracking-tighter">{i+1}</span>}
                                             </div>
-                                            <p className={`text-xs mt-2 text-center font-medium ${i <= currentStateIndex ? 'text-blue-700' : 'text-slate-400'}`}>{state}</p>
+                                            <p className={`text-[9px] mt-4 text-center font-black uppercase tracking-widest italic transition-colors ${i <= currentStateIndex ? 'text-blue-700' : 'text-slate-400'}`}>{state}</p>
+                                            {i === currentStateIndex && <div className="absolute -top-1 w-full flex justify-center"><div className="w-1 h-1 bg-blue-600 rounded-full pulse-mission" /></div>}
                                         </div>
-                                        {i < LIFECYCLE_STATES.length - 1 && <div className={`flex-1 h-1 min-w-[40px] ${i < currentStateIndex ? 'bg-blue-600' : 'bg-slate-200'}`}></div>}
+                                        {i < LIFECYCLE_STATES.length - 1 && (
+                                            <div className="flex-1 px-4 min-w-[60px]">
+                                                <div className={`h-[1px] ${i < currentStateIndex ? 'bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.4)]' : 'bg-slate-200'}`} />
+                                            </div>
+                                        )}
                                     </React.Fragment>
                                 ))}
                             </div>
@@ -194,19 +250,28 @@ export const RemisPermitDetail: React.FC = () => {
                     )}
 
                     {activeTab === 'history' && (
-                        <div>
-                            <div className="flex items-center justify-between mb-4">
-                                <h3 className="font-bold text-slate-800">Immutable Audit Trail</h3>
-                                <div className="flex items-center gap-1 text-xs text-slate-500"><Lock size={12} /> Securely Logged (Req 13.8)</div>
+                        <div className="space-y-8">
+                            <div className="flex items-center justify-between border-b border-slate-100 pb-4 italic">
+                                <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.3em] flex items-center gap-2">
+                                    <FileText size={14} className="text-blue-500" /> Strategic Audit Journal
+                                </h3>
+                                <div className="flex items-center gap-2 text-[9px] font-black text-slate-400 tracking-widest uppercase italic">
+                                    <Lock size={12} className="text-slate-300" /> Immutable Integrity Check Status::LOGGED_13.8
+                                </div>
                             </div>
-                            <div className="space-y-4">
+                            <div className="space-y-6 pt-2 pl-4 border-l-2 border-slate-100">
                                 {(permit.history || []).map((event, i) => (
-                                    <div key={i} className="flex gap-4">
-                                        <div className="flex flex-col items-center"><div className={`w-4 h-4 rounded-full ring-4 ${i === 0 ? 'bg-blue-500 ring-blue-100 animate-pulse' : 'bg-slate-300 ring-slate-100'} z-10`}></div><div className="w-0.5 flex-1 bg-slate-200"></div></div>
-                                        <div>
-                                            <p className="text-xs text-slate-500">{event.timestamp}</p>
-                                            <p className="font-medium text-slate-800">{event.action} by {event.user}</p>
-                                            {event.details && <p className="text-sm text-slate-600 mt-1 p-2 bg-slate-50 rounded-md border">{event.details}</p>}
+                                    <div key={i} className="flex gap-8 relative group">
+                                         <div className="absolute -left-[11px] top-1.5 w-4 h-4 rounded-full bg-white border-2 border-slate-200 flex items-center justify-center z-10 transition-all group-hover:border-blue-400">
+                                            <div className={`w-1.5 h-1.5 rounded-full ${i === 0 ? 'bg-blue-600 animate-pulse' : 'bg-slate-300'}`} />
+                                        </div>
+                                        <div className="pro-card p-4 bg-slate-50 border-slate-200 group-hover:border-blue-200 flex-1 transition-all shadow-sm">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <p className="text-[9px] font-black text-slate-400 font-mono tracking-tighter uppercase italic">{event.timestamp}</p>
+                                                <span className="text-[8px] font-black text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-sm uppercase tracking-widest italic">{event.action}</span>
+                                            </div>
+                                            <p className="font-black text-slate-900 text-[11px] uppercase tracking-tight leading-none mb-2 text-blue-900">CMD_OFFICER::{event.user}</p>
+                                            {event.details && <p className="text-[10px] text-slate-500 italic mt-2 border-t border-slate-200 pt-2 leading-relaxed">{event.details}</p>}
                                         </div>
                                     </div>
                                 ))}
@@ -214,6 +279,15 @@ export const RemisPermitDetail: React.FC = () => {
                         </div>
                     )}
                 </div>
+                <div className="px-6 py-5 bg-slate-950 border-t border-white/5 flex justify-between items-center text-[10px] font-black uppercase tracking-[0.3em] italic">
+                    <div className="flex items-center gap-3">
+                        <ShieldCheck size={14} className="text-emerald-400" />
+                        Regulatory Compliance Protocol (STAT_R13) Verified & Authenticated
+                    </div>
+                    <div className="text-white/20 font-mono tracking-tighter">SEC_VALID_NODE_SIG::CMD_DISTRICT</div>
+                </div>
+            </div>
+        </div>
             </div>
         </div>
     );

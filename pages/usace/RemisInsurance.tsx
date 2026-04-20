@@ -28,112 +28,133 @@ export const RemisInsurance: React.FC = () => {
     const compliantCount = complianceData.filter(c => c.hasProof).length;
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-start gap-4">
-                <div>
-                    <div className="flex items-center gap-4">
-                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Insurance & Risk Verification</h1>
-                        <RegulatoryBadge refs={['ER 405-1-12', '10.3']} />
+        <div className="max-w-[1600px] mx-auto space-y-6">
+            <div className="flex flex-col md:flex-row justify-between items-start gap-4 border-b border-slate-200 pb-6">
+                <div className="flex items-center gap-4">
+                    <div className="p-2.5 bg-slate-950 rounded shadow-lg shadow-black/10 text-white">
+                        <Shield size={24} />
                     </div>
-                    <p className="text-slate-500 mt-1 text-sm font-medium">Strategic verification of outgrantee insurance coverage and liability protection protocols.</p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 font-bold text-sm shadow-sm transition-all">
-                        <Download size={16} /> Compliance Report
-                    </button>
-                    <button className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-bold text-sm shadow-lg shadow-blue-500/20 transition-all active:scale-95">
-                        <Plus size={18} /> Update Certificate
-                    </button>
-                </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                 <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col group hover:border-emerald-300 transition-all">
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="p-3 bg-emerald-600 rounded-xl text-white shadow-lg shadow-emerald-500/20"><ShieldCheck size={20}/></div>
-                        <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">{Math.round((compliantCount / complianceData.length) * 100)}% Verified</span>
-                    </div>
-                    <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Insurance Compliance Rate</p>
-                    <p className="text-2xl font-bold text-slate-900 mt-1">{compliantCount} / {complianceData.length} Instruments</p>
-                </div>
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col group hover:border-amber-300 transition-all">
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="p-3 bg-amber-500 rounded-xl text-white shadow-lg shadow-amber-500/20"><AlertCircle size={20}/></div>
-                        <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">High Priority</span>
-                    </div>
-                    <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Pending Verifications</p>
-                    <p className="text-2xl font-bold text-slate-900 mt-1">{complianceData.length - compliantCount}</p>
-                </div>
-                <div className="bg-slate-900 p-6 rounded-2xl shadow-xl flex flex-col relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-4 opacity-5"><Shield size={80} className="text-white"/></div>
-                    <div className="mt-4">
-                        <p className="text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-1">Portfolio Risk Capacity</p>
-                        <p className="text-white text-2xl font-bold tracking-tight">$125.5M Secured</p>
-                        <p className="text-slate-400 text-[10px] mt-2 font-medium">Aggregate liability coverage across all out-grant instruments.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-                <div className="px-6 border-b border-slate-200 bg-slate-50/30 flex justify-between items-center">
-                    <h2 className="py-4 text-xs font-bold uppercase tracking-widest text-slate-900">Strategic Compliance Registry</h2>
-                    <div className="flex items-center gap-3">
-                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
-                            <input type="text" placeholder="Filter by Grantee, Policy, or Asset..." className="pl-9 pr-4 py-1.5 bg-white border border-slate-200 rounded-lg text-[11px] focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all min-w-[280px]" />
+                    <div>
+                        <div className="flex items-center gap-3">
+                            <h1 className="text-xl font-black text-slate-900 tracking-tight uppercase leading-none">Insurance & Liability Verification Command</h1>
+                            <div className="pulse-mission" />
+                            <RegulatoryBadge refs={['ER 405-1-12', 'CH 10.3']} />
                         </div>
-                        <button className="p-2 text-slate-400 hover:text-slate-600 transition-colors"><Filter size={18} /></button>
+                        <div className="flex items-center gap-3 mt-1.5 italic">
+                            <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest leading-none">Outgrantee Compliance • Proof of Coverage • Risk Offloading</span>
+                            <div className="w-1 h-1 bg-slate-300 rounded-full" />
+                            <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-tighter">Strategic Liability Protector</span>
+                        </div>
+                    </div>
+                </div>
+                <div className="flex items-center gap-2 w-full md:w-auto">
+                    <button className="btn-pro-secondary flex items-center gap-2 px-3 py-1.5 h-auto text-[10px] font-black uppercase tracking-widest italic group">
+                        <Download size={14} className="group-hover:text-blue-500" /> Export Compliance Matrix
+                    </button>
+                    <button className="btn-pro-primary flex items-center gap-2 px-3 py-1.5 h-auto text-[10px] font-black uppercase tracking-[0.2em] italic">
+                        <Plus size={14} /> Register Certificate
+                    </button>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                 <div className="pro-card p-6 flex flex-col group hover:border-emerald-400 transition-all cursor-pointer bg-white">
+                    <div className="flex justify-between items-start mb-6">
+                        <div className="p-2 bg-slate-900 rounded-sm text-white shadow-md group-hover:scale-110 transition-transform"><ShieldCheck size={18}/></div>
+                        <span className="text-[9px] font-black text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-sm border border-emerald-100 uppercase tracking-widest italic">{Math.round((compliantCount / complianceData.length) * 100)}%_PASS</span>
+                    </div>
+                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] italic leading-none mb-2">Compliance Saturation</p>
+                    <p className="text-3xl font-black text-slate-900 tracking-tighter font-mono">{compliantCount}_OF_{complianceData.length}</p>
+                    <div className="mt-4 h-1 w-full bg-slate-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-emerald-600 w-[78%]" />
+                    </div>
+                </div>
+                <div className="pro-card p-6 flex flex-col group hover:border-amber-400 transition-all cursor-pointer bg-white">
+                    <div className="flex justify-between items-start mb-6">
+                        <div className="p-2 bg-slate-900 rounded-sm text-white shadow-md group-hover:scale-110 transition-transform"><AlertCircle size={18}/></div>
+                        <span className="text-[9px] font-black text-amber-600 bg-amber-50 px-2.5 py-1 rounded-sm border border-amber-100 uppercase tracking-widest italic">CRITICAL_NODE</span>
+                    </div>
+                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] italic leading-none mb-2">Pending State Verifications</p>
+                    <p className="text-3xl font-black text-slate-900 tracking-tighter font-mono">0{complianceData.length - compliantCount}_NODES</p>
+                    <div className="mt-4 h-1 w-full bg-slate-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-amber-500 w-[22%]" />
+                    </div>
+                </div>
+                <div className="pro-card p-6 bg-slate-950 border-white/5 shadow-2xl relative overflow-hidden flex flex-col group">
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><Shield size={100} className="text-blue-500"/></div>
+                    <div className="relative z-10 flex flex-col h-full">
+                        <p className="text-blue-400 text-[10px] font-black uppercase tracking-[0.3em] mb-2 italic">Portfolio Coverage Ceiling</p>
+                        <p className="text-white text-3xl font-black tracking-tighter italic leading-none">$125.54M</p>
+                        <div className="mt-auto pt-6 border-t border-white/10 flex items-center gap-2">
+                             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                             <p className="text-white/40 text-[9px] font-bold uppercase tracking-widest leading-none">Aggregate Liability Protocol Secured</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="pro-card overflow-hidden flex flex-col bg-white">
+                <div className="px-6 border-b border-slate-100 bg-[#0A0A0B] flex justify-between items-center">
+                    <h2 className="py-5 text-[10px] font-black uppercase tracking-[0.3em] text-blue-400 flex items-center gap-2 italic leading-none">
+                        <ShieldCheck size={14} className="text-blue-500" /> Strategic Compliance Registry Index
+                    </h2>
+                    <div className="hidden md:flex items-center gap-3">
+                         <div className="relative">
+                            <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-white/20" size={12} />
+                            <input type="text" placeholder="FILTER_INSTRUMENTS..." className="bg-transparent border-none text-[10px] font-bold text-white/40 uppercase tracking-widest outline-none focus:text-white transition-colors w-40 pl-6" />
+                        </div>
+                        <button className="p-2 text-white/20 hover:text-white transition-colors"><Filter size={16} /></button>
                     </div>
                 </div>
 
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left text-sm">
-                        <thead className="bg-slate-50/50 border-b border-slate-100">
+                <div className="overflow-x-auto min-h-[400px]">
+                    <table className="w-full text-left">
+                        <thead className="bg-slate-50 border-b border-slate-200">
                             <tr>
-                                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-widest text-[10px]">Grantee & Associated Asset</th>
-                                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-widest text-[10px]">Strategic Policy</th>
-                                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-widest text-[10px]">Verification Date</th>
-                                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-widest text-[10px]">Compliance State</th>
-                                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-widest text-[10px] text-right">Command Control</th>
+                                <th className="px-6 py-4 pro-col-header">GRANTEE_ASSET_NODE</th>
+                                <th className="px-6 py-4 pro-col-header">STRATEGIC_POLICY_VECTOR</th>
+                                <th className="px-6 py-4 pro-col-header">VALIDATION_EPOCH</th>
+                                <th className="px-6 py-4 pro-col-header">COMPLIANCE_STATE</th>
+                                <th className="px-6 py-4 pro-col-header text-right">COMMAND_LIFECYCLE</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-50">
+                        <tbody className="divide-y divide-slate-100">
                             {complianceData.map(c => (
-                                <tr key={c.id} className="hover:bg-blue-50/30 transition-colors group">
+                                <tr key={c.id} className="pro-data-row group">
                                     <td className="px-6 py-5">
-                                        <div className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors">{c.grantee}</div>
-                                        <div className="flex items-center gap-2 mt-1">
-                                            <Link to={`/usace/inventory/${c.assetId}`} className="text-[11px] font-bold text-slate-500 hover:text-blue-600 font-mono tracking-tighter uppercase">{c.rpuid}</Link>
-                                            <span className="text-slate-300">•</span>
-                                            <span className="text-[10px] text-slate-400 font-medium">{c.assetName}</span>
+                                        <div className="font-black text-slate-900 group-hover:text-blue-600 transition-colors uppercase text-[12px] tracking-tight leading-none mb-1.5">{c.grantee}</div>
+                                        <div className="flex items-center gap-2 italic">
+                                            <Link to={`/usace/inventory/${c.assetId}`} className="text-[9px] font-black text-slate-500 hover:text-blue-600 font-mono tracking-tighter uppercase leading-none bg-slate-50 border border-slate-100 px-1.5 rounded-sm">{c.rpuid}</Link>
+                                            <span className="text-slate-300 opacity-30">•</span>
+                                            <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none">NODE::{c.assetName}</span>
                                         </div>
                                     </td>
                                     <td className="px-6 py-5">
                                         <div className="flex items-center gap-3">
-                                            <div className="p-2 bg-slate-100 rounded-lg text-slate-400 transition-all group-hover:bg-blue-600 group-hover:text-white group-hover:shadow-lg group-hover:shadow-blue-500/30">
+                                            <div className="p-2 bg-slate-900 rounded-sm text-white transition-all group-hover:bg-blue-600 shadow-md">
                                                 <FileText size={14} />
                                             </div>
                                             <div>
-                                                <div className="font-bold text-slate-600 text-xs">{c.policyNum}</div>
-                                                <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">GL Policy</div>
+                                                <div className="font-black text-slate-900 text-[11px] uppercase tracking-tight leading-none mb-1">{c.policyNum}</div>
+                                                <div className="text-[9px] text-slate-400 font-black uppercase tracking-widest italic leading-none">GL Policy Instrument</div>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-5">
-                                        <div className="flex items-center gap-2 text-slate-500 font-medium font-mono text-[11px]">
+                                        <div className="flex items-center gap-2 text-slate-500 font-black font-mono text-[11px] italic underline underline-offset-4 decoration-slate-200">
                                             <Calendar size={12} className="text-slate-300" />
-                                            Valid thru: {c.expiry}
+                                            EXP:: {c.expiry}
                                         </div>
                                     </td>
                                     <td className="px-6 py-5">
                                         <div className="flex items-center gap-2">
                                             {c.hasProof ? <ShieldCheck size={14} className="text-emerald-500" /> : <ShieldAlert size={14} className="text-amber-500" />}
-                                            <span className={`text-[11px] font-bold uppercase tracking-widest ${c.hasProof ? 'text-emerald-600' : 'text-amber-600'}`}>{c.status}</span>
+                                            <span className={`text-[10px] font-black uppercase tracking-[0.1em] italic ${c.hasProof ? 'text-emerald-600' : 'text-amber-600 underline underline-offset-4 decoration-amber-100'}`}>{c.status}</span>
                                         </div>
                                     </td>
                                     <td className="px-6 py-5 text-right">
-                                        <button className="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-blue-600 flex items-center gap-1 ml-auto transition-colors">
-                                            Verify Certificate <MoreHorizontal size={14} />
+                                        <button className="btn-pro-secondary text-[10px] font-black uppercase tracking-widest italic group-hover:bg-slate-900 group-hover:text-white transition-all h-auto py-1.5 px-4">
+                                            VERIFY_CTR
                                         </button>
                                     </td>
                                 </tr>
@@ -142,8 +163,11 @@ export const RemisInsurance: React.FC = () => {
                     </table>
                 </div>
                 
-                <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex justify-between items-center">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Authoritative USACE Defense-Grade Compliance Registry</p>
+                <div className="px-6 py-4 bg-slate-950 border-t border-white/5 flex justify-between items-center text-[10px] font-black uppercase tracking-[0.3em] italic">
+                    <div className="flex items-center gap-3">
+                        <UserCheck size={14} className="text-emerald-400" />
+                        Authoritative USACE Defense-Grade Compliance Registry (V9.4) Active
+                    </div>
                 </div>
             </div>
         </div>

@@ -9,116 +9,113 @@ export const RemisInvoicing: React.FC = () => {
     const [activeTab, setActiveTab] = useState('payables');
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-start gap-4">
-                <div>
-                    <div className="flex items-center gap-4">
-                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Invoicing, Payables & Strategic Disbursements</h1>
-                        <RegulatoryBadge refs={['ER 37-1-30', 'PPA']} />
+        <div className="max-w-[1600px] mx-auto space-y-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-slate-200 flex-shrink-0">
+                <div className="flex items-center gap-4">
+                    <div className="p-1.5 bg-slate-950 rounded-sm text-white shadow-sm">
+                        <DollarIcon size={20} />
                     </div>
-                    <p className="text-slate-500 mt-1 text-sm font-medium">Authoritative synchronization of vendor invoices, Prompt Payment Act compliance, and strategic CEFMS reconciliation.</p>
+                    <div>
+                        <div className="flex items-center gap-3">
+                           <h1 className="text-xl font-bold text-slate-900 tracking-tight uppercase">Strategic Disbursements</h1>
+                           <RegulatoryBadge refs={['ER 37-1-30', 'PPA']} />
+                        </div>
+                        <div className="flex items-center gap-3">
+                           <span className="data-label text-blue-600 mb-0">Finance & Invoicing Command Terminal</span>
+                           <div className="w-1 h-1 bg-slate-300 rounded-full" />
+                           <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-tighter italic">PPA COMPLIANCE: 100% // CEFMS_RECON: ACTIVE</span>
+                        </div>
+                    </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 font-bold text-sm shadow-sm transition-all">
-                        <Database size={16} /> CEFMS Sync
+                    <button className="btn-pro-secondary flex items-center gap-2">
+                        <Database size={14} /> CEFMS Recon
                     </button>
-                    <button className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-bold text-sm shadow-lg shadow-blue-500/20 transition-all active:scale-95">
-                        <Plus size={18} /> New Request for Payment
+                    <button className="btn-pro-primary flex items-center gap-2">
+                        <Plus size={14} /> New Disbursement
                     </button>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                 <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col group hover:border-blue-300 transition-all">
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="p-3 bg-blue-600 rounded-xl text-white shadow-lg shadow-blue-500/20"><Receipt size={20}/></div>
-                        <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">FY24 Current</span>
+                 {[
+                    { label: 'Active Invoices', value: INVOICES.length, status: 'FY25_TRACKING', icon: Receipt, color: 'text-blue-500' },
+                    { label: 'Aggregate Payables', value: '$45.8k', status: 'PPA_COMPLIANT', icon: CreditCard, color: 'text-emerald-500' },
+                    { label: 'Pending Approvals', value: '03 Case(s)', status: 'ACTION_REQ', icon: Clock, color: 'text-amber-500' },
+                    { label: 'System Exceptions', value: '00', status: 'STABLE', icon: AlertTriangle, color: 'text-red-500' }
+                 ].map((stat, i) => (
+                    <div key={i} className="pro-card p-5 group cursor-pointer hover:border-blue-300 transition-all">
+                        <div className="flex justify-between items-start mb-4">
+                            <div className={`p-2 bg-slate-50 border border-slate-100 rounded ${stat.color} group-hover:bg-blue-600 group-hover:text-white transition-all`}>
+                                <stat.icon size={16} />
+                            </div>
+                            <span className="text-[8px] font-mono font-black text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100 uppercase tracking-tighter italic">
+                                {stat.status}
+                            </span>
+                        </div>
+                        <p className="data-label uppercase tracking-widest">{stat.label}</p>
+                        <p className="text-2xl font-black font-mono tracking-tighter text-slate-900 leading-none">{stat.value}</p>
                     </div>
-                    <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Active Invoices</p>
-                    <p className="text-2xl font-bold text-slate-900 mt-1">{INVOICES.length}</p>
-                </div>
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col group hover:border-emerald-300 transition-all">
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="p-3 bg-emerald-600 rounded-xl text-white shadow-lg shadow-emerald-500/20"><CreditCard size={20}/></div>
-                        <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">PPA Compliant</span>
-                    </div>
-                    <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Aggregate Payables</p>
-                    <p className="text-2xl font-bold text-slate-900 mt-1">$45.8k</p>
-                </div>
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col group hover:border-amber-300 transition-all">
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="p-3 bg-amber-500 rounded-xl text-white shadow-lg shadow-amber-500/20"><Clock size={20}/></div>
-                        <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">90%+ Aging</span>
-                    </div>
-                    <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Pending Approvals</p>
-                    <p className="text-2xl font-bold text-slate-900 mt-1">3 Actionable</p>
-                </div>
-                 <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col group hover:border-red-300 transition-all">
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="p-3 bg-red-600 rounded-xl text-white shadow-lg shadow-red-500/20"><AlertTriangle size={20}/></div>
-                    </div>
-                    <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">System Exceptions</p>
-                    <p className="text-2xl font-bold text-slate-900 mt-1">0</p>
-                </div>
+                 ))}
             </div>
 
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-                <div className="px-6 border-b border-slate-200 bg-slate-50/30 flex justify-between items-center">
-                    <nav className="-mb-px flex gap-8">
-                        <button onClick={() => setActiveTab('payables')} className={`shrink-0 border-b-2 px-1 py-4 text-xs font-bold uppercase tracking-widest transition-all ${activeTab === 'payables' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>Command Accounts Payable</button>
-                        <button onClick={() => setActiveTab('aging')} className={`shrink-0 border-b-2 px-1 py-4 text-xs font-bold uppercase tracking-widest transition-all ${activeTab === 'aging' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>Aging Strategic Audit</button>
+            <div className="pro-card overflow-hidden flex flex-col">
+                <div className="px-6 border-b border-slate-200 bg-slate-50/10 flex justify-between items-center h-12">
+                    <nav className="flex h-full">
+                        <button onClick={() => setActiveTab('payables')} className={`shrink-0 h-full px-4 text-[10px] font-black uppercase tracking-[0.2em] transition-all border-b-2 ${activeTab === 'payables' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>Accounts Payable Matrix</button>
+                        <button onClick={() => setActiveTab('aging')} className={`shrink-0 h-full px-4 text-[10px] font-black uppercase tracking-[0.2em] transition-all border-b-2 ${activeTab === 'aging' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>Aging Audit</button>
                     </nav>
-                     <div className="flex items-center gap-3">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
-                            <input type="text" placeholder="Search Invoices, Vendors, POs..." className="pl-9 pr-4 py-1.5 bg-white border border-slate-200 rounded-lg text-[11px] focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all min-w-[280px]" />
+                    <div className="flex items-center gap-3">
+                        <div className="relative group">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={14} />
+                            <input type="text" placeholder="Scan Disbursements..." className="pl-9 pr-4 py-1 bg-white border border-slate-200 rounded-sm text-[10px] font-mono italic focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all min-w-[240px]" />
                         </div>
                     </div>
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left text-sm">
-                        <thead className="bg-slate-50/50 border-b border-slate-100">
+                    <table className="w-full text-left">
+                        <thead className="bg-[#0A0A0B] border-b border-white/10">
                             <tr>
-                                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-widest text-[10px]">Command Invoice / Strategic Vendor</th>
-                                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-widest text-[10px]">Reference RPUID / Strategic Asset</th>
-                                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-widest text-[10px]">Aging Status</th>
-                                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-widest text-[10px] text-right">Strategic Amount</th>
-                                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-widest text-[10px] text-right">Status</th>
+                                <th className="px-6 py-4 pro-col-header text-slate-400">INVOICE NODE / VENDOR</th>
+                                <th className="px-6 py-4 pro-col-header text-slate-400">REFERENCE ASSET</th>
+                                <th className="px-6 py-4 pro-col-header text-slate-400">AGING TELEMETRY</th>
+                                <th className="px-6 py-4 pro-col-header text-slate-400 text-right">STRATEGIC AMOUNT</th>
+                                <th className="px-6 py-4 pro-col-header text-slate-400 text-right">STATUS</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-50">
+                        <tbody className="divide-y divide-slate-100">
                             {INVOICES.map((inv, i) => {
                                 const vendor = VENDORS.find(v => v.id === inv.vendorId);
                                 const asset = USACE_ASSETS[i % USACE_ASSETS.length];
                                 return (
-                                    <tr key={inv.id} className="hover:bg-blue-50/30 transition-colors group">
-                                        <td className="px-6 py-5">
-                                            <div className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors">{inv.invoiceNumber}</div>
-                                            <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{vendor?.name}</div>
+                                    <tr key={inv.id} className="pro-data-row group">
+                                        <td className="px-6 py-4">
+                                            <div className="font-mono text-[11px] font-black text-blue-600 group-hover:text-amber-400 uppercase tracking-tighter">{inv.invoiceNumber}</div>
+                                            <div className="text-[9px] text-slate-400 group-hover:text-white/40 font-bold uppercase tracking-[0.15em] mt-0.5">{vendor?.name}</div>
                                         </td>
-                                        <td className="px-6 py-5">
+                                        <td className="px-6 py-4">
                                             <div className="flex flex-col">
-                                                <Link to={`/usace/inventory/${asset.id}`} className="font-bold font-mono text-[11px] text-blue-600 hover:underline uppercase tracking-tighter">{asset.rpuid}</Link>
-                                                <span className="text-[10px] font-bold text-slate-400 uppercase mt-0.5 tracking-tight">{asset.name}</span>
+                                                <Link to={`/usace/inventory/${asset.id}`} className="font-bold font-mono text-[10px] text-slate-600 group-hover:text-blue-300 hover:underline uppercase tracking-tighter">{asset.rpuid}</Link>
+                                                <span className="text-[9px] font-bold text-slate-400 group-hover:text-white/20 uppercase mt-0.5 tracking-tight italic">{asset.name}</span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5">
-                                            <div className="flex items-center gap-2 text-slate-500 font-medium">
-                                                <Calendar size={12} className="text-slate-300" />
-                                                <span className="text-[11px] font-mono">Due: {inv.dueDate}</span>
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-2 text-slate-500 group-hover:text-white font-medium">
+                                                <Calendar size={12} className="opacity-40" />
+                                                <span className="text-[10px] font-mono">DUE_LNK: {inv.dueDate}</span>
                                             </div>
-                                            <div className={`text-[9px] font-bold mt-1.5 uppercase tracking-[0.1em] ${inv.status === 'Overdue' ? 'text-red-500' : 'text-slate-400'}`}>
-                                                {inv.status === 'Approved' ? 'Awaiting Disbursement' : 'PPA Verification Active'}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-5 text-right font-mono font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">
-                                            <div className="flex items-center justify-end gap-1">
-                                                <DollarIcon size={12} className="text-slate-300" />
-                                                ${inv.amount.toLocaleString()}
+                                            <div className={`text-[8px] font-bold mt-1 uppercase tracking-[0.2em] ${inv.status === 'Overdue' ? 'text-rose-500' : 'text-slate-400 group-hover:text-white/30'}`}>
+                                                {inv.status === 'Approved' ? 'AWAITING_DISBURSE' : 'PPA_VERIFY_SYNC'}
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5 text-right">
+                                        <td className="px-6 py-4 text-right font-mono font-bold text-slate-900 group-hover:text-emerald-400 transition-colors">
+                                            <div className="flex items-center justify-end gap-1 text-[13px] tracking-tighter">
+                                                <DollarIcon size={12} className="opacity-30" />
+                                                {inv.amount.toLocaleString()}.00
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
                                             <StatusBadge status={inv.status} />
                                         </td>
                                     </tr>
@@ -128,13 +125,13 @@ export const RemisInvoicing: React.FC = () => {
                     </table>
                 </div>
                 
-                <div className="px-6 py-4 bg-slate-900 text-white flex justify-between items-center text-[10px] font-bold uppercase tracking-[0.2em]">
+                <div className="px-6 py-2 bg-slate-950 text-white flex justify-between items-center text-[9px] font-mono italic uppercase tracking-widest">
                     <div className="flex items-center gap-3">
-                        <ShieldCheck size={14} className="text-blue-400" />
-                        Authoritative Prompt Payment Act Compliance Sync Active
+                        <ShieldCheck size={14} className="text-emerald-500" />
+                        PPA_COMPLIANCE_PROTOCOL_SYNC_100pct
                     </div>
                     <button className="flex items-center gap-1.5 hover:text-blue-400 transition-colors">
-                        Executive Reconciliation Dashboard <ArrowRight size={12} />
+                        REC_DASHBOARD <ArrowRight size={12} />
                     </button>
                 </div>
             </div>

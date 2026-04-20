@@ -10,7 +10,7 @@ import {
   FileClock, Workflow, Receipt, ShoppingCart, LocateFixed, ArrowRightLeft,
   BookCopy, Landmark, Siren, PieChart, Scroll, X, ShieldCheck, Info,
   Scale, FileSearch, Layers, GanttChart, Share2, FileBadge, Shuffle, Move,
-  AlertTriangle, Database
+  AlertTriangle, Database, Zap
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { NOTIFICATIONS } from '../services/mockData';
@@ -138,7 +138,10 @@ export const Layout: React.FC<LayoutProps> = ({ onAiToggle, children }) => {
               <span className="text-white font-black text-[10px] tracking-tighter">RE</span>
             </div>
             {(!collapsed || sidebarOpen) && (
-              <span className="text-white font-bold text-xs tracking-[0.2em] uppercase truncate opacity-90">Remis System</span>
+              <div className="flex flex-col">
+                <span className="text-white font-bold text-xs tracking-[0.2em] uppercase truncate opacity-90">Remis System</span>
+                <span className="text-[7px] font-mono text-slate-500 uppercase tracking-widest mt-0.5">Build: v2.4.1.SR1</span>
+              </div>
             )}
           </div>
           
@@ -283,16 +286,20 @@ export const Layout: React.FC<LayoutProps> = ({ onAiToggle, children }) => {
                 <input 
                   type="text" 
                   placeholder="Global Command Search..." 
-                  className="w-full pl-9 pr-4 py-1.5 border border-slate-200/60 rounded bg-slate-50 text-[12px] font-medium text-slate-900 focus:outline-none focus:bg-white focus:border-blue-400 focus:ring-1 focus:ring-blue-400/10 transition-all placeholder:text-slate-400" 
+                  className="w-full pl-9 pr-4 py-1.5 border border-slate-200/60 rounded bg-slate-50 text-[11px] font-medium text-slate-900 focus:outline-none focus:bg-white focus:border-blue-400 focus:ring-1 focus:ring-blue-400/10 transition-all placeholder:text-slate-400 font-mono italic" 
                 />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-20 pointer-events-none">
+                    <span className="text-[9px] font-bold border border-slate-400 rounded px-1">⌘</span>
+                    <span className="text-[9px] font-bold border border-slate-400 rounded px-1">K</span>
+                </div>
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5">
-               <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hidden sm:inline">System Live</span>
+               <div className="pulse-mission" />
+               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest hidden sm:inline tabular-nums">Mission Link L-1: Active</span>
             </div>
             
             <div className="h-6 w-px bg-slate-200 mx-1 hidden sm:block" />
@@ -304,11 +311,11 @@ export const Layout: React.FC<LayoutProps> = ({ onAiToggle, children }) => {
             
             <div className="flex items-center gap-3 pl-2 sm:pl-4">
               <div className="text-right hidden sm:block">
-                <div className="text-[10px] font-black text-slate-900 uppercase tracking-tight leading-none">Dr. Vance</div>
-                <div className="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none mt-1">Admin</div>
+                <div className="text-[10px] font-black text-slate-900 uppercase tracking-tight leading-none">Cmdr. Sterling</div>
+                <div className="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none mt-1">System Authority</div>
               </div>
-              <div className="w-7 h-7 rounded bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden">
-                <UserCircle size={24} className="text-slate-400" />
+              <div className="w-8 h-8 rounded-sm bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden">
+                <UserCircle size={32} className="text-slate-400" />
               </div>
             </div>
           </div>
@@ -344,7 +351,7 @@ export const Layout: React.FC<LayoutProps> = ({ onAiToggle, children }) => {
         )}
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden p-6 md:p-12 lg:p-16 bg-[#FBFBFB] scroll-smooth">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8 lg:p-10 bg-[#FBFBFB] scroll-smooth">
           {children}
         </main>
       </div>

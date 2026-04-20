@@ -13,35 +13,52 @@
 /* Custom utility classes for the "Apple meets Bloomberg" aesthetic */
 @layer components {
   .pro-card {
-    @apply bg-white border border-slate-200/60 shadow-[0_1px_3px_rgba(0,0,0,0.02)] rounded-[4px] transition-all duration-200;
+    @apply bg-white border border-slate-200/60 shadow-[0_1px_3px_rgba(0,0,0,0.02)] rounded-[2px] transition-all duration-200;
   }
   
   .pro-card-header {
-    @apply px-4 py-2 bg-slate-50/30 border-b border-slate-100 flex items-center justify-between;
+    @apply px-4 py-2 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between;
   }
   
   .data-label {
-    @apply text-[9px] font-black text-slate-400 uppercase tracking-[0.1em] leading-none mb-1.5;
+    @apply text-[9px] font-black text-slate-400 uppercase tracking-[0.15em] leading-none mb-1.5;
   }
   
   .data-value {
     @apply font-mono text-[13px] font-bold text-slate-900 tabular-nums leading-tight tracking-tighter;
   }
+
+  .pro-col-header {
+    @apply text-[10px] uppercase font-bold tracking-[0.1em] opacity-60 italic;
+    font-family: 'Georgia', serif;
+  }
+
+  .pro-data-row {
+    @apply transition-all duration-200 border-b border-slate-100 hover:bg-slate-900 hover:text-white cursor-pointer;
+  }
+
+  .pro-data-row:hover .data-label {
+    @apply text-white/40;
+  }
+  
+  .pro-data-row:hover .font-mono {
+    @apply text-white;
+  }
   
   .glass-header {
-    @apply bg-white/70 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200/50;
+    @apply bg-white/80 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-200/50;
   }
 
   .btn-pro-primary {
-    @apply px-3 py-1.5 bg-slate-950 hover:bg-slate-900 text-white font-black text-[10px] uppercase tracking-widest rounded-[2px] shadow-sm transition-all active:scale-[0.98];
+    @apply px-3 py-1.5 bg-slate-950 hover:bg-white hover:text-slate-950 border border-slate-950 text-white font-black text-[10px] uppercase tracking-widest rounded-[1px] shadow-sm transition-all active:scale-[0.98];
   }
 
   .btn-pro-secondary {
-    @apply px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-black text-[10px] uppercase tracking-widest rounded-[2px] shadow-sm transition-all active:scale-[0.98];
+    @apply px-3 py-1.5 bg-white border border-slate-200 hover:border-slate-400 text-slate-700 font-black text-[10px] uppercase tracking-widest rounded-[1px] shadow-sm transition-all active:scale-[0.98];
   }
 
   .pro-badge {
-    @apply px-1.5 py-0.5 rounded-[2px] text-[9px] font-black uppercase tracking-widest border border-slate-100 bg-slate-50 text-slate-500;
+    @apply px-1.5 py-0.5 rounded-[1px] text-[8px] font-black uppercase tracking-widest border border-slate-100 bg-slate-50 text-slate-500;
   }
   
   .no-scrollbar::-webkit-scrollbar {
@@ -51,22 +68,43 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  .pulse-mission {
+    @apply w-2 h-2 rounded-full bg-emerald-500;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+    animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse-ring {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.5; }
+  }
+
+  .terminal-text {
+    @apply font-mono text-emerald-500 bg-slate-950 px-1 py-0.5 rounded-sm overflow-hidden whitespace-pre;
+    animation: typing 3s steps(40, end);
+  }
+
+  @keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+  }
 }
 
-/* Custom scrollbar for enterprise feel */
+/* Custom scrollbar for enterprise feel - ultra thin */
 ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 3px;
+  height: 3px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #e2e8f0;
-  border-radius: 10px;
+  background: #cbd5e1;
+  border-radius: 0px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #cbd5e1;
+  background: #94a3b8;
 }
 
 /* Safe area spacing */

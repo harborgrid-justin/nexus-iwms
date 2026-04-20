@@ -41,122 +41,142 @@ export const RemisLeaseAdmin: React.FC = () => {
     }).length;
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-start gap-4">
-                <div>
-                    <div className="flex items-center gap-4">
-                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Lease Administration & Strategic Instruments</h1>
-                        <RegulatoryBadge refs={['10', '12']} />
+        <div className="max-w-[1600px] mx-auto space-y-6">
+            <div className="flex flex-col md:flex-row justify-between items-start gap-4 border-b border-slate-200 pb-6">
+                <div className="flex items-center gap-4">
+                    <div className="p-2.5 bg-slate-950 rounded shadow-lg shadow-black/10 text-white">
+                        <FileClock size={24} />
                     </div>
-                    <p className="text-slate-500 mt-1 text-sm font-medium">Authoritative management of In-Grants, Out-Grants, and critical real estate instruments.</p>
+                    <div>
+                        <div className="flex items-center gap-3">
+                            <h1 className="text-xl font-black text-slate-900 tracking-tight uppercase leading-none italic">Lease Admin & Strategic Instruments Command</h1>
+                            <div className="pulse-mission" />
+                            <RegulatoryBadge refs={['ER 405-1-12', 'V12.1']} />
+                        </div>
+                        <div className="flex items-center gap-3 mt-1.5 italic">
+                            <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] leading-none">In-Grants (Tenant) • Out-Grants (Landlord) • Executive Instruments</span>
+                            <div className="w-1 h-1 bg-slate-300 rounded-full" />
+                            <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-tighter italic">Strategic Asset Deployment Matrix</span>
+                        </div>
+                    </div>
                 </div>
-                <div className="flex items-center gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 font-bold text-sm shadow-sm transition-all">
-                        <Download size={16} /> Export Portfolio
+                <div className="flex items-center gap-2 w-full md:w-auto">
+                    <button className="btn-pro-secondary flex items-center gap-2 px-3 py-1.5 h-auto text-[10px] font-black uppercase tracking-widest italic group">
+                        <Download size={14} className="group-hover:text-blue-500" /> Export Ledger
                     </button>
-                    <button className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-bold text-sm shadow-lg shadow-blue-500/20 transition-all active:scale-95">
-                        <Plus size={18} /> Execute New Instrument
+                    <button className="btn-pro-primary flex items-center gap-2 px-3 py-1.5 h-auto text-[10px] font-black uppercase tracking-[0.25em] italic">
+                        <Plus size={14} /> Commit New Instrument
                     </button>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col group hover:border-blue-300 transition-all cursor-pointer">
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="p-3 bg-blue-600 rounded-xl text-white shadow-lg shadow-blue-500/20"><Activity size={20}/></div>
-                        <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">+3 Month</span>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="pro-card p-6 flex flex-col group hover:border-blue-400 transition-all cursor-pointer bg-white">
+                    <div className="flex justify-between items-start mb-6">
+                        <div className="p-2 bg-slate-900 rounded-sm text-white shadow-md group-hover:scale-110 transition-transform"><Activity size={18}/></div>
+                        <span className="text-[9px] font-black text-blue-600 bg-blue-50 px-2.5 py-1 rounded-sm border border-blue-100 uppercase tracking-widest italic">ACTIVE_NODES</span>
                     </div>
-                    <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Active Instruments</p>
-                    <p className="text-2xl font-bold text-slate-900 mt-1">{allInstruments.length}</p>
+                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] italic mb-2 leading-none">Total Strategic Instruments</p>
+                    <p className="text-3xl font-black text-slate-900 tracking-tighter font-mono">{allInstruments.length}_ENTRIES</p>
                 </div>
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col group hover:border-amber-300 transition-all cursor-pointer">
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="p-3 bg-amber-500 rounded-xl text-white shadow-lg shadow-amber-500/20"><AlertCircle size={20}/></div>
-                        <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">Action Req.</span>
+                <div className="pro-card p-6 flex flex-col group hover:border-amber-400 transition-all cursor-pointer bg-white">
+                    <div className="flex justify-between items-start mb-6">
+                        <div className="p-2 bg-slate-900 rounded-sm text-white shadow-md group-hover:scale-110 transition-transform"><AlertCircle size={18}/></div>
+                        <span className="text-[9px] font-black text-amber-600 bg-amber-50 px-2.5 py-1 rounded-sm border border-amber-100 uppercase tracking-widest italic">T-MINUS_90D</span>
                     </div>
-                    <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Critical Dates (90d)</p>
-                    <p className="text-2xl font-bold text-slate-900 mt-1">{expiringSoon}</p>
+                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] italic mb-2 leading-none">Critical Expiration Events</p>
+                    <p className="text-3xl font-black text-slate-900 tracking-tighter font-mono">0{expiringSoon}_ALERTS</p>
                 </div>
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col group hover:border-emerald-300 transition-all cursor-pointer">
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="p-3 bg-emerald-600 rounded-xl text-white shadow-lg shadow-emerald-500/20"><DollarIcon size={20}/></div>
-                        <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Net Pos.</span>
+                <div className="pro-card p-6 flex flex-col group hover:border-emerald-400 transition-all cursor-pointer bg-white">
+                    <div className="flex justify-between items-start mb-6">
+                        <div className="p-2 bg-slate-900 rounded-sm text-white shadow-md group-hover:scale-110 transition-transform"><DollarIcon size={18}/></div>
+                        <span className="text-[9px] font-black text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-sm border border-emerald-100 uppercase tracking-widest italic">POSITIVE_YIELD</span>
                     </div>
-                    <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Annual Yield (Out-Grants)</p>
-                    <p className="text-2xl font-bold text-slate-900 mt-1">$452.8k</p>
+                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] italic mb-2 leading-none">Annual Est. Out-Grant Yield</p>
+                    <p className="text-3xl font-black text-slate-900 tracking-tighter font-mono">$452.8K</p>
                 </div>
-                <div className="bg-slate-900 p-6 rounded-2xl shadow-xl flex flex-col relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><ShieldCheck size={80} className="text-white"/></div>
-                    <div className="mt-8">
-                        <p className="text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-1">Compliance Status</p>
-                        <p className="text-white text-xl font-bold">98.4% Protected</p>
-                        <div className="w-full bg-slate-800 h-1.5 rounded-full mt-3">
-                            <div className="bg-blue-500 h-1.5 rounded-full" style={{width: '98.4%'}}></div>
+                <div className="pro-card p-6 bg-slate-950 border-white/5 shadow-2xl relative overflow-hidden flex flex-col group">
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><ShieldCheck size={100} className="text-blue-500"/></div>
+                    <div className="relative z-10 mt-auto">
+                        <p className="text-blue-400 text-[10px] font-black uppercase tracking-[0.3em] mb-2 italic leading-none">Portfolio Compliance Density</p>
+                        <p className="text-white text-2xl font-black tracking-tighter italic">98.4%_HEALTH</p>
+                        <div className="w-full bg-white/5 h-1 rounded-full mt-4 overflow-hidden border border-white/5">
+                            <div className="bg-blue-500 h-full animate-pulse shadow-glow" style={{width: '98.4%'}}></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-                <div className="px-6 border-b border-slate-200 bg-slate-50/30 flex justify-between items-center">
-                    <nav className="-mb-px flex gap-8">
-                        <button onClick={() => setActiveTab('all')} className={`shrink-0 border-b-2 px-1 py-4 text-xs font-bold uppercase tracking-widest transition-all ${activeTab === 'all' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>Global Ledger</button>
-                        <button onClick={() => setActiveTab('inbound')} className={`shrink-0 border-b-2 px-1 py-4 text-xs font-bold uppercase tracking-widest transition-all ${activeTab === 'inbound' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>In-Grants (Tenant)</button>
-                        <button onClick={() => setActiveTab('outbound')} className={`shrink-0 border-b-2 px-1 py-4 text-xs font-bold uppercase tracking-widest transition-all ${activeTab === 'outbound' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>Out-Grants (Landlord)</button>
+            <div className="pro-card overflow-hidden flex flex-col bg-white">
+                <div className="px-6 border-b border-white/5 bg-[#0A0A0B] flex justify-between items-center">
+                    <nav className="-mb-px flex gap-10">
+                        {[
+                            { id: 'all', label: 'Global Strategic Ledger' },
+                            { id: 'inbound', label: 'In-Grant Portfolio' },
+                            { id: 'outbound', label: 'Out-Grant Portfolio' }
+                        ].map(tab => (
+                            <button 
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)} 
+                                className={`shrink-0 border-b-2 px-1 py-5 text-[10px] font-black uppercase tracking-[0.3em] transition-all italic ${activeTab === tab.id ? 'border-blue-600 text-blue-400 opacity-100' : 'border-transparent text-white/30 hover:text-white/60 hover:border-white/10'}`}
+                            >
+                                {tab.label}
+                            </button>
+                        ))}
                     </nav>
-                    <div className="flex items-center gap-3">
+                    <div className="hidden lg:flex items-center gap-3">
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
-                            <input type="text" placeholder="Filter by Grantee, Asset, or RPUID..." className="pl-9 pr-4 py-1.5 bg-white border border-slate-200 rounded-lg text-[11px] focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all min-w-[280px]" />
+                            <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-white/20" size={12} />
+                            <input type="text" placeholder="FILTER_LEDGER..." className="bg-transparent border-none text-[10px] font-bold text-white/40 uppercase tracking-widest outline-none focus:text-white transition-colors w-48 pl-6" />
                         </div>
                     </div>
                 </div>
 
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left text-sm">
-                        <thead className="bg-slate-50/50 border-b border-slate-100">
+                <div className="overflow-x-auto min-h-[500px]">
+                    <table className="w-full text-left">
+                        <thead className="bg-slate-50 border-b border-slate-200">
                             <tr>
-                                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-widest text-[10px]">Strategic Instrument</th>
-                                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-widest text-[10px]">Counterparty</th>
-                                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-widest text-[10px]">Portfolio Lifecycle</th>
-                                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-widest text-[10px] text-right">Commitment Value</th>
-                                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-widest text-[10px] text-right">Actions</th>
+                                <th className="px-6 py-4 pro-col-header">TACTICAL_INSTRUMENT_NODE</th>
+                                <th className="px-6 py-4 pro-col-header">COUNTERPARTY_ID</th>
+                                <th className="px-6 py-4 pro-col-header">PORTFOLIO_LIFECYCLE</th>
+                                <th className="px-6 py-4 pro-col-header text-right">EST_COMMITMENT_VAL</th>
+                                <th className="px-6 py-4 pro-col-header text-right">COMMAND_LIFECYCLE</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-50">
+                        <tbody className="divide-y divide-slate-100">
                             {filtered.map((inst, i) => {
                                 const asset = USACE_ASSETS.find(a => a.id === inst.assetId) || USACE_ASSETS.find(a => a.rpuid === inst.assetId);
                                 return (
-                                    <tr key={i} className="hover:bg-blue-50/30 transition-colors group">
+                                    <tr key={i} className="pro-data-row group">
                                         <td className="px-6 py-5">
-                                            <div className="flex items-center gap-3">
-                                                <div className={`p-2 rounded-lg ${inst.direction === 'In' ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'} transition-all group-hover:scale-110`}>
-                                                    <ArrowRightLeft size={14} className={inst.direction === 'In' ? 'rotate-180' : ''} />
+                                            <div className="flex items-center gap-4">
+                                                <div className={`p-2 rounded-sm shadow-md transition-all group-hover:scale-110 ${inst.direction === 'In' ? 'bg-amber-600 text-white shadow-amber-500/20' : 'bg-emerald-600 text-white shadow-emerald-500/20'}`}>
+                                                    <ArrowRightLeft size={16} className={inst.direction === 'In' ? 'rotate-180' : ''} />
                                                 </div>
                                                 <div>
-                                                    <div className="font-bold text-slate-900 text-xs uppercase tracking-tight">{inst.instrumentType}</div>
-                                                    <Link to={`/usace/inventory/${asset?.id}`} className="text-[10px] font-bold text-blue-600 hover:underline font-mono tracking-tighter uppercase block mt-1">{asset?.rpuid || inst.assetId}</Link>
+                                                    <div className="font-black text-slate-900 text-[11px] uppercase tracking-tight leading-none mb-1.5 transition-colors group-hover:text-blue-600">INSRT::{inst.instrumentType}</div>
+                                                    <Link to={`/usace/inventory/${asset?.id}`} className="text-[10px] font-black text-blue-600 hover:underline font-mono tracking-tighter uppercase block leading-none bg-blue-50 px-2 py-0.5 border border-blue-100 rounded-sm italic w-fit">{asset?.rpuid || inst.assetId}</Link>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5 font-bold text-slate-600 text-xs">{(inst as any).grantee || (inst as any).tenantName}</td>
+                                        <td className="px-6 py-5 font-black text-slate-700 text-[11px] uppercase tracking-tighter">{(inst as any).grantee || (inst as any).tenantName}</td>
                                         <td className="px-6 py-5">
                                             <StatusBadge status={(inst as any).status || (inst as any).lifecycleState} />
-                                            <div className="flex items-center gap-2 text-[9px] text-slate-400 font-bold uppercase mt-1.5 tracking-widest">
-                                                <Calendar size={10} />
-                                                Term End: {inst.endDate}
+                                            <div className="flex items-center gap-2 text-[9px] text-slate-400 font-bold uppercase mt-2 tracking-widest italic leading-none underline underline-offset-4 decoration-slate-100">
+                                                <Calendar size={10} className="text-slate-300" />
+                                                TERM_CEIL:: {inst.endDate}
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5 text-right font-mono font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                                            <div className="flex items-center justify-end gap-1">
-                                                <DollarIcon size={12} className="text-slate-300" />
-                                                ${((inst as any).revenue || (inst as any).monthlyRent * 12).toLocaleString()}
+                                        <td className="px-6 py-5 text-right font-mono font-black text-slate-900 group-hover:text-emerald-600 transition-colors text-[13px] tracking-tighter italic">
+                                            <div className="flex items-center justify-end gap-1.5">
+                                                <DollarIcon size={12} className="text-slate-200" />
+                                                ${((inst as any).revenue || (inst as any).monthlyRent * 12).toLocaleString()}.00
                                             </div>
-                                            <div className="text-[9px] text-slate-400 uppercase tracking-widest">Annual Est.</div>
+                                            <div className="text-[9px] text-slate-400 uppercase tracking-widest mt-1 leading-none italic font-sans opacity-50">ANNUALIZED_YIELD</div>
                                         </td>
                                         <td className="px-6 py-5 text-right">
-                                            <button className="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-blue-600 flex items-center gap-1 ml-auto transition-colors">
-                                                Command Audit <MoreHorizontal size={14} />
+                                            <button className="btn-pro-secondary text-[10px] font-black uppercase tracking-widest italic group-hover:bg-slate-900 group-hover:text-white transition-all h-auto py-1.5 px-4">
+                                                INSTRUMENT_AUDIT
                                             </button>
                                         </td>
                                     </tr>
@@ -166,8 +186,9 @@ export const RemisLeaseAdmin: React.FC = () => {
                     </table>
                 </div>
                 
-                <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-                    Authoritative USACE Real Estate Instrument Ledger (FIPS-199 Compliant)
+                <div className="px-6 py-5 bg-slate-950 border-t border-white/5 flex justify-between items-center text-[10px] font-black uppercase tracking-[0.3em] italic">
+                    <span className="text-white/40">GLOBAL_LEASE_LEDGER_ACTIVE (SIG::ADMIN_LEAD_LEDGER)</span>
+                    <span className="text-white/20 font-mono tracking-tighter">FIPS-199_SECURITY_COMPLIANT</span>
                 </div>
             </div>
         </div>
