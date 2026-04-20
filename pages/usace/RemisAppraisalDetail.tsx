@@ -1,8 +1,8 @@
+
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { USACE_APPRAISALS, USACE_ASSETS } from '../../services/mockData';
 import { RegulatoryBadge } from '../../components/RegulatoryBadge';
-// FIX: Import 'DollarSign' icon from lucide-react.
 import { ArrowLeft, Edit, ChevronDown, Building, Target, Calendar, User, FileText, Lock, List, Activity, Paperclip, X, DollarSign } from 'lucide-react';
 import { Appraisal, AuditEvent } from '../../types';
 
@@ -19,7 +19,10 @@ const DetailCard = ({ label, value, icon: Icon, isProtected = false }: { label: 
     <div className="flex items-start gap-3">
         <Icon className="text-slate-400 mt-1 flex-shrink-0" size={16} />
         <div>
-            <div className="text-xs text-slate-500 flex items-center gap-1">{label} {isProtected && <Lock size={10} title="This data is protected and access is logged." />}</div>
+            <div className="text-xs text-slate-500 flex items-center gap-1">
+              {label} 
+              {isProtected && <span title="This data is protected and access is logged."><Lock size={10} /></span>}
+            </div>
             <div className="text-sm font-medium text-slate-800">{String(value)}</div>
         </div>
     </div>
@@ -45,7 +48,7 @@ export const RemisAppraisalDetail: React.FC = () => {
             action: 'Status Updated',
             details: reason,
         };
-        setAppraisal(prev => prev ? { ...prev, status: newStatus, history: [newHistoryEvent, ...prev.history!] } : undefined);
+        setAppraisal(prev => prev ? { ...prev, status: newStatus, history: [newHistoryEvent, ...(prev.history || [])] } : undefined);
         alert(`Appraisal status changed to ${newStatus}. This action has been logged.`);
     }
     

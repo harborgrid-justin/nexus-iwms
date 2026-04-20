@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, AlertTriangle, CheckCircle2, History, Plus, Filter } from 'lucide-react';
+import { Calendar, AlertTriangle, CheckCircle2, History, Plus, Filter, Clock } from 'lucide-react';
 import { PM_SCHEDULES, ASSETS } from '../services/mockData';
 
 export const PreventiveMaintenance: React.FC = () => {
@@ -31,66 +31,109 @@ export const PreventiveMaintenance: React.FC = () => {
           <p className="text-slate-500 mt-1">Schedule and track recurring maintenance to maximize asset lifespan.</p>
         </div>
         <div className="flex gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 font-medium text-sm">
+          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 font-medium text-sm flex-1 md:flex-none justify-center">
             <Filter size={16} /> Filter
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm shadow-sm">
-            <Plus size={16} /> New PM Schedule
+          <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm shadow-sm flex-1 md:flex-none justify-center">
+            <Plus size={16} /> New <span className="hidden sm:inline">Schedule</span>
           </button>
         </div>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-xl border shadow-sm flex items-center gap-4">
-            <AlertTriangle className="text-red-500" size={24}/>
+            <div className="p-3 bg-red-100 rounded-lg"><AlertTriangle className="text-red-500" size={24}/></div>
             <div><div className="text-slate-500 text-sm">Overdue PMs</div><div className="text-2xl font-bold">{overdue}</div></div>
         </div>
         <div className="bg-white p-6 rounded-xl border shadow-sm flex items-center gap-4">
-            <Calendar className="text-amber-500" size={24}/>
+            <div className="p-3 bg-amber-100 rounded-lg"><Calendar className="text-amber-500" size={24}/></div>
             <div><div className="text-slate-500 text-sm">Due in 30 Days</div><div className="text-2xl font-bold">{upcoming}</div></div>
         </div>
         <div className="bg-white p-6 rounded-xl border shadow-sm flex items-center gap-4">
-            <CheckCircle2 className="text-green-500" size={24}/>
+            <div className="p-3 bg-green-100 rounded-lg"><CheckCircle2 className="text-green-500" size={24}/></div>
             <div><div className="text-slate-500 text-sm">On-Time Completion (YTD)</div><div className="text-2xl font-bold">92%</div></div>
         </div>
       </div>
 
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="p-4 border-b"><h2 className="text-lg font-bold text-slate-900">PM Schedule</h2></div>
-        <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 border-b border-slate-200">
-            <tr>
-              <th className="px-6 py-4 font-semibold text-slate-700">Task / Asset</th>
-              <th className="px-6 py-4 font-semibold text-slate-700">Frequency</th>
-              <th className="px-6 py-4 font-semibold text-slate-700">Next Due Date</th>
-              <th className="px-6 py-4 font-semibold text-slate-700">Last Completed</th>
-              <th className="px-6 py-4 font-semibold text-slate-700">Status</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {PM_SCHEDULES.map(pm => {
-              const asset = ASSETS.find(a => a.id === pm.assetId);
-              const statusInfo = getStatusInfo(pm.status);
-              return (
-                <tr key={pm.id} className="hover:bg-slate-50/50">
-                  <td className="px-6 py-4">
-                    <div className="font-semibold text-slate-900">{pm.task}</div>
-                    <div className="text-xs text-slate-500">{asset?.name} ({asset?.id})</div>
-                  </td>
-                  <td className="px-6 py-4 text-slate-600">{pm.frequency}</td>
-                  <td className="px-6 py-4 text-slate-600 font-medium">{pm.nextDueDate}</td>
-                  <td className="px-6 py-4 text-slate-600">{pm.lastCompletedDate || 'N/A'}</td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${statusInfo.bg} ${statusInfo.color}`}>
-                        <statusInfo.icon size={12}/>
-                        {pm.status}
-                    </span>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+        <div className="p-4 border-b bg-slate-50/50"><h2 className="text-lg font-bold text-slate-900">PM Schedule</h2></div>
+        
+        {/* Desktop Table */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-slate-50 border-b border-slate-200">
+              <tr>
+                <th className="px-6 py-4 font-semibold text-slate-700">Task / Asset</th>
+                <th className="px-6 py-4 font-semibold text-slate-700">Frequency</th>
+                <th className="px-6 py-4 font-semibold text-slate-700">Next Due Date</th>
+                <th className="px-6 py-4 font-semibold text-slate-700">Last Completed</th>
+                <th className="px-6 py-4 font-semibold text-slate-700">Status</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {PM_SCHEDULES.map(pm => {
+                const asset = ASSETS.find(a => a.id === pm.assetId);
+                const statusInfo = getStatusInfo(pm.status);
+                return (
+                  <tr key={pm.id} className="hover:bg-slate-50/50">
+                    <td className="px-6 py-4">
+                      <div className="font-semibold text-slate-900">{pm.task}</div>
+                      <div className="text-xs text-slate-500">{asset?.name} ({asset?.id})</div>
+                    </td>
+                    <td className="px-6 py-4 text-slate-600">{pm.frequency}</td>
+                    <td className="px-6 py-4 text-slate-600 font-medium">{pm.nextDueDate}</td>
+                    <td className="px-6 py-4 text-slate-600">{pm.lastCompletedDate || 'N/A'}</td>
+                    <td className="px-6 py-4">
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${statusInfo.bg} ${statusInfo.color}`}>
+                          <statusInfo.icon size={12}/>
+                          {pm.status}
+                      </span>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden divide-y divide-slate-100">
+          {PM_SCHEDULES.map(pm => {
+            const asset = ASSETS.find(a => a.id === pm.assetId);
+            const statusInfo = getStatusInfo(pm.status);
+            return (
+              <div key={pm.id} className="p-4 space-y-3">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="font-bold text-slate-900">{pm.task}</div>
+                    <div className="text-xs text-slate-500">{asset?.name}</div>
+                  </div>
+                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${statusInfo.bg} ${statusInfo.color}`}>
+                      <statusInfo.icon size={14}/>
+                      {pm.status}
+                  </span>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 text-sm mt-2">
+                  <div className="bg-slate-50 p-2 rounded border border-slate-100">
+                    <div className="text-xs text-slate-400 uppercase font-semibold mb-1">Frequency</div>
+                    <div className="font-medium text-slate-700 flex items-center gap-1"><History size={14}/> {pm.frequency}</div>
+                  </div>
+                  <div className="bg-slate-50 p-2 rounded border border-slate-100">
+                    <div className="text-xs text-slate-400 uppercase font-semibold mb-1">Next Due</div>
+                    <div className="font-medium text-slate-700 flex items-center gap-1"><Clock size={14}/> {pm.nextDueDate}</div>
+                  </div>
+                </div>
+                
+                {pm.lastCompletedDate && (
+                  <div className="text-xs text-slate-400 text-right">
+                    Last completed: {pm.lastCompletedDate}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
       </div>
     </div>
   );

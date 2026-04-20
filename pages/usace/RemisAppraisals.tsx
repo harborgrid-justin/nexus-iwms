@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { DollarSign, Plus, Filter, Search, Lock, X } from 'lucide-react';
 import { USACE_APPRAISALS, USACE_ASSETS, USACE_ACQUISITIONS, USACE_DISPOSALS } from '../../services/mockData';
@@ -94,7 +95,9 @@ export const RemisAppraisals: React.FC = () => {
                 <td className="px-6 py-4 text-slate-600">{app.appraisalDate}</td>
                 <td className="px-6 py-4 text-slate-600">{app.purpose}</td>
                 <td className="px-6 py-4 text-slate-600 text-right font-mono flex justify-end items-center gap-2">
-                    <Lock size={12} className="text-slate-400" title="Controlled Access Data" />
+                    <span title="Controlled Access Data">
+                      <Lock size={12} className="text-slate-400" />
+                    </span>
                     ${app.appraisedValue.toLocaleString()}
                 </td>
                 <td className="px-6 py-4">

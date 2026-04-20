@@ -40,30 +40,38 @@ export const EncroachmentModal: React.FC<EncroachmentModalProps> = ({ isOpen, on
                 </div>
                 <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
                     
-                    {/* 17.1.1 & 17.1.3 Identification */}
+                    {/* 17.1.1 Case Establishment */}
                     <div>
-                        <h3 className="text-sm font-bold text-slate-900 mb-3 uppercase tracking-wider">Discovery Details</h3>
+                        <h3 className="text-sm font-bold text-slate-900 mb-3 uppercase tracking-wider">Case Details</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div><label className="text-sm font-medium">Asset</label><select name="assetId" defaultValue={encroachment?.assetId} className="w-full mt-1 p-2 border rounded-md" required disabled={isEditMode}>{USACE_ASSETS.map(a => <option key={a.id} value={a.id}>{a.rpuid} - {a.name}</option>)}</select></div>
-                            <div><label className="text-sm font-medium">Type</label><select name="type" defaultValue={encroachment?.type} className="w-full mt-1 p-2 border rounded-md"><option>Structure</option><option>Vegetation</option><option>Use</option><option>Boundary</option></select></div>
-                            <div><label className="text-sm font-medium">Discovery Date</label><input name="discoveryDate" type="date" defaultValue={encroachment?.discoveryDate} className="w-full mt-1 p-2 border rounded-md" required /></div>
-                            <div><label className="text-sm font-medium">Responsible Official</label><input name="responsibleOfficial" type="text" defaultValue={encroachment?.responsibleOfficial} className="w-full mt-1 p-2 border rounded-md" required /></div>
-                            <div className="md:col-span-2"><label className="text-sm font-medium">Location Description</label><input name="locationDescription" type="text" defaultValue={encroachment?.locationDescription} placeholder="e.g., Near Mile Marker 12..." className="w-full mt-1 p-2 border rounded-md" required /></div>
-                            <div className="md:col-span-2"><label className="text-sm font-medium">Initial Assessment</label><textarea name="initialAssessment" defaultValue={encroachment?.initialAssessment} className="w-full mt-1 p-2 border rounded-md h-20" placeholder="Describe the unauthorized activity..." required /></div>
+                            <div><label className="text-sm font-medium">Affected Asset</label><select name="assetId" defaultValue={encroachment?.assetId} className="w-full mt-1 p-2 border rounded-md" required disabled={isEditMode}>{USACE_ASSETS.map(a => <option key={a.id} value={a.id}>{a.rpuid} - {a.name}</option>)}</select></div>
+                            <div><label className="text-sm font-medium">Type</label><select name="type" defaultValue={encroachment?.type} className="w-full mt-1 p-2 border rounded-md"><option>Structure</option><option>Vegetation</option><option>Use</option><option>Unauthorized Access</option><option>Dumping</option></select></div>
+                            <div><label className="text-sm font-medium">Discovery Date</label><input name="dateReported" type="date" defaultValue={encroachment?.dateReported} className="w-full mt-1 p-2 border rounded-md" required /></div>
+                            <div><label className="text-sm font-medium">Discovery Method</label><select name="discoveryMethod" defaultValue={encroachment?.discoveryMethod} className="w-full mt-1 p-2 border rounded-md"><option>Inspection</option><option>Public Report</option><option>Remote Sensing</option><option>Patrol</option></select></div>
+                            <div className="md:col-span-2"><label className="text-sm font-medium">Location Description</label><input name="locationDescription" type="text" defaultValue={encroachment?.locationDescription} className="w-full mt-1 p-2 border rounded-md" required /></div>
+                            <div className="md:col-span-2"><label className="text-sm font-medium">Initial Assessment</label><textarea name="initialAssessment" defaultValue={encroachment?.initialAssessment} className="w-full mt-1 p-2 border rounded-md h-20" required /></div>
+                        </div>
+                    </div>
+
+                    <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <h3 className="text-sm font-bold text-slate-900 mb-3 uppercase tracking-wider">Administrative</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div><label className="text-sm font-medium">Responsible Official</label><input name="responsibleOfficial" type="text" defaultValue={encroachment?.responsibleOfficial} className="w-full mt-1 p-2 border rounded-md" /></div>
+                            <div><label className="text-sm font-medium">Related Out-Grant ID (Optional)</label><input name="relatedOutGrantId" type="text" defaultValue={encroachment?.relatedOutGrantId} placeholder="e.g. OG-02" className="w-full mt-1 p-2 border rounded-md" /></div>
                         </div>
                     </div>
 
                      {isEditMode && (
                         <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg">
                             <label className="block text-sm font-bold text-amber-800">Reason for Change (Mandatory)</label>
-                            <textarea value={reason} onChange={e => setReason(e.target.value)} placeholder="Justification for update (17.3.4)..." className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm" required />
-                            <p className="text-xs text-amber-700 mt-1">Updates are logged in the immutable audit trail (Req 17.8.1).</p>
+                            <textarea value={reason} onChange={e => setReason(e.target.value)} placeholder="Justification for update (Req 17.3.4)..." className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm" required />
+                            <p className="text-xs text-amber-700 mt-1">Updates are versioned and logged in the immutable audit trail (Req 17.8.1).</p>
                         </div>
                     )}
                 </form>
                 <div className="p-4 bg-slate-50 border-t flex justify-end gap-2">
                     <button type="button" onClick={onClose} className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border rounded-md hover:bg-slate-50">Cancel</button>
-                    <button type="submit" onClick={handleSubmit} className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border rounded-md hover:bg-blue-700">{isEditMode ? 'Update Case' : 'Create Case'}</button>
+                    <button type="submit" onClick={handleSubmit} className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border rounded-md hover:bg-blue-700">{isEditMode ? 'Update Case' : 'Report Case'}</button>
                 </div>
             </div>
         </div>

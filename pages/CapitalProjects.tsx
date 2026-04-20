@@ -1,19 +1,19 @@
+
 import React, { useState } from 'react';
 import { CAPITAL_PROJECTS, PROPERTIES, EMPLOYEES, PPBE_FUNDS, FUND_TRANSACTIONS } from '../services/mockData';
-import { Status, ChangeOrder, ProjectMilestone } from '../types';
+import { Status } from '../types';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, LineChart, Line, AreaChart, Area } from 'recharts';
-// FIX: Import 'Calendar' icon from lucide-react.
 import { ArrowUp, ArrowDown, ShieldAlert, FileText, Download, GanttChartSquare, DollarSign, Banknote, ListChecks, FilePlus2, AlertCircle, Calendar } from 'lucide-react';
 
 const getStatusColor = (status: Status | string) => {
   switch (status) {
-    case Status.OnTrack:
+    case 'OnTrack':
     case 'Completed':
       return 'bg-green-100 text-green-800';
-    case Status.AtRisk: return 'bg-amber-100 text-amber-800';
-    case Status.Overdue: return 'bg-red-100 text-red-800';
-    case Status.Pending:
-    case Status.Planning:
+    case 'AtRisk': return 'bg-amber-100 text-amber-800';
+    case 'Overdue': return 'bg-red-100 text-red-800';
+    case 'Pending':
+    case 'Planning':
     case 'In Progress':
     case 'Not Started':
       return 'bg-slate-100 text-slate-800';

@@ -9,9 +9,9 @@ export const GisMap: React.FC = () => {
     const getPinColorForLayer = (property: typeof PROPERTIES[0], layer: string) => {
         if (layer === 'status') {
             switch (property.status) {
-                case Status.Good: return 'bg-green-500';
-                case Status.Warning: return 'bg-amber-500';
-                case Status.Critical: return 'bg-red-500';
+                case 'Good': return 'bg-green-500';
+                case 'Warning': return 'bg-amber-500';
+                case 'Critical': return 'bg-red-500';
                 default: return 'bg-slate-500';
             }
         }

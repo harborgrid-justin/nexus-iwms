@@ -1,12 +1,12 @@
 import React, { useState, FormEvent } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { USACE_ACQUISITIONS, USACE_ASSETS, USACE_APPRAISALS } from '../../services/mockData';
+import { USACE_ACQUISITIONS, USACE_ASSETS, USACE_APPRAISALS, USACE_ENVIRONMENTAL, FUND_TRANSACTIONS } from '../../services/mockData';
 import { RegulatoryBadge } from '../../components/RegulatoryBadge';
 import { DetailItem } from '../../components/DetailItem';
-// FIX: Added 'Target' to the import list to fix 'Cannot find name' error.
 import { ArrowLeft, Edit, Building, MapPin, Calendar, DollarSign, Shield, Sigma, BookOpen, FileText, Check, MoreVertical, Paperclip, Activity, Users, Target } from 'lucide-react';
 import { AcquisitionRecord, AuditEvent } from '../../types';
 import { AcquisitionModal } from './components/AcquisitionModal';
+import { validateNEPAForAcquisition, validateAcquisitionFunding, validateAppraisalRecency } from '../../utils/usaceRules';
 
 const getStatusColor = (status: string) => {
     switch(status) {
@@ -38,7 +38,7 @@ export const RemisAcquisitionDetail: React.FC = () => {
             action: 'Record Updated',
             details: reason
         };
-        setAcquisition(prev => prev ? { ...prev, ...updatedRecord, history: [newHistoryEvent, ...prev.history!] } : undefined);
+        setAcquisition(prev => prev ? { ...prev, ...updatedRecord, history: [newHistoryEvent, ...(prev.history || [])] } : undefined);
         setIsEditModalOpen(false);
     };
 
@@ -47,6 +47,36 @@ export const RemisAcquisitionDetail: React.FC = () => {
             alert("Cannot move to a previous or current stage.");
             return;
         }
+
+        // Rule 20: NEPA check before Closing
+        if (newStage === 'Closing') {
+            const ruleCheck = validateNEPAForAcquisition(acquisition, USACE_ENVIRONMENTAL);
+            if (!ruleCheck.allowed) {
+                alert(ruleCheck.reason);
+                if (!confirm("Simulation Override: Proceed despite NEPA warning?")) return;
+            }
+        }
+
+        // Rule 26: Funding Obligation check before Closing
+        if (newStage === 'Closing') {
+            const fundCheck = validateAcquisitionFunding(acquisition, FUND_TRANSACTIONS);
+            if (!fundCheck.allowed) {
+                alert(fundCheck.reason);
+                if (!confirm("Simulation Override: Proceed without obligated funds?")) return;
+            }
+        }
+
+        // Rule 28 check (implicitly during flow, but checked here for demonstration on appraisal stage)
+        if (newStage === 'Negotiation') {
+             const linkedAppraisals = USACE_APPRAISALS.filter(a => acquisition.appraisalIds.includes(a.id));
+             for (const app of linkedAppraisals) {
+                 const recencyCheck = validateAppraisalRecency(app);
+                 if (!recencyCheck.allowed) {
+                     alert(`Warning for Appraisal ${app.id}: ${recencyCheck.reason}`);
+                 }
+             }
+        }
+
         const reason = `Stage advanced from ${acquisition.stage} to ${newStage}.`;
          const newHistoryEvent: AuditEvent = {
             timestamp: new Date().toLocaleString(),
@@ -54,7 +84,7 @@ export const RemisAcquisitionDetail: React.FC = () => {
             action: 'Stage Changed',
             details: reason,
         };
-        setAcquisition(prev => prev ? { ...prev, stage: newStage, history: [newHistoryEvent, ...prev.history!] } : undefined);
+        setAcquisition(prev => prev ? { ...prev, stage: newStage, history: [newHistoryEvent, ...(prev.history || [])] } : undefined);
         alert(`Acquisition stage advanced to ${newStage}. This action has been logged.`);
     }
     

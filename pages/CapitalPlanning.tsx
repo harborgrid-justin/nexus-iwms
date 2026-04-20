@@ -1,11 +1,17 @@
 import React from 'react';
-import { Presentation, Plus, Sliders, TrendingUp } from 'lucide-react';
-import { CAPITAL_PLAN, PROPERTIES, UNFUNDED_REQUIREMENTS } from '../services/mockData';
+import { Plus, Sliders, TrendingUp } from 'lucide-react';
+import { CAPITAL_PLAN, UNFUNDED_REQUIREMENTS } from '../services/mockData';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+
+interface YearData {
+  name: string;
+  Funded: number;
+  Unfunded: number;
+}
 
 export const CapitalPlanning: React.FC = () => {
 
-  const dataByYear = CAPITAL_PLAN.reduce((acc, item) => {
+  const dataByYear = CAPITAL_PLAN.reduce((acc: Record<string, YearData>, item) => {
     const year = `FY${item.fiscalYear}`;
     if (!acc[year]) {
       acc[year] = { name: year, Funded: 0, Unfunded: 0 };
@@ -16,7 +22,7 @@ export const CapitalPlanning: React.FC = () => {
       acc[year].Unfunded += item.projectedCost;
     }
     return acc;
-  }, {} as any);
+  }, {} as Record<string, YearData>);
 
   const chartData = Object.values(dataByYear);
 
@@ -42,7 +48,7 @@ export const CapitalPlanning: React.FC = () => {
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="name" />
               <YAxis tickFormatter={val => `$${val / 1000000}M`} />
-              <Tooltip formatter={val => `$${(val as number).toLocaleString()}`} />
+              <Tooltip formatter={(val) => `$${(val as number).toLocaleString()}`} />
               <Legend />
               <Bar dataKey="Funded" stackId="a" fill="#3b82f6" />
               <Bar dataKey="Unfunded" stackId="a" fill="#f43f5e" radius={[4, 4, 0, 0]}/>

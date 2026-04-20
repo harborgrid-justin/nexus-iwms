@@ -1,185 +1,198 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import React from 'react';
+import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { AiDrawer } from './components/AiDrawer';
-import { Dashboard } from './pages/Dashboard';
-import { RealEstate } from './pages/RealEstate';
-import { Operations } from './pages/Operations';
-import { Space } from './pages/Space';
-import { Sustainability } from './pages/Sustainability';
-import { CapitalProjects } from './pages/CapitalProjects';
-import { Admin } from './pages/Admin';
-import { Financials } from './pages/Financials';
-import { People } from './pages/People';
-import { Analytics } from './pages/Analytics';
-import { AssetRegistry } from './pages/AssetRegistry';
-import { VendorManagement } from './pages/VendorManagement';
-import { ContractManagement } from './pages/ContractManagement';
-import { EHS } from './pages/EHS';
-import { Budgeting } from './pages/Budgeting';
-import { CadViewer } from './pages/CadViewer';
-import { Compliance } from './pages/Compliance';
-import { ConditionAssessment } from './pages/ConditionAssessment';
-import { DocumentCentral } from './pages/DocumentCentral';
-import { EnergyDashboard } from './pages/EnergyDashboard';
-import { GisMap } from './pages/GisMap';
-import { Insurance } from './pages/Insurance';
-import { Inventory } from './pages/Inventory';
-import { KeyManagement } from './pages/KeyManagement';
-import { MobileWorkforce } from './pages/MobileWorkforce';
-import { Parking } from './pages/Parking';
-import { PreventiveMaintenance } from './pages/PreventiveMaintenance';
-import { Reporting } from './pages/Reporting';
-import { Reservations } from './pages/Reservations';
-import { SupportCenter } from './pages/SupportCenter';
-import { UtilityBills } from './pages/UtilityBills';
-import { VisitorManagement } from './pages/VisitorManagement';
-import { WasteDashboard } from './pages/WasteDashboard';
-import { PpbeFunds } from './pages/PpbeFunds';
-import { CapitalPlanning } from './pages/CapitalPlanning';
-import { Invoicing } from './pages/Invoicing';
-import { Procurement } from './pages/Procurement';
-import { Chargebacks } from './pages/Chargebacks';
-import { StrategicPortfolio } from './pages/StrategicPortfolio';
-import { LeaseAdmin } from './pages/LeaseAdmin';
+import { Loading } from './components/Loading';
+import { ErrorPage } from './pages/ErrorPage';
 
-// USACE REMIS
-import { RemisDashboard } from './pages/usace/RemisDashboard';
-import { RemisInventory } from './pages/usace/RemisInventory';
-import { RemisAssetDetail } from './pages/usace/RemisAssetDetail';
-import { RemisAcquisitions } from './pages/usace/RemisAcquisitions';
-import { RemisAcquisitionDetail } from './pages/usace/RemisAcquisitionDetail';
-import { RemisDisposals } from './pages/usace/RemisDisposals';
-import { RemisDisposalDetail } from './pages/usace/RemisDisposalDetail';
-import { RemisLinkages } from './pages/usace/RemisLinkages';
-import { RemisLinkageDetail } from './pages/usace/RemisLinkageDetail';
-import { RemisOutgrants } from './pages/usace/RemisOutgrants';
-import { RemisOutgrantDetail } from './pages/usace/RemisOutgrantDetail';
-import { RemisAppraisals } from './pages/usace/RemisAppraisals';
-import { RemisAppraisalDetail } from './pages/usace/RemisAppraisalDetail';
-import { RemisGisHub } from './pages/usace/RemisGisHub';
-import { RemisEnvironmental } from './pages/usace/RemisEnvironmental';
-import { RemisEnvironmentalDetail } from './pages/usace/RemisEnvironmentalDetail';
-import { RemisLegal } from './pages/usace/RemisLegal';
-import { RemisLegalDetail } from './pages/usace/RemisLegalDetail';
-import { RemisCostShare } from './pages/usace/RemisCostShare';
-import { RemisCostShareDetail } from './pages/usace/RemisCostShareDetail';
-import { RemisPermits } from './pages/usace/RemisPermits';
-import { RemisPermitDetail } from './pages/usace/RemisPermitDetail';
-import { RemisMobilization } from './pages/usace/RemisMobilization';
-import { RemisMobilizationDetail } from './pages/usace/RemisMobilizationDetail';
-import { RemisRelocation } from './pages/usace/RemisRelocation';
-import { RemisRelocationDetail } from './pages/usace/RemisRelocationDetail';
-import { RemisSolicitations } from './pages/usace/RemisSolicitations';
-import { RemisSolicitationDetail } from './pages/usace/RemisSolicitationDetail';
-import { RemisEncroachments } from './pages/usace/RemisEncroachments';
-import { RemisEncroachmentDetail } from './pages/usace/RemisEncroachmentDetail';
+// Mock Data for AI Context
+import { 
+  PROPERTIES, WORK_ORDERS, CAPITAL_PROJECTS, LEASES, 
+  VENDORS, ASSETS, USACE_ASSETS, USACE_ACQUISITIONS 
+} from './services/mockData';
 
-// USACE RFMIS
-import { RfmisDashboard } from './pages/usace/rfmis/RfmisDashboard';
-import { RfmisInventory } from './pages/usace/rfmis/RfmisInventory';
-import { RfmisFacilityDetail } from './pages/usace/rfmis/RfmisFacilityDetail';
+// --- Lazy Load All Page Components for Code Splitting ---
+const Dashboard = React.lazy(() => import('./pages/Dashboard').then(module => ({ default: module.Dashboard })));
+const RealEstate = React.lazy(() => import('./pages/RealEstate').then(module => ({ default: module.RealEstate })));
+const Operations = React.lazy(() => import('./pages/Operations').then(module => ({ default: module.Operations })));
+const CapitalProjects = React.lazy(() => import('./pages/CapitalProjects').then(module => ({ default: module.CapitalProjects })));
+const Sustainability = React.lazy(() => import('./pages/Sustainability').then(module => ({ default: module.Sustainability })));
+const Admin = React.lazy(() => import('./pages/Admin').then(module => ({ default: module.Admin })));
+const AssetRegistry = React.lazy(() => import('./pages/AssetRegistry').then(module => ({ default: module.AssetRegistry })));
+const VendorManagement = React.lazy(() => import('./pages/VendorManagement').then(module => ({ default: module.VendorManagement })));
+const ContractManagement = React.lazy(() => import('./pages/ContractManagement').then(module => ({ default: module.ContractManagement })));
+const EHS = React.lazy(() => import('./pages/EHS').then(module => ({ default: module.EHS })));
+const Space = React.lazy(() => import('./pages/Space').then(module => ({ default: module.Space })));
+const Financials = React.lazy(() => import('./pages/Financials').then(module => ({ default: module.Financials })));
+const Budgeting = React.lazy(() => import('./pages/Budgeting').then(module => ({ default: module.Budgeting })));
+const PpbeFunds = React.lazy(() => import('./pages/PpbeFunds').then(module => ({ default: module.PpbeFunds })));
+const CapitalPlanning = React.lazy(() => import('./pages/CapitalPlanning').then(module => ({ default: module.CapitalPlanning })));
+const Invoicing = React.lazy(() => import('./pages/Invoicing').then(module => ({ default: module.Invoicing })));
+const Chargebacks = React.lazy(() => import('./pages/Chargebacks').then(module => ({ default: module.Chargebacks })));
+const Procurement = React.lazy(() => import('./pages/Procurement').then(module => ({ default: module.Procurement })));
+const StrategicPortfolio = React.lazy(() => import('./pages/StrategicPortfolio').then(module => ({ default: module.StrategicPortfolio })));
+const Analytics = React.lazy(() => import('./pages/Analytics').then(module => ({ default: module.Analytics })));
+const Reporting = React.lazy(() => import('./pages/Reporting').then(module => ({ default: module.Reporting })));
+const ConditionAssessment = React.lazy(() => import('./pages/ConditionAssessment').then(module => ({ default: module.ConditionAssessment })));
+const PreventiveMaintenance = React.lazy(() => import('./pages/PreventiveMaintenance').then(module => ({ default: module.PreventiveMaintenance })));
+const Inventory = React.lazy(() => import('./pages/Inventory').then(module => ({ default: module.Inventory })));
+const KeyManagement = React.lazy(() => import('./pages/KeyManagement').then(module => ({ default: module.KeyManagement })));
+const LeaseAdmin = React.lazy(() => import('./pages/LeaseAdmin').then(module => ({ default: module.LeaseAdmin })));
+const Insurance = React.lazy(() => import('./pages/Insurance').then(module => ({ default: module.Insurance })));
+const GisMap = React.lazy(() => import('./pages/GisMap').then(module => ({ default: module.GisMap })));
+const People = React.lazy(() => import('./pages/People').then(module => ({ default: module.People })));
+const Reservations = React.lazy(() => import('./pages/Reservations').then(module => ({ default: module.Reservations })));
+const VisitorManagement = React.lazy(() => import('./pages/VisitorManagement').then(module => ({ default: module.VisitorManagement })));
+const Parking = React.lazy(() => import('./pages/Parking').then(module => ({ default: module.Parking })));
+const EnergyDashboard = React.lazy(() => import('./pages/EnergyDashboard').then(module => ({ default: module.EnergyDashboard })));
+const WasteDashboard = React.lazy(() => import('./pages/WasteDashboard').then(module => ({ default: module.WasteDashboard })));
+const UtilityBills = React.lazy(() => import('./pages/UtilityBills').then(module => ({ default: module.UtilityBills })));
+const DocumentCentral = React.lazy(() => import('./pages/DocumentCentral').then(module => ({ default: module.DocumentCentral })));
+const CadViewer = React.lazy(() => import('./pages/CadViewer').then(module => ({ default: module.CadViewer })));
+const MobileWorkforce = React.lazy(() => import('./pages/MobileWorkforce').then(module => ({ default: module.MobileWorkforce })));
+const SupportCenter = React.lazy(() => import('./pages/SupportCenter').then(module => ({ default: module.SupportCenter })));
+const Compliance = React.lazy(() => import('./pages/Compliance').then(module => ({ default: module.Compliance })));
 
-import * as contextData from './services/mockData';
+// USACE Pages
+const RemisDashboard = React.lazy(() => import('./pages/usace/RemisDashboard').then(module => ({ default: module.RemisDashboard })));
+const RemisInventory = React.lazy(() => import('./pages/usace/RemisInventory').then(module => ({ default: module.RemisInventory })));
+const RemisAssetDetail = React.lazy(() => import('./pages/usace/RemisAssetDetail').then(module => ({ default: module.RemisAssetDetail })));
+const RemisAcquisitions = React.lazy(() => import('./pages/usace/RemisAcquisitions').then(module => ({ default: module.RemisAcquisitions })));
+const RemisAcquisitionDetail = React.lazy(() => import('./pages/usace/RemisAcquisitionDetail').then(module => ({ default: module.RemisAcquisitionDetail })));
+const RemisDisposals = React.lazy(() => import('./pages/usace/RemisDisposals').then(module => ({ default: module.RemisDisposals })));
+const RemisDisposalDetail = React.lazy(() => import('./pages/usace/RemisDisposalDetail').then(module => ({ default: module.RemisDisposalDetail })));
+const RemisOutgrants = React.lazy(() => import('./pages/usace/RemisOutgrants').then(module => ({ default: module.RemisOutgrants })));
+const RemisOutgrantDetail = React.lazy(() => import('./pages/usace/RemisOutgrantDetail').then(module => ({ default: module.RemisOutgrantDetail })));
+const RemisAppraisals = React.lazy(() => import('./pages/usace/RemisAppraisals').then(module => ({ default: module.RemisAppraisals })));
+const RemisAppraisalDetail = React.lazy(() => import('./pages/usace/RemisAppraisalDetail').then(module => ({ default: module.RemisAppraisalDetail })));
+const RemisGisHub = React.lazy(() => import('./pages/usace/RemisGisHub').then(module => ({ default: module.RemisGisHub })));
+const RemisEnvironmental = React.lazy(() => import('./pages/usace/RemisEnvironmental').then(module => ({ default: module.RemisEnvironmental })));
+const RemisEnvironmentalDetail = React.lazy(() => import('./pages/usace/RemisEnvironmentalDetail').then(module => ({ default: module.RemisEnvironmentalDetail })));
+const RemisLegal = React.lazy(() => import('./pages/usace/RemisLegal').then(module => ({ default: module.RemisLegal })));
+const RemisLegalDetail = React.lazy(() => import('./pages/usace/RemisLegalDetail').then(module => ({ default: module.RemisLegalDetail })));
+const RemisCostShare = React.lazy(() => import('./pages/usace/RemisCostShare').then(module => ({ default: module.RemisCostShare })));
+const RemisCostShareDetail = React.lazy(() => import('./pages/usace/RemisCostShareDetail').then(module => ({ default: module.RemisCostShareDetail })));
+const RemisPermits = React.lazy(() => import('./pages/usace/RemisPermits').then(module => ({ default: module.RemisPermits })));
+const RemisPermitDetail = React.lazy(() => import('./pages/usace/RemisPermitDetail').then(module => ({ default: module.RemisPermitDetail })));
+const RemisMobilization = React.lazy(() => import('./pages/usace/RemisMobilization').then(module => ({ default: module.RemisMobilization })));
+const RemisMobilizationDetail = React.lazy(() => import('./pages/usace/RemisMobilizationDetail').then(module => ({ default: module.RemisMobilizationDetail })));
+const RemisRelocation = React.lazy(() => import('./pages/usace/RemisRelocation').then(module => ({ default: module.RemisRelocation })));
+const RemisRelocationDetail = React.lazy(() => import('./pages/usace/RemisRelocationDetail').then(module => ({ default: module.RemisRelocationDetail })));
+const RemisSolicitations = React.lazy(() => import('./pages/usace/RemisSolicitations').then(module => ({ default: module.RemisSolicitations })));
+const RemisSolicitationDetail = React.lazy(() => import('./pages/usace/RemisSolicitationDetail').then(module => ({ default: module.RemisSolicitationDetail })));
+const RemisEncroachments = React.lazy(() => import('./pages/usace/RemisEncroachments').then(module => ({ default: module.RemisEncroachments })));
+const RemisEncroachmentDetail = React.lazy(() => import('./pages/usace/RemisEncroachmentDetail').then(module => ({ default: module.RemisEncroachmentDetail })));
 
-export const App = () => {
-  const [aiOpen, setAiOpen] = useState(false);
+
+// --- Root Layout Component ---
+// This component manages the shared state (like the AI drawer) and renders the main layout.
+// The <Outlet/> from react-router-dom will render the matched child route.
+const RootLayout = () => {
+  const [aiDrawerOpen, setAiDrawerOpen] = React.useState(false);
+
+  const aiContext = {
+    properties: PROPERTIES,
+    workOrders: WORK_ORDERS,
+    projects: CAPITAL_PROJECTS,
+    leases: LEASES,
+    vendors: VENDORS,
+    assets: ASSETS,
+    usace_inventory: USACE_ASSETS,
+    usace_acquisitions: USACE_ACQUISITIONS
+  };
 
   return (
-    <Router>
-      <Layout onAiToggle={() => setAiOpen(!aiOpen)}>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/real-estate" element={<RealEstate />} />
-          <Route path="/lease-admin" element={<LeaseAdmin />} />
-          <Route path="/contracts" element={<ContractManagement />} />
-          <Route path="/insurance" element={<Insurance />} />
-          <Route path="/gis-map" element={<GisMap />} />
-          
-          <Route path="/financials" element={<Financials />} />
-          <Route path="/budgeting" element={<Budgeting />} />
-          <Route path="/ppbe-funds" element={<PpbeFunds />} />
-          <Route path="/capital-planning" element={<CapitalPlanning />} />
-          <Route path="/invoicing" element={<Invoicing />} />
-          <Route path="/procurement" element={<Procurement />} />
-          <Route path="/chargebacks" element={<Chargebacks />} />
-
-          <Route path="/projects" element={<CapitalProjects />} />
-          <Route path="/strategic-portfolio" element={<StrategicPortfolio />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/reporting" element={<Reporting />} />
-          <Route path="/condition-assessment" element={<ConditionAssessment />} />
-
-          <Route path="/operations" element={<Operations />} />
-          <Route path="/assets" element={<AssetRegistry />} />
-          <Route path="/preventive-maintenance" element={<PreventiveMaintenance />} />
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/vendors" element={<VendorManagement />} />
-          <Route path="/key-management" element={<KeyManagement />} />
-
-          <Route path="/space" element={<Space />} />
-          <Route path="/people" element={<People />} />
-          <Route path="/reservations" element={<Reservations />} />
-          <Route path="/visitor-management" element={<VisitorManagement />} />
-          <Route path="/parking" element={<Parking />} />
-
-          <Route path="/sustainability" element={<Sustainability />} />
-          <Route path="/energy" element={<EnergyDashboard />} />
-          <Route path="/waste" element={<WasteDashboard />} />
-          <Route path="/utility-bills" element={<UtilityBills />} />
-
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/ehs" element={<EHS />} />
-          <Route path="/compliance" element={<Compliance />} />
-          <Route path="/documents" element={<DocumentCentral />} />
-          <Route path="/cad-viewer" element={<CadViewer />} />
-          <Route path="/mobile" element={<MobileWorkforce />} />
-          <Route path="/support" element={<SupportCenter />} />
-
-          {/* USACE REMIS Routes */}
-          <Route path="/usace/dashboard" element={<RemisDashboard />} />
-          <Route path="/usace/inventory" element={<RemisInventory />} />
-          <Route path="/usace/inventory/:assetId" element={<RemisAssetDetail />} />
-          <Route path="/usace/acquisitions" element={<RemisAcquisitions />} />
-          <Route path="/usace/acquisitions/:acquisitionId" element={<RemisAcquisitionDetail />} />
-          <Route path="/usace/disposals" element={<RemisDisposals />} />
-          <Route path="/usace/disposals/:disposalId" element={<RemisDisposalDetail />} />
-          <Route path="/usace/linkages" element={<RemisLinkages />} />
-          <Route path="/usace/linkages/:linkageId" element={<RemisLinkageDetail />} />
-          <Route path="/usace/outgrants" element={<RemisOutgrants />} />
-          <Route path="/usace/outgrants/:outgrantId" element={<RemisOutgrantDetail />} />
-          <Route path="/usace/appraisals" element={<RemisAppraisals />} />
-          <Route path="/usace/appraisals/:appraisalId" element={<RemisAppraisalDetail />} />
-          <Route path="/usace/gis" element={<RemisGisHub />} />
-          <Route path="/usace/environmental" element={<RemisEnvironmental />} />
-          <Route path="/usace/environmental/:siteId" element={<RemisEnvironmentalDetail />} />
-          <Route path="/usace/legal" element={<RemisLegal />} />
-          <Route path="/usace/legal/:claimId" element={<RemisLegalDetail />} />
-          <Route path="/usace/cost-share" element={<RemisCostShare />} />
-          <Route path="/usace/cost-share/:agreementId" element={<RemisCostShareDetail />} />
-          <Route path="/usace/permits" element={<RemisPermits />} />
-          <Route path="/usace/permits/:permitId" element={<RemisPermitDetail />} />
-          <Route path="/usace/mobilization" element={<RemisMobilization />} />
-          <Route path="/usace/mobilization/:profileId" element={<RemisMobilizationDetail />} />
-          <Route path="/usace/relocation" element={<RemisRelocation />} />
-          <Route path="/usace/relocation/:relocationId" element={<RemisRelocationDetail />} />
-          <Route path="/usace/solicitations" element={<RemisSolicitations />} />
-          <Route path="/usace/solicitations/:solicitationId" element={<RemisSolicitationDetail />} />
-          <Route path="/usace/encroachments" element={<RemisEncroachments />} />
-          <Route path="/usace/encroachments/:caseId" element={<RemisEncroachmentDetail />} />
-
-          {/* USACE RFMIS Routes */}
-          <Route path="/rfmis/dashboard" element={<RfmisDashboard />} />
-          <Route path="/rfmis/inventory" element={<RfmisInventory />} />
-          <Route path="/rfmis/inventory/:facilityId" element={<RfmisFacilityDetail />} />
-          
-          <Route path="/rfmis/leases" element={<div className="p-6">RFMIS Leases Placeholder</div>} />
-          <Route path="/rfmis/projects" element={<div className="p-6">RFMIS Projects Placeholder</div>} />
-          <Route path="/rfmis/map" element={<div className="p-6">RFMIS Map Placeholder</div>} />
-
-        </Routes>
-        <AiDrawer isOpen={aiOpen} onClose={() => setAiOpen(false)} contextData={contextData} />
+    <>
+      <Layout onAiToggle={() => setAiDrawerOpen(true)}>
+        <React.Suspense fallback={<Loading />}>
+          <Outlet />
+        </React.Suspense>
       </Layout>
-    </Router>
+      <AiDrawer isOpen={aiDrawerOpen} onClose={() => setAiDrawerOpen(false)} contextData={aiContext} />
+    </>
   );
+};
+
+// --- Centralized Router Configuration ---
+const router = createBrowserRouter([
+  {
+    element: <RootLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      { path: '/', element: <Dashboard /> },
+      { path: 'real-estate', element: <RealEstate /> },
+      { path: 'lease-admin', element: <LeaseAdmin /> },
+      { path: 'operations', element: <Operations /> },
+      { path: 'projects', element: <CapitalProjects /> },
+      { path: 'sustainability', element: <Sustainability /> },
+      { path: 'admin', element: <Admin /> },
+      { path: 'assets', element: <AssetRegistry /> },
+      { path: 'vendors', element: <VendorManagement /> },
+      { path: 'contracts', element: <ContractManagement /> },
+      { path: 'ehs', element: <EHS /> },
+      { path: 'space', element: <Space /> },
+      { path: 'financials', element: <Financials /> },
+      { path: 'budgeting', element: <Budgeting /> },
+      { path: 'ppbe-funds', element: <PpbeFunds /> },
+      { path: 'capital-planning', element: <CapitalPlanning /> },
+      { path: 'invoicing', element: <Invoicing /> },
+      { path: 'chargebacks', element: <Chargebacks /> },
+      { path: 'procurement', element: <Procurement /> },
+      { path: 'strategic-portfolio', element: <StrategicPortfolio /> },
+      { path: 'analytics', element: <Analytics /> },
+      { path: 'reporting', element: <Reporting /> },
+      { path: 'condition-assessment', element: <ConditionAssessment /> },
+      { path: 'preventive-maintenance', element: <PreventiveMaintenance /> },
+      { path: 'inventory', element: <Inventory /> },
+      { path: 'key-management', element: <KeyManagement /> },
+      { path: 'insurance', element: <Insurance /> },
+      { path: 'gis-map', element: <GisMap /> },
+      { path: 'people', element: <People /> },
+      { path: 'reservations', element: <Reservations /> },
+      { path: 'visitor-management', element: <VisitorManagement /> },
+      { path: 'parking', element: <Parking /> },
+      { path: 'energy', element: <EnergyDashboard /> },
+      { path: 'waste', element: <WasteDashboard /> },
+      { path: 'utility-bills', element: <UtilityBills /> },
+      { path: 'documents', element: <DocumentCentral /> },
+      { path: 'cad-viewer', element: <CadViewer /> },
+      { path: 'mobile', element: <MobileWorkforce /> },
+      { path: 'support', element: <SupportCenter /> },
+      { path: 'compliance', element: <Compliance /> },
+
+      // USACE Routes
+      { path: 'usace/dashboard', element: <RemisDashboard /> },
+      { path: 'usace/inventory', element: <RemisInventory /> },
+      { path: 'usace/inventory/:assetId', element: <RemisAssetDetail /> },
+      { path: 'usace/acquisitions', element: <RemisAcquisitions /> },
+      { path: 'usace/acquisitions/:acquisitionId', element: <RemisAcquisitionDetail /> },
+      { path: 'usace/disposals', element: <RemisDisposals /> },
+      { path: 'usace/disposals/:disposalId', element: <RemisDisposalDetail /> },
+      { path: 'usace/outgrants', element: <RemisOutgrants /> },
+      { path: 'usace/outgrants/:outgrantId', element: <RemisOutgrantDetail /> },
+      { path: 'usace/appraisals', element: <RemisAppraisals /> },
+      { path: 'usace/appraisals/:appraisalId', element: <RemisAppraisalDetail /> },
+      { path: 'usace/gis', element: <RemisGisHub /> },
+      { path: 'usace/environmental', element: <RemisEnvironmental /> },
+      { path: 'usace/environmental/:siteId', element: <RemisEnvironmentalDetail /> },
+      { path: 'usace/legal', element: <RemisLegal /> },
+      { path: 'usace/legal/:claimId', element: <RemisLegalDetail /> },
+      { path: 'usace/cost-share', element: <RemisCostShare /> },
+      { path: 'usace/cost-share/:agreementId', element: <RemisCostShareDetail /> },
+      { path: 'usace/permits', element: <RemisPermits /> },
+      { path: 'usace/permits/:permitId', element: <RemisPermitDetail /> },
+      { path: 'usace/mobilization', element: <RemisMobilization /> },
+      { path: 'usace/mobilization/:profileId', element: <RemisMobilizationDetail /> },
+      { path: 'usace/relocation', element: <RemisRelocation /> },
+      { path: 'usace/relocation/:relocationId', element: <RemisRelocationDetail /> },
+      { path: 'usace/solicitations', element: <RemisSolicitations /> },
+      { path: 'usace/solicitations/:solicitationId', element: <RemisSolicitationDetail /> },
+      { path: 'usace/encroachments', element: <RemisEncroachments /> },
+      { path: 'usace/encroachments/:caseId', element: <RemisEncroachmentDetail /> },
+    ]
+  }
+]);
+
+export const App = () => {
+  return <RouterProvider router={router} />;
 };

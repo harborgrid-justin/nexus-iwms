@@ -1,20 +1,27 @@
 import React from 'react';
-import { FileText, BarChart, Droplet, Zap, Plus, Filter } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { UTILITY_BILLS, PROPERTIES } from '../services/mockData';
-import { Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart, Legend } from 'recharts';
+import { Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart } from 'recharts';
+
+interface UtilityChartData {
+  name: string;
+  [key: string]: string | number;
+}
 
 export const UtilityBills: React.FC = () => {
 
-  const data = UTILITY_BILLS.reduce((acc, bill) => {
+  const data = UTILITY_BILLS.reduce((acc: UtilityChartData[], bill) => {
     const month = new Date(bill.serviceDate + '-02').toLocaleString('default', { month: 'short' });
     const existing = acc.find(item => item.name === month);
     if(existing) {
         existing[bill.utility] = bill.cost;
     } else {
-        acc.push({ name: month, [bill.utility]: bill.cost });
+        const newItem: UtilityChartData = { name: month };
+        newItem[bill.utility] = bill.cost;
+        acc.push(newItem);
     }
     return acc;
-  }, [] as any[]);
+  }, [] as UtilityChartData[]);
 
   return (
     <div className="space-y-6">
@@ -38,7 +45,7 @@ export const UtilityBills: React.FC = () => {
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="name" />
               <YAxis tickFormatter={val => `$${val/1000}k`}/>
-              <Tooltip formatter={val => `$${(val as number).toLocaleString()}`} />
+              <Tooltip formatter={(val) => `$${(val as number).toLocaleString()}`} />
               <Legend />
               <Bar dataKey="Electric" fill="#3b82f6" stackId="a" />
               <Bar dataKey="Water" fill="#06b6d4" stackId="a" />

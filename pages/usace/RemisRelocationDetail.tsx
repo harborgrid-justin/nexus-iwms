@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { USACE_RELOCATION, USACE_ACQUISITIONS, USACE_ASSETS, DOCUMENTS, FUND_TRANSACTIONS } from '../../services/mockData';
@@ -32,7 +33,7 @@ export const RemisRelocationDetail: React.FC = () => {
             action: 'Record Updated',
             details: reason
         };
-        setRelocation(prev => prev ? { ...prev, ...updatedRecord, history: [newHistoryEvent, ...prev.history!] } : undefined);
+        setRelocation(prev => prev ? { ...prev, ...updatedRecord, history: [newHistoryEvent, ...(prev.history || [])] } : undefined);
         setIsEditModalOpen(false);
     };
 
@@ -50,7 +51,7 @@ export const RemisRelocationDetail: React.FC = () => {
             action: 'State Transition',
             details: reason,
         };
-        setRelocation(prev => prev ? { ...prev, lifecycleState: newState, history: [newHistoryEvent, ...prev.history!] } : undefined);
+        setRelocation(prev => prev ? { ...prev, lifecycleState: newState, history: [newHistoryEvent, ...(prev.history || [])] } : undefined);
     };
 
     const currentStateIndex = LIFECYCLE_STATES.indexOf(relocation.lifecycleState);
@@ -64,7 +65,7 @@ export const RemisRelocationDetail: React.FC = () => {
                     <div>
                         <div className="flex items-center gap-3">
                             <h1 className="text-2xl font-bold text-slate-900">Relocation: {relocation.claimantName}</h1>
-                            <Lock size={16} className="text-amber-500" title="Contains PII" />
+                            <span title="Contains PII"><Lock size={16} className="text-amber-500" /></span>
                         </div>
                         <p className="text-slate-500 font-mono">{relocation.id} • Acq: {acquisition?.id}</p>
                     </div>

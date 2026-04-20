@@ -1,9 +1,9 @@
+
 import React from 'react';
 import { Banknote, Plus, Filter, GanttChartSquare, ClipboardList, PackagePlus } from 'lucide-react';
 import { PPBE_FUNDS, FUND_TRANSACTIONS, UNFUNDED_REQUIREMENTS } from '../services/mockData';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
-// FIX: Refactored component to use React.FC and explicit props typing to fix 'key' prop error.
 const FundCard: React.FC<{ fund: typeof PPBE_FUNDS[0] }> = ({ fund }) => {
   const utilized = fund.obligated + fund.expended;
   const progress = (utilized / fund.totalAmount) * 100;

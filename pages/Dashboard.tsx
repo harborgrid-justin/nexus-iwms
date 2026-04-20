@@ -1,14 +1,25 @@
 import React, { useState } from 'react';
 import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   AreaChart, Area 
 } from 'recharts';
 import { ArrowUpRight, ArrowDownRight, DollarSign, Building, AlertTriangle, Zap, Wrench, ChevronDown } from 'lucide-react';
 import { SUSTAINABILITY_DATA, WORK_ORDERS, PROPERTIES, CAPITAL_PROJECTS, LEASES } from '../services/mockData';
-import { Status } from '../types';
 import { useNavigate, Link } from 'react-router-dom';
 
-const KpiCard = ({ title, value, change, trend, icon: Icon, color, subtleText, link, filterState }: any) => {
+interface KpiCardProps {
+  title: string;
+  value: string | number;
+  change?: string;
+  trend?: 'up' | 'down';
+  icon: React.ElementType;
+  color: string;
+  subtleText?: string;
+  link?: string;
+  filterState?: unknown;
+}
+
+const KpiCard: React.FC<KpiCardProps> = ({ title, value, change, trend, icon: Icon, color, subtleText, link, filterState }) => {
   const navigate = useNavigate();
   const handleNavigate = () => {
     if(link) navigate(link, { state: filterState });
@@ -35,7 +46,7 @@ export const Dashboard: React.FC = () => {
   const [currentRole, setCurrentRole] = useState('Executive');
   const activeWorkOrders = WORK_ORDERS.filter(wo => wo.status !== 'Completed').length;
   const portfolioValue = PROPERTIES.reduce((acc, curr) => acc + curr.marketValue, 0) / 1000000;
-  const projectsAtRisk = CAPITAL_PROJECTS.filter(p => p.status === Status.AtRisk).length;
+  const projectsAtRisk = CAPITAL_PROJECTS.filter(p => p.status === 'AtRisk').length;
   const expiringLease = LEASES.find(l => l.status === 'Expiring Soon');
   const overBudgetProject = CAPITAL_PROJECTS.find(p => p.spent > p.totalBudget);
   
@@ -112,7 +123,7 @@ export const Dashboard: React.FC = () => {
           color="bg-red-500"
           subtleText="vs. 0 last quarter"
           link="/projects"
-          filterState={{ status: Status.AtRisk }}
+          filterState={{ status: 'AtRisk' }}
         />
       </div>
 

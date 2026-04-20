@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { USACE_CLAIMS, USACE_ASSETS, DOCUMENTS } from '../../services/mockData';
@@ -6,6 +7,7 @@ import { DetailItem } from '../../components/DetailItem';
 import { ArrowLeft, Edit, Gavel, Calendar, DollarSign, FileText, CheckCircle, Lock, Building, Scale, AlertTriangle, User } from 'lucide-react';
 import { LegalClaim, AuditEvent } from '../../types';
 import { LegalClaimModal } from './components/LegalClaimModal';
+import { validateLegalStatute, validateAuditCommentDetail } from '../../utils/usaceRules';
 
 const LIFECYCLE_STATES: LegalClaim['lifecycleState'][] = ['Received', 'Under Investigation', 'Adjudicated', 'Settled', 'Denied', 'Paid', 'Closed'];
 
@@ -23,7 +25,16 @@ export const RemisLegalDetail: React.FC = () => {
     const asset = USACE_ASSETS.find(a => a.id === claim.assetId);
     const relatedDocs = DOCUMENTS.filter(d => claim.documentIds.includes(d.id));
 
+    // Rule 39 Check
+    const statuteCheck = validateLegalStatute(claim);
+
     const handleSave = (updatedRecord: Partial<LegalClaim>, reason: string) => {
+        const commentCheck = validateAuditCommentDetail(reason);
+        if (!commentCheck.allowed) {
+            alert(commentCheck.reason);
+            // In strict mode we might return, but for simulation we proceed with warning
+        }
+
         const newHistoryEvent: AuditEvent = {
             timestamp: new Date().toLocaleString(),
             user: 'Amanda Legal', // Simulated User
@@ -77,6 +88,16 @@ export const RemisLegalDetail: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            {!statuteCheck.allowed && (
+                <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+                    <AlertTriangle className="text-red-600 mt-0.5" size={20} />
+                    <div>
+                        <h4 className="font-bold text-red-800">Compliance Warning</h4>
+                        <p className="text-sm text-red-700">{statuteCheck.reason}</p>
+                    </div>
+                </div>
+            )}
 
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col">
                 <div className="px-6 border-b border-slate-200">

@@ -6,6 +6,7 @@ import { DetailItem } from '../../components/DetailItem';
 import { ArrowLeft, Edit, Building, FileText, CheckCircle, AlertTriangle, Scale, Leaf, Trash2, History, Paperclip, ShieldCheck, Lock } from 'lucide-react';
 import { DisposalRecord, AuditEvent } from '../../types';
 import { DisposalModal } from './components/DisposalModal';
+import { validateDisposalAuthorization, validateEnvironmentalForDisposal, validateDisposalProceeds, validateDisposalClean } from '../../utils/usaceRules';
 
 const LIFECYCLE_STATES: DisposalRecord['lifecycleState'][] = ['Initiated', 'Excess Determined', 'Pending Authorization', 'Authorized', 'Executed', 'Closed'];
 
@@ -35,15 +36,47 @@ export const RemisDisposalDetail: React.FC = () => {
             action: 'Record Updated',
             details: reason
         };
-        setDisposal(prev => prev ? { ...prev, ...updatedRecord, history: [newHistoryEvent, ...prev.history!] } : undefined);
+        setDisposal(prev => prev ? { ...prev, ...updatedRecord, history: [newHistoryEvent, ...(prev.history || [])] } : undefined);
         setIsEditModalOpen(false);
     };
 
     const handleStateTransition = (newState: DisposalRecord['lifecycleState']) => {
-        // 5.7.4 - Prevent transition to executed without authorization
-        if (newState === 'Executed' && disposal.authorizationStatus !== 'Approved') {
-            alert('Compliance Error: Cannot transition to Executed status without approved Authorization.');
-            return;
+        // Rule 2: Check Authorization prerequisites
+        if (newState === 'Authorized') {
+            const ruleCheck = validateDisposalAuthorization(disposal);
+            if (!ruleCheck.allowed) {
+                alert(ruleCheck.reason);
+                return;
+            }
+        }
+
+        // Rule 7 & 49: Check Environmental Clearance
+        if (newState === 'Executed') {
+            const ruleCheck = validateEnvironmentalForDisposal(disposal, USACE_ENVIRONMENTAL);
+            if (!ruleCheck.allowed) {
+                alert(ruleCheck.reason);
+                return;
+            }
+            const cleanCheck = validateDisposalClean(disposal, USACE_ENVIRONMENTAL);
+            if(!cleanCheck.allowed) {
+                alert(cleanCheck.reason);
+                if(!confirm("Simulation Override: Proceed with outstanding environmental actions?")) return;
+            }
+
+            if (disposal.authorizationStatus !== 'Approved') {
+                alert('Compliance Error: Cannot transition to Executed status without approved Authorization.');
+                return;
+            }
+        }
+
+        // Rule 27: Check Proceeds
+        if (newState === 'Closed') {
+            const proceedsCheck = validateDisposalProceeds(disposal);
+            if (!proceedsCheck.allowed) {
+                alert(proceedsCheck.reason);
+                // Allow override
+                if(!confirm("Simulation Override: Proceed closing without proceeds?")) return;
+            }
         }
 
         const reason = `Lifecycle state advanced from ${disposal.lifecycleState} to ${newState}.`;
@@ -53,7 +86,7 @@ export const RemisDisposalDetail: React.FC = () => {
             action: 'State Transition',
             details: reason,
         };
-        setDisposal(prev => prev ? { ...prev, lifecycleState: newState, history: [newHistoryEvent, ...prev.history!] } : undefined);
+        setDisposal(prev => prev ? { ...prev, lifecycleState: newState, history: [newHistoryEvent, ...(prev.history || [])] } : undefined);
     };
 
     const currentStateIndex = LIFECYCLE_STATES.indexOf(disposal.lifecycleState);
@@ -205,7 +238,7 @@ export const RemisDisposalDetail: React.FC = () => {
                                 <div className="flex items-center gap-1 text-xs text-slate-500"><Lock size={12} /> Securely Logged</div>
                             </div>
                             <div className="space-y-4">
-                                {disposal.history?.map((event, i) => (
+                                {(disposal.history || []).map((event, i) => (
                                     <div key={i} className="flex gap-4">
                                         <div className="flex flex-col items-center"><div className={`w-4 h-4 rounded-full ring-4 ${i === 0 ? 'bg-blue-500 ring-blue-100 animate-pulse' : 'bg-slate-300 ring-slate-100'} z-10`}></div><div className="w-0.5 flex-1 bg-slate-200"></div></div>
                                         <div>

@@ -1,14 +1,14 @@
 
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { USACE_ENCROACHMENTS, USACE_ASSETS, USACE_OUTGRANTS, USACE_PERMITS, USACE_CLAIMS } from '../../services/mockData';
+import { USACE_ENCROACHMENTS, USACE_ASSETS, DOCUMENTS } from '../../services/mockData';
 import { RegulatoryBadge } from '../../components/RegulatoryBadge';
 import { DetailItem } from '../../components/DetailItem';
-import { ArrowLeft, Edit, AlertTriangle, Calendar, ShieldCheck, CheckCircle, Lock, Building, FileText, Activity, Plus, Trash2, ListChecks } from 'lucide-react';
-import { EncroachmentCase, AuditEvent, EncroachmentTask } from '../../types';
+import { ArrowLeft, Edit, AlertTriangle, Calendar, ShieldAlert, CheckCircle, Lock, Building, MapPin, Activity, CheckSquare, Plus, FileText, User } from 'lucide-react';
+import { EncroachmentCase, AuditEvent, EncroachmentTask, WorkActivity } from '../../types';
 import { EncroachmentModal } from './components/EncroachmentModal';
-
-const LIFECYCLE_STATES: EncroachmentCase['lifecycleState'][] = ['Reported', 'Triaged', 'Investigated', 'Action Planned', 'Under Corrective Action', 'Resolved', 'Closed', 'Archived'];
+import { TaskModal } from './components/TaskModal';
+import { validateEncroachmentTransition, validateEncroachmentClosure } from '../../utils/usaceRules';
 
 export const RemisEncroachmentDetail: React.FC = () => {
     const { caseId } = useParams<{ caseId: string }>();
@@ -16,21 +16,18 @@ export const RemisEncroachmentDetail: React.FC = () => {
     const [encroachment, setEncroachment] = useState<EncroachmentCase | undefined>(USACE_ENCROACHMENTS.find(e => e.id === caseId));
     const [activeTab, setActiveTab] = useState('overview');
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [taskModalState, setTaskModalState] = useState<{ open: boolean, mode: 'Task'|'Activity', parentTaskId?: string, task?: EncroachmentTask }>({ open: false, mode: 'Task' });
 
     if (!encroachment) {
         return <div className="p-6">Encroachment case not found. <Link to="/usace/encroachments" className="text-blue-600">Return to Dashboard</Link></div>;
     }
 
     const asset = USACE_ASSETS.find(a => a.id === encroachment.assetId);
-    // 17.1.5 Associations
-    const relatedOutGrant = USACE_OUTGRANTS.find(o => o.id === encroachment.relatedOutGrantId);
-    const relatedPermit = USACE_PERMITS.find(p => p.id === encroachment.relatedPermitId);
-    const relatedClaim = USACE_CLAIMS.find(c => c.id === encroachment.relatedLegalClaimId);
-
-    const handleSave = (updatedRecord: Partial<EncroachmentCase>, reason: string) => {
+    
+    const handleSaveCase = (updatedRecord: Partial<EncroachmentCase>, reason: string) => {
         const newHistoryEvent: AuditEvent = {
             timestamp: new Date().toLocaleString(),
-            user: 'Enforcement Officer', // Simulated User
+            user: 'Alex Realty',
             action: 'Record Updated',
             details: reason
         };
@@ -38,11 +35,52 @@ export const RemisEncroachmentDetail: React.FC = () => {
         setIsEditModalOpen(false);
     };
 
+    const handleSaveTaskData = (data: any, type: 'Task' | 'Activity') => {
+        if (!encroachment) return;
+        
+        let updatedTasks = [...encroachment.tasks];
+        
+        if (type === 'Task') {
+            if (taskModalState.task) {
+                // Update existing
+                updatedTasks = updatedTasks.map(t => t.id === taskModalState.task!.id ? { ...t, ...data } : t);
+            } else {
+                // Add new
+                const newTask: EncroachmentTask = { 
+                    id: `TSK-${Date.now()}`, 
+                    caseId: encroachment.id,
+                    activities: [],
+                    ...data 
+                };
+                updatedTasks.push(newTask);
+            }
+        } else {
+            // Add Activity
+            updatedTasks = updatedTasks.map(t => {
+                if (t.id === taskModalState.parentTaskId) {
+                    return { ...t, activities: [...t.activities, data] };
+                }
+                return t;
+            });
+        }
+
+        setEncroachment({ ...encroachment, tasks: updatedTasks });
+        setTaskModalState({ open: false, mode: 'Task' });
+    };
+
     const handleStateTransition = (newState: EncroachmentCase['lifecycleState']) => {
-        // 17.7.3 Enforce valid transitions
-        if (newState === 'Closed' && encroachment.lifecycleState !== 'Resolved') {
-            alert('Governance Error: Case must be Resolved before it can be Closed.');
+        const transitionCheck = validateEncroachmentTransition(encroachment.lifecycleState, newState);
+        if (!transitionCheck.allowed) {
+            alert(transitionCheck.reason);
             return;
+        }
+
+        if (newState === 'Closed') {
+            const closureCheck = validateEncroachmentClosure(encroachment);
+            if (!closureCheck.allowed) {
+                alert(closureCheck.reason);
+                return;
+            }
         }
 
         const reason = `Lifecycle state advanced from ${encroachment.lifecycleState} to ${newState}.`;
@@ -55,38 +93,30 @@ export const RemisEncroachmentDetail: React.FC = () => {
         setEncroachment(prev => prev ? { ...prev, lifecycleState: newState, history: [newHistoryEvent, ...(prev.history || [])] } : undefined);
     };
 
-    const currentStateIndex = LIFECYCLE_STATES.indexOf(encroachment.lifecycleState);
-
-    // Mock Task Management
-    const addTask = () => {
-        const newTask: EncroachmentTask = {
-            id: `TASK-${Date.now()}`,
-            caseId: encroachment.id,
-            title: 'New Investigation Task',
-            type: 'Investigation',
-            assignedTo: 'Unassigned',
-            dueDate: new Date().toISOString().split('T')[0],
-            lifecycleState: 'Assigned',
-            workActivities: []
-        };
-        setEncroachment(prev => prev ? { ...prev, tasks: [...(prev.tasks || []), newTask] } : undefined);
-    };
-
     return (
         <div className="space-y-6">
-            <EncroachmentModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onSave={handleSave} encroachment={encroachment} />
+            <EncroachmentModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onSave={handleSaveCase} encroachment={encroachment} />
+            <TaskModal 
+                isOpen={taskModalState.open} 
+                onClose={() => setTaskModalState({...taskModalState, open: false})} 
+                onSave={handleSaveTaskData} 
+                mode={taskModalState.mode} 
+                parentTaskId={taskModalState.parentTaskId}
+                existingTask={taskModalState.task}
+            />
+
             <div>
                 <button onClick={() => navigate('/usace/encroachments')} className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 mb-2"><ArrowLeft size={16} /> Back to Dashboard</button>
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <div className="flex items-center gap-3">
                             <h1 className="text-2xl font-bold text-slate-900">Encroachment: {encroachment.id}</h1>
-                            <span className={`text-xs px-2 py-1 rounded-full font-bold border ${encroachment.type === 'Structure' ? 'bg-red-100 text-red-800 border-red-200' : 'bg-slate-100 text-slate-800 border-slate-200'}`}>{encroachment.type}</span>
+                            <span className="text-xs bg-red-100 text-red-800 border border-red-200 px-2 py-1 rounded-full font-bold">{encroachment.type}</span>
                         </div>
-                        <p className="text-slate-500 font-mono text-sm mt-1">Asset: {asset?.rpuid}</p>
+                        <p className="text-slate-500 text-sm mt-1">Asset: {asset?.rpuid} • {asset?.name}</p>
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className={`text-sm font-semibold px-3 py-1 rounded-full border bg-slate-100 text-slate-800 border-slate-200`}>{encroachment.lifecycleState}</span>
+                        <span className={`text-sm font-semibold px-3 py-1 rounded-full border bg-blue-100 text-blue-800 border-blue-200`}>{encroachment.lifecycleState}</span>
                         <button onClick={() => setIsEditModalOpen(true)} className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 font-medium text-sm"><Edit size={16} /> Update Case</button>
                         <RegulatoryBadge refs={['17']} />
                     </div>
@@ -96,11 +126,10 @@ export const RemisEncroachmentDetail: React.FC = () => {
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col">
                 <div className="px-6 border-b border-slate-200">
                     <nav className="-mb-px flex gap-6" aria-label="Tabs">
-                        <button onClick={() => setActiveTab('overview')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'overview' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Case Overview</button>
-                        <button onClick={() => setActiveTab('work')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'work' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Work Management (Req 17)</button>
-                        <button onClick={() => setActiveTab('lifecycle')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'lifecycle' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Lifecycle Governance</button>
-                        <button onClick={() => setActiveTab('related')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'related' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Related Artifacts</button>
-                        <button onClick={() => setActiveTab('history')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'history' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Audit Trail</button>
+                        <button onClick={() => setActiveTab('overview')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'overview' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Overview</button>
+                        <button onClick={() => setActiveTab('work')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'work' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Work Management</button>
+                        <button onClick={() => setActiveTab('documents')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'documents' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Evidence & Docs</button>
+                        <button onClick={() => setActiveTab('history')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'history' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>History & Audit</button>
                     </nav>
                 </div>
 
@@ -108,17 +137,30 @@ export const RemisEncroachmentDetail: React.FC = () => {
                     {activeTab === 'overview' && (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             <div className="space-y-6">
-                                <h3 className="font-bold text-slate-800 border-b pb-2">Discovery Information</h3>
-                                <DetailItem label="Asset" value={asset?.name} icon={Building} />
-                                <DetailItem label="Discovery Date" value={encroachment.discoveryDate} icon={Calendar} />
-                                <DetailItem label="Official" value={encroachment.responsibleOfficial} icon={ShieldCheck} />
+                                <h3 className="font-bold text-slate-800 border-b pb-2">Discovery & Location</h3>
+                                <DetailItem label="Date Reported" value={encroachment.dateReported} icon={Calendar} />
+                                <DetailItem label="Method" value={encroachment.discoveryMethod} icon={Activity} />
+                                <DetailItem label="Location" value={encroachment.locationDescription} icon={MapPin} />
                             </div>
-                            <div className="space-y-6 lg:col-span-2">
-                                <h3 className="font-bold text-slate-800 border-b pb-2">Location & Assessment</h3>
-                                <DetailItem label="Location" value={encroachment.locationDescription} icon={AlertTriangle} />
-                                <div className="mt-4 bg-slate-50 p-3 rounded border">
-                                    <p className="text-xs text-slate-500 font-bold uppercase mb-1">Initial Assessment</p>
-                                    <p className="text-sm text-slate-800">{encroachment.initialAssessment}</p>
+                            <div className="space-y-6">
+                                <h3 className="font-bold text-slate-800 border-b pb-2">Assessment</h3>
+                                <div className="p-3 bg-slate-50 rounded border">
+                                    <p className="text-xs text-slate-500 uppercase font-semibold">Initial Assessment</p>
+                                    <p className="text-sm text-slate-800 mt-1">{encroachment.initialAssessment}</p>
+                                </div>
+                                <div className="p-3 bg-slate-50 rounded border">
+                                    <p className="text-xs text-slate-500 uppercase font-semibold">Resolution Plan</p>
+                                    <p className="text-sm text-slate-800 mt-1">{encroachment.resolutionPlan || 'Plan pending development.'}</p>
+                                </div>
+                            </div>
+                            <div className="space-y-6">
+                                <h3 className="font-bold text-slate-800 border-b pb-2">Actions</h3>
+                                <div className="flex flex-col gap-2">
+                                    {encroachment.lifecycleState === 'Reported' && <button onClick={() => handleStateTransition('Triaged')} className="w-full py-2 bg-blue-600 text-white rounded text-sm">Triage Case</button>}
+                                    {encroachment.lifecycleState === 'Triaged' && <button onClick={() => handleStateTransition('Investigated')} className="w-full py-2 bg-blue-600 text-white rounded text-sm">Mark Investigated</button>}
+                                    {encroachment.lifecycleState === 'Investigated' && <button onClick={() => handleStateTransition('Action Planned')} className="w-full py-2 bg-blue-600 text-white rounded text-sm">Finalize Plan</button>}
+                                    {encroachment.lifecycleState === 'Resolved' && <button onClick={() => handleStateTransition('Closed')} className="w-full py-2 bg-green-600 text-white rounded text-sm">Close Case</button>}
+                                    <p className="text-xs text-slate-400 text-center mt-2">Current State: {encroachment.lifecycleState}</p>
                                 </div>
                             </div>
                         </div>
@@ -127,85 +169,63 @@ export const RemisEncroachmentDetail: React.FC = () => {
                     {activeTab === 'work' && (
                         <div>
                             <div className="flex justify-between items-center mb-4">
-                                <h3 className="font-bold text-slate-900 text-lg">Encroachment Tasks & Activities (17.3)</h3>
-                                <button onClick={addTask} className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-xs"><Plus size={14}/> Add Task</button>
+                                <h3 className="font-bold text-slate-800 flex items-center gap-2"><CheckSquare size={20}/> Tasks & Activities</h3>
+                                <button onClick={() => setTaskModalState({ open: true, mode: 'Task', task: null })} className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-xs"><Plus size={14}/> Add Task</button>
                             </div>
                             
                             <div className="space-y-4">
-                                {(encroachment.tasks || []).map((task, idx) => (
-                                    <div key={task.id} className="border rounded-lg overflow-hidden bg-white shadow-sm">
-                                        <div className="bg-slate-50 p-3 border-b flex justify-between items-center">
+                                {encroachment.tasks.length === 0 && <p className="text-slate-500 italic text-center py-8">No tasks assigned. Create a task to track work.</p>}
+                                {encroachment.tasks.map(task => (
+                                    <div key={task.id} className="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                                        <div className="bg-slate-50 p-4 flex justify-between items-start">
                                             <div>
-                                                <h4 className="font-bold text-slate-800 flex items-center gap-2"><ListChecks size={16}/> {task.title}</h4>
-                                                <p className="text-xs text-slate-500">{task.type} • Assigned: {task.assignedTo} • Due: {task.dueDate}</p>
+                                                <div className="flex items-center gap-2">
+                                                    <h4 className="font-bold text-slate-900">{task.description}</h4>
+                                                    <span className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded ${task.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>{task.status}</span>
+                                                </div>
+                                                <div className="text-xs text-slate-500 mt-1 flex gap-3">
+                                                    <span className="flex items-center gap-1"><User size={12}/> {task.assignedTo}</span>
+                                                    <span className="flex items-center gap-1"><Calendar size={12}/> Due: {task.dueDate}</span>
+                                                </div>
                                             </div>
-                                            <span className={`text-xs px-2 py-1 rounded-full border bg-white font-medium`}>{task.lifecycleState}</span>
+                                            <div className="flex gap-2">
+                                                <button onClick={() => setTaskModalState({ open: true, mode: 'Task', task })} className="text-xs text-blue-600 hover:underline">Edit</button>
+                                                <button onClick={() => setTaskModalState({ open: true, mode: 'Activity', parentTaskId: task.id })} className="flex items-center gap-1 text-xs bg-white border px-2 py-1 rounded hover:bg-slate-50 text-slate-700"><Activity size={12}/> Log Activity</button>
+                                            </div>
                                         </div>
-                                        <div className="p-3">
-                                            <h5 className="text-xs font-bold text-slate-500 uppercase mb-2">Work Activities</h5>
-                                            <table className="w-full text-xs text-left">
-                                                <thead className="text-slate-500 bg-slate-50/50"><tr><th className="p-2">Description</th><th className="p-2">Planned Date</th><th className="p-2">Responsible</th><th className="p-2">Outcome</th></tr></thead>
-                                                <tbody>
-                                                    {task.workActivities.map(wa => (
-                                                        <tr key={wa.id} className="border-t border-slate-100">
-                                                            <td className="p-2">{wa.description}</td>
-                                                            <td className="p-2">{wa.plannedDate}</td>
-                                                            <td className="p-2">{wa.responsibleParty}</td>
-                                                            <td className="p-2 text-slate-600">{wa.outcome || '-'}</td>
-                                                        </tr>
-                                                    ))}
-                                                    {task.workActivities.length === 0 && <tr><td colSpan={4} className="p-2 text-center text-slate-400 italic">No activities logged.</td></tr>}
-                                                </tbody>
-                                            </table>
-                                            <button className="mt-2 text-xs text-blue-600 hover:underline flex items-center gap-1"><Plus size={12}/> Log Activity</button>
-                                        </div>
+                                        {task.activities.length > 0 && (
+                                            <div className="bg-white border-t border-slate-100">
+                                                <table className="w-full text-xs text-left">
+                                                    <thead className="bg-slate-50/50 text-slate-500"><tr><th className="p-2 pl-4">Date</th><th>Action</th><th>Performed By</th><th>Outcome</th></tr></thead>
+                                                    <tbody className="divide-y divide-slate-50">
+                                                        {task.activities.map(act => (
+                                                            <tr key={act.id}>
+                                                                <td className="p-2 pl-4 text-slate-600 w-24">{act.date}</td>
+                                                                <td className="p-2 font-medium w-48">{act.action}</td>
+                                                                <td className="p-2 text-slate-600 w-32">{act.performedBy}</td>
+                                                                <td className="p-2 text-slate-700">{act.outcome}</td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
-                                {(!encroachment.tasks || encroachment.tasks.length === 0) && <p className="text-slate-500 italic text-sm text-center py-8">No tasks established.</p>}
                             </div>
                         </div>
                     )}
 
-                    {activeTab === 'lifecycle' && (
-                        <div>
-                            <div className="bg-slate-50 p-5 rounded-xl border mb-8 flex justify-between items-center">
-                                <div>
-                                    <h3 className="font-bold text-slate-900 text-lg">Current State: {encroachment.lifecycleState}</h3>
-                                    <p className="text-sm text-slate-600 mt-1">Resolution: {encroachment.resolution || 'Pending'}</p>
-                                </div>
-                                <div className="flex gap-2">
-                                    {currentStateIndex < LIFECYCLE_STATES.length - 1 && (
-                                        <button onClick={() => handleStateTransition(LIFECYCLE_STATES[currentStateIndex + 1])} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm shadow-sm">
-                                            Advance to {LIFECYCLE_STATES[currentStateIndex + 1]}
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-
-                            <h3 className="font-bold text-slate-800 mb-6">Case Progression</h3>
-                            <div className="flex items-center overflow-x-auto pb-4">
-                                {LIFECYCLE_STATES.map((state, i) => (
-                                    <React.Fragment key={state}>
-                                        <div className="flex flex-col items-center min-w-[80px]">
-                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors ${i <= currentStateIndex ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-300 text-slate-400'}`}>
-                                                {i < currentStateIndex ? <CheckCircle size={16}/> : <span className="text-xs font-bold">{i+1}</span>}
-                                            </div>
-                                            <p className={`text-xs mt-2 text-center font-medium ${i <= currentStateIndex ? 'text-blue-700' : 'text-slate-400'}`}>{state}</p>
-                                        </div>
-                                        {i < LIFECYCLE_STATES.length - 1 && <div className={`flex-1 h-1 min-w-[40px] ${i < currentStateIndex ? 'bg-blue-600' : 'bg-slate-200'}`}></div>}
-                                    </React.Fragment>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {activeTab === 'related' && (
+                    {activeTab === 'documents' && (
                         <div className="space-y-4">
-                            <h3 className="font-bold text-slate-800 mb-2">Associated Records (17.1.5)</h3>
-                            {relatedOutGrant && <div className="p-3 border rounded bg-slate-50 flex justify-between items-center"><div><p className="font-semibold text-sm">Related Out-Grant</p><p className="text-xs text-slate-500">{relatedOutGrant.id} ({relatedOutGrant.grantee})</p></div><Link to={`/usace/outgrants/${relatedOutGrant.id}`} className="text-blue-600 text-sm hover:underline">View</Link></div>}
-                            {relatedPermit && <div className="p-3 border rounded bg-slate-50 flex justify-between items-center"><div><p className="font-semibold text-sm">Related Permit</p><p className="text-xs text-slate-500">{relatedPermit.uniqueIdentifier}</p></div><Link to={`/usace/permits/${relatedPermit.id}`} className="text-blue-600 text-sm hover:underline">View</Link></div>}
-                            {relatedClaim && <div className="p-3 border rounded bg-slate-50 flex justify-between items-center"><div><p className="font-semibold text-sm">Related Legal Claim</p><p className="text-xs text-slate-500">{relatedClaim.id}</p></div><Link to={`/usace/legal/${relatedClaim.id}`} className="text-blue-600 text-sm hover:underline">View</Link></div>}
-                            {!relatedOutGrant && !relatedPermit && !relatedClaim && <p className="text-sm text-slate-500 italic">No related records linked.</p>}
+                            <div className="flex justify-between items-center">
+                                <h3 className="font-bold text-slate-800">Evidence & Documentation</h3>
+                                <button className="text-xs text-blue-600 hover:underline">Upload Document</button>
+                            </div>
+                            <div className="p-8 border-2 border-dashed border-slate-200 rounded-lg text-center text-slate-400">
+                                <FileText size={32} className="mx-auto mb-2 opacity-50"/>
+                                <p>No documents attached. Upload photos, reports, or notices here.</p>
+                            </div>
                         </div>
                     )}
 

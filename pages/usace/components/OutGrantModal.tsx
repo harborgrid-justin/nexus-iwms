@@ -1,7 +1,9 @@
+
 import React, { useState, FormEvent } from 'react';
 import { X } from 'lucide-react';
 import { OutGrant } from '../../../types';
 import { USACE_ASSETS } from '../../../services/mockData';
+import { validateOutgrantTerm } from '../../../utils/usaceRules';
 
 interface OutGrantModalProps {
     isOpen: boolean;
@@ -27,9 +29,19 @@ export const OutGrantModal: React.FC<OutGrantModalProps> = ({ isOpen, onClose, o
             return;
         }
 
+        // Rule 4 Validation
+        const termCheck = validateOutgrantTerm(data.startDate as string, data.endDate as string, data.type as string);
+        if (!termCheck.allowed) {
+            alert(termCheck.reason);
+            // Allow override simulation
+            if (!confirm("Simulation Override: Proceed with Secretarial Approval assumption?")) return;
+        }
+
         const processedData = {
             ...data,
             revenue: Number(data.revenue),
+            insuranceProof: (data.insuranceProof === 'on'),
+            publicBenefitAllowance: (data.publicBenefitAllowance === 'on')
         };
 
         onSave(processedData as any, reason);
@@ -62,6 +74,14 @@ export const OutGrantModal: React.FC<OutGrantModalProps> = ({ isOpen, onClose, o
                             <div><label className="text-sm font-medium">Start Date</label><input name="startDate" type="date" defaultValue={outgrant?.startDate} className="w-full mt-1 p-2 border rounded-md" required /></div>
                             <div><label className="text-sm font-medium">End Date</label><input name="endDate" type="date" defaultValue={outgrant?.endDate} className="w-full mt-1 p-2 border rounded-md" required /></div>
                             <div><label className="text-sm font-medium">Annual Revenue ($)</label><input name="revenue" type="number" defaultValue={outgrant?.revenue} className="w-full mt-1 p-2 border rounded-md" /></div>
+                        </div>
+                        <div className="flex gap-6 mt-4">
+                            <label className="flex items-center gap-2 text-sm text-slate-700">
+                                <input type="checkbox" name="insuranceProof" defaultChecked={outgrant?.insuranceProof} /> Proof of Insurance Received
+                            </label>
+                            <label className="flex items-center gap-2 text-sm text-slate-700">
+                                <input type="checkbox" name="publicBenefitAllowance" defaultChecked={outgrant?.publicBenefitAllowance} /> Public Benefit Allowance Applied
+                            </label>
                         </div>
                     </div>
 

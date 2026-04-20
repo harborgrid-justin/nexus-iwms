@@ -5,9 +5,10 @@ import { USACE_OUTGRANTS, USACE_ASSETS, DOCUMENTS, USACE_INSPECTIONS } from '../
 import { RegulatoryBadge } from '../../components/RegulatoryBadge';
 import { DetailItem } from '../../components/DetailItem';
 import { ArrowLeft, Edit, Calendar, DollarSign, FileText, CheckCircle, Lock, Building, Scale, ClipboardList, Plus, AlertTriangle } from 'lucide-react';
-import { OutGrant, AuditEvent, UtilizationInspection } from '../../types';
+import { OutGrant, AuditEvent, OutGrantInspection } from '../../types';
 import { OutGrantModal } from './components/OutGrantModal';
 import { InspectionModal } from './components/InspectionModal';
+import { validateGranteeInsurance, validateOutgrantRevenue } from '../../utils/usaceRules';
 
 const LIFECYCLE_STATES: OutGrant['lifecycleState'][] = ['Proposed', 'Active', 'Amended', 'Suspended', 'Expired', 'Terminated', 'Closed', 'Archived'];
 
@@ -18,7 +19,7 @@ export const RemisOutgrantDetail: React.FC = () => {
     const [activeTab, setActiveTab] = useState('overview');
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isInspectionModalOpen, setIsInspectionModalOpen] = useState(false);
-    const [selectedInspection, setSelectedInspection] = useState<UtilizationInspection | null>(null);
+    const [selectedInspection, setSelectedInspection] = useState<OutGrantInspection | null>(null);
 
     // Filter inspections for this specific outgrant
     const inspections = USACE_INSPECTIONS.filter(i => i.outGrantId === outgrantId);
@@ -29,6 +30,10 @@ export const RemisOutgrantDetail: React.FC = () => {
 
     const asset = USACE_ASSETS.find(a => a.id === outgrant.assetId);
     const relatedDocs = DOCUMENTS.filter(d => outgrant.documentIds.includes(d.id));
+
+    // Rule 22 check (simulation FMV)
+    const estimatedFMV = outgrant.revenue * 1.1; // Assume revenue is 10% below FMV for testing rule
+    const revenueValidation = validateOutgrantRevenue(outgrant, estimatedFMV);
 
     const handleSaveOutGrant = (updatedRecord: Partial<OutGrant>, reason: string) => {
         const newHistoryEvent: AuditEvent = {
@@ -41,13 +46,24 @@ export const RemisOutgrantDetail: React.FC = () => {
         setIsEditModalOpen(false);
     };
 
-    const handleSaveInspection = (record: Partial<UtilizationInspection>, reason: string) => {
-        console.log("Saving inspection:", record, reason);
-        alert("Inspection record saved with full lifecycle data.");
+    const handleSaveInspection = (record: Partial<OutGrantInspection>) => {
+        // Mock save inspection logic - normally would update the inspections array state
+        console.log("Saving inspection", record);
+        alert("Inspection record saved.");
         setIsInspectionModalOpen(false);
     }
 
     const handleStateTransition = (newState: OutGrant['lifecycleState']) => {
+        // Rule 19: Insurance check for active leases
+        if (newState === 'Active') {
+            const insuranceCheck = validateGranteeInsurance(outgrant);
+            if (!insuranceCheck.allowed) {
+                alert(insuranceCheck.reason);
+                // Allow override in simulation
+                if(!confirm("Simulation Override: Proceed without insurance proof?")) return;
+            }
+        }
+
         const reason = `Lifecycle state advanced from ${outgrant.lifecycleState} to ${newState}.`;
         const newHistoryEvent: AuditEvent = {
             timestamp: new Date().toLocaleString(),
@@ -63,14 +79,7 @@ export const RemisOutgrantDetail: React.FC = () => {
     return (
         <div className="space-y-6">
             <OutGrantModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onSave={handleSaveOutGrant} outgrant={outgrant} />
-            <InspectionModal 
-                isOpen={isInspectionModalOpen} 
-                onClose={() => setIsInspectionModalOpen(false)} 
-                onSave={handleSaveInspection} 
-                inspection={selectedInspection} 
-                outGrantId={outgrant.id}
-                assetId={outgrant.assetId} 
-            />
+            <InspectionModal isOpen={isInspectionModalOpen} onClose={() => setIsInspectionModalOpen(false)} onSave={handleSaveInspection} inspection={selectedInspection} outGrantId={outgrant.id} />
             
             <div>
                 <button onClick={() => navigate('/usace/outgrants')} className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 mb-2"><ArrowLeft size={16} /> Back to Dashboard</button>
@@ -95,7 +104,7 @@ export const RemisOutgrantDetail: React.FC = () => {
                     <nav className="-mb-px flex gap-6" aria-label="Tabs">
                         <button onClick={() => setActiveTab('overview')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'overview' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Overview</button>
                         <button onClick={() => setActiveTab('utilization')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'utilization' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Utilization & Compliance</button>
-                        <button onClick={() => setActiveTab('inspections')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'inspections' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Inspections (Req 16)</button>
+                        <button onClick={() => setActiveTab('inspections')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'inspections' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Inspections</button>
                         <button onClick={() => setActiveTab('history')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'history' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>History & Audit</button>
                     </nav>
                 </div>
@@ -117,6 +126,7 @@ export const RemisOutgrantDetail: React.FC = () => {
                                             {state}
                                         </div>
                                     ))}
+                                    {/* ... truncated list visual */}
                                 </div>
                                 {currentStateIndex < LIFECYCLE_STATES.length - 1 && (
                                     <div className="flex gap-2">
@@ -130,6 +140,7 @@ export const RemisOutgrantDetail: React.FC = () => {
                                 <DetailItem label="Start Date" value={outgrant.startDate} icon={Calendar} />
                                 <DetailItem label="End Date" value={outgrant.endDate} icon={Calendar} />
                                 <DetailItem label="Annual Revenue" value={`$${outgrant.revenue.toLocaleString()}`} icon={DollarSign} />
+                                {!revenueValidation.allowed && <div className="bg-amber-50 p-2 text-xs text-amber-800 border border-amber-200 rounded">{revenueValidation.reason}</div>}
                             </div>
                         </div>
                     )}
@@ -169,8 +180,8 @@ export const RemisOutgrantDetail: React.FC = () => {
                                             <th className="p-3 font-semibold">Date</th>
                                             <th className="p-3 font-semibold">Type</th>
                                             <th className="p-3 font-semibold">Inspector</th>
-                                            <th className="p-3 font-semibold">State</th>
                                             <th className="p-3 font-semibold">Findings</th>
+                                            <th className="p-3 font-semibold">Status</th>
                                             <th className="p-3 font-semibold">Action</th>
                                         </tr>
                                     </thead>
@@ -180,11 +191,9 @@ export const RemisOutgrantDetail: React.FC = () => {
                                                 <td className="p-3">{insp.inspectionDate}</td>
                                                 <td className="p-3">{insp.type}</td>
                                                 <td className="p-3">{insp.inspector}</td>
-                                                <td className="p-3"><span className="text-xs px-2 py-1 bg-slate-200 text-slate-700 rounded-full font-medium">{insp.lifecycleState}</span></td>
-                                                <td className="p-3">
-                                                    {insp.findings.length > 0 ? <span className="text-red-600 font-bold">{insp.findings.length} Issues</span> : <span className="text-green-600">None</span>}
-                                                </td>
-                                                <td className="p-3"><button onClick={() => { setSelectedInspection(insp); setIsInspectionModalOpen(true); }} className="text-blue-600 hover:underline font-medium">Manage</button></td>
+                                                <td className="p-3 truncate max-w-xs">{insp.findings}</td>
+                                                <td className="p-3"><span className={`text-xs px-2 py-1 rounded-full ${insp.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}`}>{insp.status}</span></td>
+                                                <td className="p-3"><button onClick={() => { setSelectedInspection(insp); setIsInspectionModalOpen(true); }} className="text-blue-600 hover:underline">Update</button></td>
                                             </tr>
                                         ))}
                                         {inspections.length === 0 && <tr><td colSpan={6} className="p-4 text-center text-slate-500 italic">No inspections recorded.</td></tr>}
