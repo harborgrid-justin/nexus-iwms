@@ -3,18 +3,11 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { USACE_ACQUISITIONS, USACE_ASSETS, USACE_APPRAISALS, USACE_ENVIRONMENTAL, FUND_TRANSACTIONS } from '../../services/mockData';
 import { RegulatoryBadge } from '../../components/RegulatoryBadge';
 import { DetailItem } from '../../components/DetailItem';
-import { ArrowLeft, Edit, Building, MapPin, Calendar, DollarSign, Shield, Sigma, BookOpen, FileText, Check, MoreVertical, Paperclip, Activity, Users, Target } from 'lucide-react';
+import { StatusBadge } from '../../components/StatusBadge';
+import { ArrowLeft, Edit, Building, MapPin, Calendar, DollarSign, Shield, Sigma, BookOpen, FileText, Check, MoreVertical, Paperclip, Activity, Users, Target, Clock } from 'lucide-react';
 import { AcquisitionRecord, AuditEvent } from '../../types';
 import { AcquisitionModal } from './components/AcquisitionModal';
 import { validateNEPAForAcquisition, validateAcquisitionFunding, validateAppraisalRecency } from '../../utils/usaceRules';
-
-const getStatusColor = (status: string) => {
-    switch(status) {
-      case 'Closed': case 'Terminated': return 'bg-slate-100 text-slate-800 border-slate-200';
-      case 'Closing': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-blue-100 text-blue-800 border-blue-200';
-    }
-};
 
 const STAGES: AcquisitionRecord['stage'][] = ['Planning', 'Site Selection', 'NEPA Review', 'Appraisal', 'Negotiation', 'Condemnation', 'Closing', 'Closed'];
 
@@ -98,11 +91,11 @@ export const RemisAcquisitionDetail: React.FC = () => {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <h1 className="text-2xl font-bold text-slate-900">Acquisition: {asset?.name}</h1>
-                        <p className="text-slate-500 font-mono">{acquisition.id}</p>
+                        <p className="text-slate-500 font-mono text-xs">{acquisition.id}</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <span className={`text-sm font-semibold px-3 py-1 rounded-full border ${getStatusColor(acquisition.stage)}`}>{acquisition.stage}</span>
-                        <button onClick={() => setIsEditModalOpen(true)} className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 font-medium text-sm"><Edit size={16} /> Edit</button>
+                    <div className="flex items-center gap-3">
+                        <StatusBadge status={acquisition.stage} />
+                        <button onClick={() => setIsEditModalOpen(true)} className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 font-medium text-sm transition-colors shadow-sm"><Edit size={16} /> Edit</button>
                         <RegulatoryBadge refs={['4']} />
                     </div>
                 </div>
@@ -110,27 +103,27 @@ export const RemisAcquisitionDetail: React.FC = () => {
 
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col">
                 <div className="px-6 border-b border-slate-200">
-                    <nav className="-mb-px flex gap-6" aria-label="Tabs">
-                        <button onClick={() => setActiveTab('overview')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'overview' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Overview</button>
-                        <button onClick={() => setActiveTab('lifecycle')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'lifecycle' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Lifecycle</button>
-                        <button onClick={() => setActiveTab('documents')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'documents' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Documents</button>
-                        <button onClick={() => setActiveTab('history')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-medium ${activeTab === 'history' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>History & Audit</button>
+                    <nav className="-mb-px flex gap-8" aria-label="Tabs">
+                        <button onClick={() => setActiveTab('overview')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-semibold transition-colors ${activeTab === 'overview' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Overview</button>
+                        <button onClick={() => setActiveTab('lifecycle')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-semibold transition-colors ${activeTab === 'lifecycle' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Lifecycle</button>
+                        <button onClick={() => setActiveTab('documents')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-semibold transition-colors ${activeTab === 'documents' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>Documents</button>
+                        <button onClick={() => setActiveTab('history')} className={`shrink-0 border-b-2 px-1 py-4 text-sm font-semibold transition-colors ${activeTab === 'history' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>History & Audit</button>
                     </nav>
                 </div>
-                 <div className="p-6">
+                 <div className="p-8">
                     {activeTab === 'overview' && (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div className="space-y-6"><h3 className="font-bold text-slate-800">Key Information</h3>
-                                <DetailItem label="Associated Asset" value={asset?.rpuid || 'N/A'} icon={Building} />
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                            <div className="space-y-8"><h3 className="font-bold text-slate-900 border-l-4 border-blue-600 pl-3">Key Information</h3>
+                                <DetailItem label="Associated Asset" value={asset?.rpuid || '—'} icon={Building} />
                                 <DetailItem label="Purpose" value={acquisition.purpose} icon={Target} />
                                 <DetailItem label="Responsible Organization" value={acquisition.responsibleOrg} icon={Users} />
                             </div>
-                            <div className="space-y-6"><h3 className="font-bold text-slate-800">Legal & Authority</h3>
+                            <div className="space-y-8"><h3 className="font-bold text-slate-900 border-l-4 border-blue-600 pl-3">Legal & Authority</h3>
                                 <DetailItem label="Acquisition Method" value={acquisition.acquisitionMethod} icon={BookOpen} />
                                 <DetailItem label="Authority" value={acquisition.authority} icon={Shield} />
                                 <DetailItem label="Statutory Basis" value={acquisition.statutoryBasis} icon={Shield} />
                             </div>
-                            <div className="space-y-6"><h3 className="font-bold text-slate-800">Financials & Dates</h3>
+                            <div className="space-y-8"><h3 className="font-bold text-slate-900 border-l-4 border-blue-600 pl-3">Financials & Dates</h3>
                                 <DetailItem label="Funding Source" value={acquisition.fundingSource} icon={Sigma} isProtected />
                                 <DetailItem label="Total Cost" value={`$${acquisition.cost.toLocaleString()}`} icon={DollarSign} isProtected />
                                 <DetailItem label="Target Close Date" value={acquisition.closeDate} icon={Calendar} />
@@ -139,58 +132,99 @@ export const RemisAcquisitionDetail: React.FC = () => {
                     )}
                     {activeTab === 'lifecycle' && (
                          <div>
-                             <h3 className="font-bold text-slate-800 mb-6">Acquisition Lifecycle</h3>
+                             <h3 className="font-bold text-slate-900 border-l-4 border-blue-600 pl-3 mb-8">Acquisition Pipeline</h3>
                              <div className="flex items-center">
                                 {STAGES.map((stage, i) => (
                                     <React.Fragment key={stage}>
                                         <div className="flex flex-col items-center">
-                                            <div className={`w-6 h-6 rounded-full flex items-center justify-center border-2 ${i <= currentStageIndex ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-300'}`}>
-                                               {i < currentStageIndex ? <Check size={14}/> : <span className="text-xs font-bold">{i+1}</span>}
+                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all ${i <= currentStageIndex ? 'bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-500/20' : 'bg-white border-slate-200 text-slate-400'}`}>
+                                               {i < currentStageIndex ? <Check size={18}/> : <span className="text-xs font-bold">{i+1}</span>}
                                             </div>
-                                            <p className={`text-xs mt-2 text-center ${i <= currentStageIndex ? 'font-semibold text-blue-600' : 'text-slate-500'}`}>{stage}</p>
+                                            <p className={`text-[10px] mt-2 text-center uppercase tracking-wider font-bold transition-colors ${i <= currentStageIndex ? 'text-blue-600' : 'text-slate-400'}`}>{stage}</p>
                                         </div>
-                                        {i < STAGES.length - 1 && <div className={`flex-1 h-1 ${i < currentStageIndex ? 'bg-blue-600' : 'bg-slate-300'}`}></div>}
+                                        {i < STAGES.length - 1 && <div className={`flex-1 h-1 mx-2 rounded-full transition-colors ${i < currentStageIndex ? 'bg-blue-600' : 'bg-slate-100'}`}></div>}
                                     </React.Fragment>
                                 ))}
                              </div>
-                              <div className="mt-8 text-center">
-                                {currentStageIndex < STAGES.length - 1 && <button onClick={() => handleStageChange(STAGES[currentStageIndex+1])} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm shadow-sm">Advance to: {STAGES[currentStageIndex+1]}</button>}
+                              <div className="mt-12 text-center">
+                                {currentStageIndex < STAGES.length - 1 && (
+                                    <button onClick={() => handleStageChange(STAGES[currentStageIndex+1])} className="px-6 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-bold text-sm shadow-lg shadow-blue-500/20 transition-all active:scale-95">
+                                        Advance to: {STAGES[currentStageIndex+1]}
+                                    </button>
+                                )}
                              </div>
                          </div>
                     )}
-                     {activeTab === 'documents' && (
-                         <div>
-                             <h3 className="font-bold text-slate-800 mb-4">Supporting Documents</h3>
-                             <div className="bg-slate-50 rounded-lg border">
+                    {activeTab === 'documents' && (
+                         <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+                             <h3 className="font-bold text-slate-900 border-l-4 border-blue-600 pl-3 mb-6 text-base tracking-tight uppercase">Supporting Documentation</h3>
+                             <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
                                  <table className="w-full text-sm">
-                                     <thead className="text-left"><tr className="border-b"><th className="p-3">Document Type</th><th>ID / Name</th><th>Status</th></tr></thead>
-                                     <tbody>
+                                     <thead className="bg-slate-50/50 border-b border-slate-100">
+                                         <tr>
+                                             <th className="px-6 py-4 text-left font-bold text-slate-500 uppercase tracking-widest text-[10px]">Document Category</th>
+                                             <th className="px-6 py-4 text-left font-bold text-slate-500 uppercase tracking-widest text-[10px]">Reference ID</th>
+                                             <th className="px-6 py-4 text-left font-bold text-slate-500 uppercase tracking-widest text-[10px]">Status</th>
+                                         </tr>
+                                     </thead>
+                                     <tbody className="divide-y divide-slate-50">
                                         {acquisition.appraisalIds.map(id => {
                                             const appraisal = USACE_APPRAISALS.find(a => a.id === id);
-                                            return (<tr key={id} className="border-b last:border-0"><td className="p-3 font-medium flex items-center gap-2"><Paperclip size={14}/>Appraisal</td><td><Link to={`/usace/appraisals/${id}`} className="text-blue-600 hover:underline">{id}</Link></td><td><span className="text-xs font-semibold px-2 py-1 bg-green-100 text-green-800 rounded-full">{appraisal?.status}</span></td></tr>)
+                                            return (
+                                               <tr key={id} className="hover:bg-blue-50/30 transition-colors group/row">
+                                                   <td className="px-6 py-5 font-bold text-slate-900 flex items-center gap-3">
+                                                       <div className="p-2 bg-slate-100 rounded-lg text-slate-400 group-hover/row:bg-blue-100 group-hover/row:text-blue-600 transition-colors">
+                                                           <Paperclip size={14} />
+                                                       </div>
+                                                       Real Property Appraisal
+                                                   </td>
+                                                   <td className="px-6 py-5">
+                                                       <Link to={`/usace/appraisals/${id}`} className="text-blue-600 hover:underline font-bold font-mono tracking-tighter uppercase">{id}</Link>
+                                                   </td>
+                                                   <td className="px-6 py-5">
+                                                       <StatusBadge status={appraisal?.status || 'Unknown'} />
+                                                   </td>
+                                               </tr>
+                                            )
                                         })}
                                      </tbody>
                                  </table>
                              </div>
                          </div>
-                     )}
-                     {activeTab === 'history' && (
-                         <div>
-                             <h3 className="font-bold text-slate-800 mb-4">Record History & Audit Log</h3>
-                             <div className="space-y-4">
-                                {acquisition.history?.map((event, i) => (
-                                    <div key={i} className="flex gap-4">
-                                        <div className="flex flex-col items-center"><div className={`w-4 h-4 rounded-full ring-4 ${i === 0 ? 'bg-blue-500 ring-blue-100 animate-pulse' : 'bg-slate-300 ring-slate-100'} z-10`}></div><div className="w-0.5 flex-1 bg-slate-200"></div></div>
-                                        <div>
-                                            <p className="text-xs text-slate-500">{event.timestamp}</p>
-                                            <p className="font-medium text-slate-800">{event.action} by {event.user}</p>
-                                            {event.details && <p className="text-sm text-slate-600 mt-1 p-2 bg-slate-50 rounded-md border">{event.details}</p>}
-                                        </div>
-                                    </div>
-                                ))}
+                    )}
+                    {activeTab === 'history' && (
+                         <div className="animate-in fade-in slide-in-from-bottom-3 duration-500">
+                             <h3 className="font-bold text-slate-900 border-l-4 border-emerald-500 pl-3 mb-10 text-base uppercase tracking-tight">Audit Log & Lifecycle</h3>
+                             <div className="space-y-0 relative before:absolute before:inset-0 before:left-3 before:w-0.5 before:bg-slate-100 ml-1">
+                               {acquisition.history?.map((event, i) => (
+                                   <div key={i} className="flex gap-10 relative group/event">
+                                       <div className="flex-shrink-0 mt-2">
+                                           <div className={`w-6 h-6 rounded-full ring-4 ${i === 0 ? 'bg-emerald-600 ring-emerald-50' : 'bg-white ring-slate-50 border-2 border-slate-200'} z-10 relative shadow-sm transition-transform group-hover/event:scale-110 flex items-center justify-center`}>
+                                               {i === 0 && <Clock size={12} className="text-white" />}
+                                           </div>
+                                       </div>
+                                       <div className="flex-1 pb-12 last:pb-0">
+                                           <div className="bg-white rounded-3xl border border-transparent group-hover/event:border-slate-100 group-hover/event:shadow-xl transition-all p-4 -m-4">
+                                               <div className="flex flex-wrap items-center gap-4 mb-3">
+                                                   <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 font-mono tracking-widest bg-slate-50 px-3 py-1 rounded-full uppercase">
+                                                       <Calendar size={10} />
+                                                       {event.timestamp}
+                                                   </div>
+                                                   <span className={`text-[10px] px-3 py-1 rounded-lg font-bold uppercase tracking-widest shadow-sm ${i === 0 ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-200'}`}>{event.action}</span>
+                                               </div>
+                                               <p className="font-bold text-slate-900 text-sm mb-4">Record modification by <span className="text-blue-600 font-bold underline underline-offset-4 cursor-pointer">{event.user}</span></p>
+                                               {event.details && (
+                                                   <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 text-sm text-slate-600 font-medium leading-relaxed italic border-l-4 border-emerald-400 group-hover/event:bg-white group-hover/event:border-emerald-200 transition-colors">
+                                                       "{event.details}"
+                                                   </div>
+                                               )}
+                                           </div>
+                                       </div>
+                                   </div>
+                               ))}
                              </div>
                          </div>
-                     )}
+                    )}
                 </div>
             </div>
         </div>

@@ -380,3 +380,17 @@ export const UTILITY_BILLS = [
     { id: 'UB-03', propertyId: 'P002', utility: 'Electric', serviceDate: '2024-05', cost: 6000, consumption: 48000, unit: 'kWh' },
     { id: 'UB-04', propertyId: 'P002', utility: 'Water', serviceDate: '2024-05', cost: 800, consumption: 5000, unit: 'Gal' }
 ];
+
+export const SYSTEM_HEALTH_METRICS = [
+    { name: 'Uptime', value: '99.9%' },
+    { name: 'Latency', value: '14ms' },
+    { name: 'Load', value: '0.4%' }
+];
+
+export const ENERGY_CONSUMPTION = UTILITY_BILLS.filter(u => u.utility === 'Electric');
+export const WATER_USAGE = UTILITY_BILLS.filter(u => u.utility === 'Water');
+export const WASTE_STREAMS = [
+    { type: 'Recycling', amount: 250, unit: 'kg' },
+    { type: 'Landfill', amount: 150, unit: 'kg' },
+    { type: 'Compost', amount: 80, unit: 'kg' }
+];

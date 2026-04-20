@@ -1,49 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Building2, Plus, Filter, Search, CheckCircle, AlertCircle, Clock, X, ChevronsUpDown, Download, ArrowRight, MapPin } from 'lucide-react';
+import { Building2, Plus, Filter, Search, CheckCircle, AlertCircle, Clock, X, ChevronsUpDown, Download, ArrowRight, MapPin, Terminal, Database, Activity, ShieldAlert, ArrowUpRight } from 'lucide-react';
 import { USACE_ASSETS } from '../../services/mockData';
 import { RegulatoryBadge } from '../../components/RegulatoryBadge';
+import { StatusBadge } from '../../components/StatusBadge';
+import { SyncStatus } from '../../components/SyncStatus';
+import { CreateAssetModal } from './components/CreateAssetModal';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { RealPropertyAsset } from '../../types';
-
-const CreateAssetModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
-  if (!isOpen) return null;
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert('New asset record created (simulation).');
-    onClose();
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-end md:items-center justify-center p-0 md:p-4" onClick={onClose}>
-      <div 
-        className="bg-white rounded-t-2xl md:rounded-xl shadow-2xl w-full max-w-2xl h-[90vh] md:h-auto md:max-h-[90vh] flex flex-col transform transition-transform" 
-        onClick={e => e.stopPropagation()}
-      >
-        <div className="flex justify-between items-center p-4 border-b shrink-0">
-          <h2 className="text-lg font-bold text-slate-900">Create New Asset Record</h2>
-          <button onClick={onClose} className="p-2 rounded-full hover:bg-slate-100 text-slate-500"><X size={24} /></button>
-        </div>
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 pb-24 md:pb-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div><label className="block text-sm font-medium text-slate-700 mb-1">RPUID</label><input type="text" defaultValue={`USACE-CW-NEW-${Math.floor(Math.random() * 1000)}`} className="block w-full px-3 py-3 md:py-2.5 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-base" required /></div>
-            <div><label className="block text-sm font-medium text-slate-700 mb-1">Asset Name</label><input type="text" placeholder="e.g., New Operations Building" className="block w-full px-3 py-3 md:py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-base" required /></div>
-            <div><label className="block text-sm font-medium text-slate-700 mb-1">Program</label><select className="block w-full px-3 py-3 md:py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-base"><option>Civil Works</option><option>Military</option></select></div>
-            <div><label className="block text-sm font-medium text-slate-700 mb-1">Asset Type</label><select className="block w-full px-3 py-3 md:py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-base"><option>Building</option><option>Structure</option><option>Land</option><option>Linear Structure</option></select></div>
-            <div><label className="block text-sm font-medium text-slate-700 mb-1">Status</label><select className="block w-full px-3 py-3 md:py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-base" defaultValue="In Progress"><option>In Progress</option><option>Active</option></select></div>
-            <div><label className="block text-sm font-medium text-slate-700 mb-1">Acquisition Date</label><input type="date" className="block w-full px-3 py-3 md:py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-base" required /></div>
-            <div><label className="block text-sm font-medium text-slate-700 mb-1">Cost</label><input type="number" placeholder="25000000" className="block w-full px-3 py-3 md:py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-base" required /></div>
-            <div><label className="block text-sm font-medium text-slate-700 mb-1">Area</label><input type="number" placeholder="120000" className="block w-full px-3 py-3 md:py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-base" /></div>
-          </div>
-        </form>
-        <div className="p-4 bg-white border-t flex gap-3 shrink-0 pb-safe fixed bottom-0 w-full md:relative md:w-auto md:bg-slate-50 md:rounded-b-xl z-10">
-          <button type="button" onClick={onClose} className="flex-1 px-4 py-3 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 active:bg-slate-100">Cancel</button>
-          <button type="submit" onClick={handleSubmit} className="flex-1 px-4 py-3 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 active:bg-blue-800 shadow-sm">Create Asset</button>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export const RemisInventory: React.FC = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -74,155 +37,106 @@ export const RemisInventory: React.FC = () => {
     }
   }, [location, navigate]);
 
-  const getStatusColor = (status: string) => {
-    switch(status) {
-      case 'Active': return 'bg-green-100 text-green-800 border-green-200';
-      case 'Excess': return 'bg-amber-100 text-amber-800 border-amber-200';
-      case 'Disposed': return 'bg-slate-100 text-slate-800 border-slate-200';
-      default: return 'bg-blue-100 text-blue-800 border-blue-200';
-    }
-  };
-
-  const getSyncIcon = (status: 'Synced' | 'Pending' | 'Error') => {
-    switch(status) {
-        case 'Synced': return <div className="flex items-center gap-1.5 text-green-700 text-xs font-medium"><CheckCircle size={14} /> Synced</div>;
-        case 'Pending': return <div className="flex items-center gap-1.5 text-amber-700 text-xs font-medium"><Clock size={14} /> Pending</div>;
-        case 'Error': return <div className="flex items-center gap-1.5 text-red-700 text-xs font-medium"><AlertCircle size={14} /> Error</div>;
-    }
-  };
-
   return (
-    <div className="space-y-4 md:space-y-6 pb-20 md:pb-0 relative">
+    <div className="max-w-[1600px] mx-auto space-y-6">
       <CreateAssetModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />
       
-      <div className="flex flex-col md:flex-row md:items-start justify-between gap-2 md:gap-4">
+      {/* Authoritative Inventory Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-slate-200">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Real Property Inventory</h1>
-          <p className="text-slate-500 mt-1 text-sm md:text-base">Authoritative system of record for all USACE real property assets.</p>
+          <div className="flex items-center gap-2 mb-1">
+            <div className="p-1.5 bg-slate-950 rounded text-white shadow-sm">
+                <Database size={16} />
+            </div>
+            <h1 className="text-xl font-bold text-slate-900 tracking-tight uppercase px-1">USACE Real Property Registry</h1>
+            <RegulatoryBadge refs={['1', '2', '15', '19']} />
+          </div>
+          <div className="flex items-center gap-3">
+             <span className="data-label text-blue-600">Enterprise Asset Inventory Terminal</span>
+             <div className="w-1 h-1 bg-slate-300 rounded-full" />
+             <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Auth: RPUID-MASTER-004</span>
+          </div>
         </div>
-        <div className="hidden md:block">
-           <RegulatoryBadge refs={['1', '2', '15', '19']} />
+        
+        <div className="flex items-center gap-2 w-full md:w-auto">
+            <div className="relative flex-grow md:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+                <input 
+                  type="text" 
+                  placeholder="Scan RPUID / Name..." 
+                  value={searchTerm} 
+                  onChange={e => setSearchTerm(e.target.value)}
+                  className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded text-[12px] font-medium outline-none focus:ring-1 focus:ring-blue-500" 
+                />
+            </div>
+            <button className="btn-pro-primary flex items-center gap-2">
+                <Plus size={14} /> Register Asset
+            </button>
         </div>
       </div>
 
-      {/* Sticky Filters Mobile */}
-      <div className="sticky top-0 z-20 bg-slate-50 pt-2 pb-2 md:static md:bg-transparent md:pt-0 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0 border-b md:border-0 border-slate-200 shadow-sm md:shadow-none">
-        <div className="flex flex-col lg:flex-row gap-3">
-            <div className="relative flex-grow">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-            <input type="text" placeholder="Search RPUID, Name..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="w-full pl-10 pr-4 py-3 md:py-2 border border-slate-300 md:border-slate-200 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none text-base md:text-sm shadow-sm"/>
-            </div>
-            {/* Scrollable Filters on Mobile */}
-            <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar md:pb-0">
-                <select value={programFilter} onChange={e => setProgramFilter(e.target.value)} className="w-auto px-3 py-2 border border-slate-300 md:border-slate-200 rounded-lg bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none flex-shrink-0">
-                    <option value="All">All Programs</option><option value="Civil Works">Civil Works</option><option value="Military">Military</option>
-                </select>
-                <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="w-auto px-3 py-2 border border-slate-300 md:border-slate-200 rounded-lg bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none flex-shrink-0">
-                    <option value="All">All Statuses</option><option value="Active">Active</option><option value="In Progress">In Progress</option><option value="Excess">Excess</option><option value="Disposed">Disposed</option>
-                </select>
-                <button onClick={() => alert('Exporting data...')} className="flex items-center justify-center gap-2 px-3 py-2 bg-white border border-slate-300 md:border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 font-medium text-sm shrink-0 whitespace-nowrap">
-                    <Download size={16} /> Export
-                </button>
-                <button onClick={() => setIsCreateModalOpen(true)} className="hidden md:flex flex-1 sm:flex-none items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm shadow-sm shrink-0">
-                    <Plus size={16} /> New Asset
-                </button>
-            </div>
+      {/* Global Filter Bar */}
+      <div className="flex flex-wrap items-center gap-4 p-1 bg-slate-50 border border-slate-100 rounded-sm">
+        <select value={programFilter} onChange={e => setProgramFilter(e.target.value)} className="bg-transparent text-[11px] font-bold text-slate-500 uppercase tracking-widest px-3 py-1 outline-none cursor-pointer hover:text-blue-600 transition-colors">
+            <option value="All">Global Programs</option>
+            <option value="Civil Works">Civil Works</option>
+            <option value="Military">Military</option>
+        </select>
+        <div className="w-px h-4 bg-slate-200" />
+        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="bg-transparent text-[11px] font-bold text-slate-500 uppercase tracking-widest px-3 py-1 outline-none cursor-pointer hover:text-blue-600 transition-colors">
+            <option value="All">Operational Status</option>
+            <option value="Active">Active</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Excess">Excess</option>
+        </select>
+        <div className="ml-auto flex items-center gap-2 px-2">
+            <button className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-blue-600 flex items-center gap-1.5 transition-colors">
+                <Download size={14} /> Export CSV
+            </button>
         </div>
       </div>
       
-      {/* List / Table Container */}
-      <div className="bg-transparent md:bg-white md:rounded-xl md:border md:border-slate-200 md:shadow-sm md:overflow-hidden">
-        
-        {/* Desktop Table (Hidden on Mobile) */}
-        <div className="hidden md:block overflow-x-auto">
+      {/* Registry Table */}
+      <div className="pro-card overflow-hidden">
+        <div className="overflow-x-auto italic font-mono">
           <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 border-b border-slate-200">
+            <thead className="bg-[#0A0A0B] text-white border-b border-slate-800">
               <tr>
-                <th className="px-6 py-4 font-semibold text-slate-700"><div className="flex items-center gap-1">RPUID <ChevronsUpDown size={14}/></div></th>
-                <th className="px-6 py-4 font-semibold text-slate-700">Asset Name</th>
-                <th className="px-6 py-4 font-semibold text-slate-700">Program</th>
-                <th className="px-6 py-4 font-semibold text-slate-700">Type</th>
-                <th className="px-6 py-4 font-semibold text-slate-700">Status</th>
-                <th className="px-6 py-4 font-semibold text-slate-700 text-center">CEFMS</th>
+                <th className="px-6 py-4 data-label text-slate-400 font-black">RPUID NODE</th>
+                <th className="px-6 py-4 data-label text-slate-400 font-black">ASSET NOMENCLATURE</th>
+                <th className="px-6 py-4 data-label text-slate-400 font-black">PROGRAM</th>
+                <th className="px-6 py-4 data-label text-slate-400 font-black">CLASSIFICATION</th>
+                <th className="px-6 py-4 data-label text-slate-400 font-black">VERIFICATION</th>
+                <th className="px-6 py-4 data-label text-slate-400 font-black text-center">SYNCHRONIZATION</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {filteredAssets.map(asset => (
-                <tr key={asset.id} onClick={() => navigate(`/usace/inventory/${asset.id}`)} className="hover:bg-slate-50/50 cursor-pointer transition-colors group">
-                  <td className="px-6 py-4 font-mono text-blue-600 font-medium group-hover:text-blue-700">{asset.rpuid}</td>
-                  <td className="px-6 py-4">
-                    <div className="font-semibold text-slate-900">{asset.name}</div>
-                    <div className="text-xs text-slate-500">{asset.location}</div>
+                <tr key={asset.id} onClick={() => navigate(`/usace/inventory/${asset.id}`)} className="hover:bg-slate-50 cursor-pointer transition-all group">
+                  <td className="px-6 py-5 font-bold text-blue-600 group-hover:bg-blue-50/30 transition-colors uppercase pr-10">{asset.rpuid}</td>
+                  <td className="px-6 py-5 not-italic">
+                    <div className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors uppercase tracking-tight">{asset.name}</div>
+                    <div className="text-[10px] text-slate-400 font-bold flex items-center gap-1 mt-1 uppercase tracking-tighter italic"><MapPin size={10} className="text-blue-500"/> {asset.location}</div>
                   </td>
-                  <td className="px-6 py-4 text-slate-600">{asset.program}</td>
-                  <td className="px-6 py-4 text-slate-600">{asset.type}</td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(asset.status)}`}>
-                      {asset.status}
-                    </span>
+                  <td className="px-6 py-5 text-slate-600 font-bold text-xs uppercase tracking-widest">{asset.program}</td>
+                  <td className="px-6 py-5 text-slate-600 font-bold text-xs uppercase tracking-widest">{asset.type}</td>
+                  <td className="px-6 py-5 not-italic">
+                    <StatusBadge status={asset.status} />
                   </td>
-                  <td className="px-6 py-4 text-center">
-                      <div className="flex justify-center">{getSyncIcon(asset.cefmsSyncStatus)}</div>
+                  <td className="px-6 py-5 text-center not-italic bg-slate-50/30 group-hover:bg-transparent transition-colors">
+                      <div className="flex justify-center">
+                          <SyncStatus status={asset.cefmsSyncStatus} showLabel={true} />
+                      </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-
-        {/* Mobile Card View (Visible only on Mobile) */}
-        <div className="md:hidden space-y-3">
-          {filteredAssets.map(asset => (
-            <div key={asset.id} onClick={() => navigate(`/usace/inventory/${asset.id}`)} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm active:scale-[0.99] transition-transform">
-              <div className="flex justify-between items-start mb-3">
-                <div className="flex-1 pr-2">
-                  <div className="text-xs font-mono text-blue-600 font-semibold mb-0.5">{asset.rpuid}</div>
-                  <h3 className="font-bold text-slate-900 text-base leading-tight">{asset.name}</h3>
-                </div>
-                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] uppercase font-bold border ${getStatusColor(asset.status)}`}>
-                  {asset.status}
-                </span>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-y-3 gap-x-2 text-sm border-t border-slate-100 pt-3">
-                <div className="flex items-start gap-2">
-                    <MapPin size={16} className="text-slate-400 mt-0.5 shrink-0" />
-                    <div>
-                        <div className="text-xs text-slate-500 font-medium">Location</div>
-                        <div className="text-slate-700 line-clamp-1">{asset.location}</div>
-                    </div>
-                </div>
-                <div>
-                  <div className="text-xs text-slate-500 font-medium">Program</div>
-                  <div className="text-slate-700">{asset.program}</div>
-                </div>
-                <div>
-                  <div className="text-xs text-slate-500 font-medium">Type</div>
-                  <div className="text-slate-700">{asset.type}</div>
-                </div>
-                <div>
-                  <div className="text-xs text-slate-500 font-medium">Sync Status</div>
-                  <div className="mt-0.5">{getSyncIcon(asset.cefmsSyncStatus)}</div>
-                </div>
-              </div>
-            </div>
-          ))}
-          {filteredAssets.length === 0 && (
-              <div className="text-center py-10">
-                  <p className="text-slate-500">No assets found matching your search.</p>
-              </div>
-          )}
+        <div className="p-4 bg-slate-50/50 border-t border-slate-100 italic text-center">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Aggregate inventory coherence established: {filteredAssets.length} Nodes</span>
         </div>
       </div>
-
-      {/* Mobile Floating Action Button (FAB) */}
-      <button 
-        onClick={() => setIsCreateModalOpen(true)}
-        className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-xl flex items-center justify-center hover:bg-blue-700 active:scale-95 transition-transform z-40"
-        aria-label="Add New Asset"
-      >
-        <Plus size={28} />
-      </button>
     </div>
   );
 };

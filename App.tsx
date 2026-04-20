@@ -66,6 +66,15 @@ const RemisOutgrantDetail = React.lazy(() => import('./pages/usace/RemisOutgrant
 const RemisAppraisals = React.lazy(() => import('./pages/usace/RemisAppraisals').then(module => ({ default: module.RemisAppraisals })));
 const RemisAppraisalDetail = React.lazy(() => import('./pages/usace/RemisAppraisalDetail').then(module => ({ default: module.RemisAppraisalDetail })));
 const RemisGisHub = React.lazy(() => import('./pages/usace/RemisGisHub').then(module => ({ default: module.RemisGisHub })));
+const RemisLeaseAdmin = React.lazy(() => import('./pages/usace/RemisLeaseAdmin').then(module => ({ default: module.RemisLeaseAdmin })));
+const RemisContracts = React.lazy(() => import('./pages/usace/RemisContracts').then(module => ({ default: module.RemisContracts })));
+const RemisInsurance = React.lazy(() => import('./pages/usace/RemisInsurance').then(module => ({ default: module.RemisInsurance })));
+const RemisFinanceOverview = React.lazy(() => import('./pages/usace/RemisFinanceOverview').then(module => ({ default: module.RemisFinanceOverview })));
+const RemisBudgeting = React.lazy(() => import('./pages/usace/RemisBudgeting').then(module => ({ default: module.RemisBudgeting })));
+const RemisPpbeFunds = React.lazy(() => import('./pages/usace/RemisPpbeFunds').then(module => ({ default: module.RemisPpbeFunds })));
+const RemisCapitalPlanning = React.lazy(() => import('./pages/usace/RemisCapitalPlanning').then(module => ({ default: module.RemisCapitalPlanning })));
+const RemisInvoicing = React.lazy(() => import('./pages/usace/RemisInvoicing').then(module => ({ default: module.RemisInvoicing })));
+const RemisProcurement = React.lazy(() => import('./pages/usace/RemisProcurement').then(module => ({ default: module.RemisProcurement })));
 const RemisEnvironmental = React.lazy(() => import('./pages/usace/RemisEnvironmental').then(module => ({ default: module.RemisEnvironmental })));
 const RemisEnvironmentalDetail = React.lazy(() => import('./pages/usace/RemisEnvironmentalDetail').then(module => ({ default: module.RemisEnvironmentalDetail })));
 const RemisLegal = React.lazy(() => import('./pages/usace/RemisLegal').then(module => ({ default: module.RemisLegal })));
@@ -175,6 +184,15 @@ const router = createBrowserRouter([
       { path: 'usace/appraisals', element: <RemisAppraisals /> },
       { path: 'usace/appraisals/:appraisalId', element: <RemisAppraisalDetail /> },
       { path: 'usace/gis', element: <RemisGisHub /> },
+      { path: 'usace/leases', element: <RemisLeaseAdmin /> },
+      { path: 'usace/contracts', element: <RemisContracts /> },
+      { path: 'usace/insurance', element: <RemisInsurance /> },
+      { path: 'usace/finance', element: <RemisFinanceOverview /> },
+      { path: 'usace/budgeting', element: <RemisBudgeting /> },
+      { path: 'usace/ppbe', element: <RemisPpbeFunds /> },
+      { path: 'usace/capital-planning', element: <RemisCapitalPlanning /> },
+      { path: 'usace/invoicing', element: <RemisInvoicing /> },
+      { path: 'usace/procurement', element: <RemisProcurement /> },
       { path: 'usace/environmental', element: <RemisEnvironmental /> },
       { path: 'usace/environmental/:siteId', element: <RemisEnvironmentalDetail /> },
       { path: 'usace/legal', element: <RemisLegal /> },

@@ -11,6 +11,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      },
       animation: {
         'fade-in-down': 'fade-in-down 0.3s ease-out',
         'fade-in-up': 'fade-in-up 0.3s ease-out',

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { FileClock, Plus, Search, Eye, Edit } from 'lucide-react';
+import { FileClock, Plus, Search, Eye, Edit, Download, Filter, MoreHorizontal, MapPin, DollarSign as DollarIcon, Calendar, Activity, Terminal, Database, ArrowUpRight } from 'lucide-react';
 import { USACE_OUTGRANTS, USACE_INSPECTIONS } from '../../services/mockData';
 import { RegulatoryBadge } from '../../components/RegulatoryBadge';
 import { OutGrant } from '../../types';
 import { Link, useNavigate } from 'react-router-dom';
 import { OutGrantModal } from './components/OutGrantModal';
+import { StatusBadge } from '../../components/StatusBadge';
 
 export const RemisOutgrants: React.FC = () => {
     const [activeTab, setActiveTab] = useState('outgrants');
@@ -19,84 +20,157 @@ export const RemisOutgrants: React.FC = () => {
 
     const handleSave = (record: Partial<OutGrant>, reason: string) => {
         console.log("Saving outgrant:", record, "Reason:", reason);
-        alert('Out-Grant record saved. Audit log updated.');
+        alert('Out-Grant record authorized. Strategic utilization tracking initialized.');
         setIsModalOpen(false);
     };
 
     return (
-        <div className="space-y-6">
+        <div className="max-w-[1600px] mx-auto space-y-6">
             <OutGrantModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSave={handleSave} outgrant={selectedOutgrant} />
-            <div className="flex justify-between items-start">
+            
+            {/* Out-Grants Header */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-slate-200">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Out-Grants & Utilization</h1>
-                    <p className="text-slate-500 mt-1">Administer out-grant records and associated utilization inspections.</p>
+                    <div className="flex items-center gap-2 mb-1">
+                        <div className="p-1.5 bg-slate-950 rounded text-white shadow-sm">
+                            <FileClock size={16} />
+                        </div>
+                        <h1 className="text-xl font-bold text-slate-900 tracking-tight uppercase px-1">Utilization & Out-Grant Terminal</h1>
+                        <RegulatoryBadge refs={['12', '16']} />
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <span className="data-label text-blue-600">Enterprise Instrument Command Center</span>
+                        <div className="w-1 h-1 bg-slate-300 rounded-full" />
+                        <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Protocol: AR 405-10</span>
+                    </div>
                 </div>
-                 <div className="flex items-start gap-4">
-                    <button onClick={handleNew} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm shadow-sm">
-                        <Plus size={16} /> New Out-Grant
+                
+                <div className="flex items-center gap-2">
+                    <button className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-blue-600 flex items-center gap-1.5 transition-colors px-3 py-2">
+                        <Download size={14} /> Fiscal Export
                     </button>
-                    <RegulatoryBadge refs={['12', '16']} />
+                    <button onClick={handleNew} className="btn-pro-primary flex items-center gap-2">
+                        <Plus size={16} /> New Instrument
+                    </button>
                 </div>
             </div>
 
-            <div className="border-b border-slate-200">
-                <nav className="-mb-px flex gap-6" aria-label="Tabs">
-                <button onClick={() => setActiveTab('outgrants')} className={`shrink-0 border-b-2 px-1 pb-4 text-sm font-medium ${activeTab === 'outgrants' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700'}`}>Out-Grant Records</button>
-                <button onClick={() => setActiveTab('inspections')} className={`shrink-0 border-b-2 px-1 pb-4 text-sm font-medium ${activeTab === 'inspections' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700'}`}>Utilization Inspections</button>
-                </nav>
+            <div className="pro-card overflow-hidden flex flex-col">
+                <div className="px-6 border-b border-slate-200 bg-white flex justify-between items-center">
+                    <nav className="-mb-px flex gap-8" aria-label="Tabs">
+                        <button 
+                            onClick={() => setActiveTab('outgrants')} 
+                            className={`shrink-0 border-b-2 px-1 py-4 text-xs font-black uppercase tracking-[0.2em] transition-all ${activeTab === 'outgrants' ? 'border-blue-600 text-blue-600 font-bold' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                        >
+                            Active Instruments
+                        </button>
+                        <button 
+                            onClick={() => setActiveTab('inspections')} 
+                            className={`shrink-0 border-b-2 px-1 py-4 text-xs font-black uppercase tracking-[0.2em] transition-all ${activeTab === 'inspections' ? 'border-blue-600 text-blue-600 font-bold' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                        >
+                            Utilization Monitoring
+                        </button>
+                    </nav>
+                    <div className="flex items-center gap-3">
+                        <div className="relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+                            <input type="text" placeholder="Scan portfolio..." className="pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded text-[11px] font-mono outline-none focus:ring-1 focus:ring-blue-500 transition-all italic" />
+                        </div>
+                        <button className="p-1.5 text-slate-400 hover:text-blue-600 transition-colors border border-slate-200 rounded bg-slate-50"><Filter size={14} /></button>
+                    </div>
+                </div>
+
+                <div className="overflow-x-auto italic font-mono">
+                    {activeTab === 'outgrants' && (
+                        <table className="w-full text-left text-sm">
+                            <thead className="bg-[#0A0A0B] text-white border-b border-slate-800">
+                                <tr>
+                                    <th className="px-6 py-4 data-label text-slate-400 font-black">GRANTEE ENTITY</th>
+                                    <th className="px-6 py-4 data-label text-slate-400 font-black">ASSET NODE</th>
+                                    <th className="px-6 py-4 data-label text-slate-400 font-black">TYPE</th>
+                                    <th className="px-6 py-4 data-label text-slate-400 font-black">LIFECYCLE</th>
+                                    <th className="px-6 py-4 data-label text-slate-400 font-black">EXPIRY</th>
+                                    <th className="px-6 py-4 data-label text-slate-400 font-black text-right">REVENUE</th>
+                                    <th className="px-6 py-4 data-label text-slate-400 font-black text-right">COMMAND</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100">
+                                {USACE_OUTGRANTS.map(og => (
+                                    <tr key={og.id} className="hover:bg-slate-50 group cursor-pointer transition-all">
+                                        <td className="px-6 py-4 not-italic">
+                                            <div className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors uppercase tracking-tight">{og.grantee}</div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className="font-bold text-blue-600 uppercase tracking-tighter">{og.assetId}</span>
+                                        </td>
+                                        <td className="px-6 py-4 text-slate-600 font-bold text-xs uppercase tracking-widest">{og.type}</td>
+                                        <td className="px-6 py-4 not-italic">
+                                            <StatusBadge status={og.lifecycleState} />
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-1.5 text-slate-500 font-bold text-[11px]">
+                                                <Calendar size={12} className="text-blue-500" />
+                                                {og.endDate}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-right not-italic bg-slate-50/30 group-hover:bg-transparent transition-colors">
+                                            <div className="font-black text-emerald-600 text-sm tracking-tighter">
+                                                ${og.revenue.toLocaleString()}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-right not-italic">
+                                            <button 
+                                                onClick={() => navigate(`/usace/outgrants/${og.id}`)}
+                                                className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300 hover:text-blue-600 flex items-center gap-1 justify-end transition-colors"
+                                            >
+                                                MANAGE <ArrowUpRight size={14} />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
+
+                    {activeTab === 'inspections' && (
+                        <table className="w-full text-left text-sm">
+                            <thead className="bg-[#0A0A0B] text-white border-b border-slate-800">
+                                <tr>
+                                    <th className="px-6 py-4 data-label text-slate-400 font-black">INSTRUMENT REF</th>
+                                    <th className="px-6 py-4 data-label text-slate-400 font-black">MONITORING DATE</th>
+                                    <th className="px-6 py-4 data-label text-slate-400 font-black">CLASS</th>
+                                    <th className="px-6 py-4 data-label text-slate-400 font-black">INSPECTOR</th>
+                                    <th className="px-6 py-4 data-label text-slate-400 font-black">STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100">
+                                {USACE_INSPECTIONS.map(i => (
+                                    <tr key={i.id} className="hover:bg-slate-50 transition-all group cursor-pointer">
+                                        <td className="px-6 py-4">
+                                            <Link to={`/usace/outgrants/${i.outGrantId}`} className="font-bold text-blue-600 hover:underline uppercase tracking-tighter">{i.outGrantId}</Link>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-1.5 text-slate-500 font-bold text-[11px]">
+                                                <Activity size={12} className="text-blue-500" />
+                                                {i.inspectionDate}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 not-italic font-bold text-slate-900 group-hover:text-blue-600 transition-colors uppercase tracking-tight">{i.type}</td>
+                                        <td className="px-6 py-4 not-italic font-bold text-slate-600 text-xs uppercase tracking-widest">{i.inspector}</td>
+                                        <td className="px-6 py-4 not-italic">
+                                            <StatusBadge status={i.status} />
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
+                </div>
+                
+                <div className="px-6 py-3 bg-slate-50/50 border-t border-slate-100 italic text-center">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Aggregate utilization metrics validated for current fiscal cycles</span>
+                </div>
             </div>
-
-            {activeTab === 'outgrants' && (
-                <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                    <table className="w-full text-left text-sm">
-                        <thead className="bg-slate-50"><tr>
-                            <th className="px-6 py-3 font-semibold text-slate-700">Grantee</th>
-                            <th className="px-6 py-3 font-semibold text-slate-700">Asset</th>
-                            <th className="px-6 py-3 font-semibold text-slate-700">Type</th>
-                            <th className="px-6 py-3 font-semibold text-slate-700">State</th>
-                            <th className="px-6 py-3 font-semibold text-slate-700">End Date</th>
-                            <th className="px-6 py-3 font-semibold text-slate-700 text-right">Annual Revenue</th>
-                            <th className="px-6 py-3 font-semibold text-slate-700 text-right">Actions</th>
-                        </tr></thead>
-                        <tbody className="divide-y divide-slate-100">{USACE_OUTGRANTS.map(og => (
-                            <tr key={og.id} className="hover:bg-slate-50/50">
-                                <td className="px-6 py-4 font-medium text-slate-800">{og.grantee}</td>
-                                <td className="px-6 py-4 text-blue-600 font-mono">{og.assetId}</td>
-                                <td className="px-6 py-4">{og.type}</td>
-                                <td className="px-6 py-4"><span className={`text-xs px-2 py-1 rounded border ${og.lifecycleState === 'Active' ? 'bg-green-100 text-green-800 border-green-200' : 'bg-slate-100 text-slate-800'}`}>{og.lifecycleState}</span></td>
-                                <td className="px-6 py-4">{og.endDate}</td>
-                                <td className="px-6 py-4 text-right font-mono">${og.revenue.toLocaleString()}</td>
-                                <td className="px-6 py-4 text-right">
-                                    <Link to={`/usace/outgrants/${og.id}`} className="text-blue-600 hover:underline font-medium text-xs">Manage</Link>
-                                </td>
-                            </tr>
-                        ))}</tbody>
-                    </table>
-                </div>
-            )}
-
-            {activeTab === 'inspections' && (
-                 <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                    <table className="w-full text-left text-sm">
-                        <thead className="bg-slate-50"><tr>
-                            <th className="px-6 py-3 font-semibold text-slate-700">Out-Grant</th>
-                            <th className="px-6 py-3 font-semibold text-slate-700">Inspection Date</th>
-                            <th className="px-6 py-3 font-semibold text-slate-700">Type</th>
-                            <th className="px-6 py-3 font-semibold text-slate-700">Inspector</th>
-                            <th className="px-6 py-3 font-semibold text-slate-700">Status</th>
-                        </tr></thead>
-                        <tbody className="divide-y divide-slate-100">{USACE_INSPECTIONS.map(i => (
-                            <tr key={i.id}>
-                                <td className="px-6 py-4 font-medium text-blue-600 font-mono"><Link to={`/usace/outgrants/${i.outGrantId}`}>{i.outGrantId}</Link></td>
-                                <td className="px-6 py-4">{i.inspectionDate}</td>
-                                <td className="px-6 py-4">{i.type}</td>
-                                <td className="px-6 py-4">{i.inspector}</td>
-                                <td className="px-6 py-4"><span className="text-xs font-semibold px-2 py-1 bg-green-100 text-green-800 rounded-full">{i.status}</span></td>
-                            </tr>
-                        ))}</tbody>
-                    </table>
-                </div>
-            )}
         </div>
     );
 };
