@@ -7,9 +7,8 @@ export default defineConfig({
     cors: true
   },
   define: {
-    // Explicitly define process.env.API_KEY to ensure it is replaced by Vite during build/serve.
-    // This provides a fallback if the global process polyfill is bypassed.
-    "process.env.API_KEY": JSON.stringify(process.env.API_KEY || ""),
+    // Explicitly define process.env.GEMINI_API_KEY to ensure it is replaced by Vite during build/serve.
+    "process.env.GEMINI_API_KEY": JSON.stringify(process.env.GEMINI_API_KEY || ""),
     "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development")
   },
   test: {

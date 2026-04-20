@@ -15,7 +15,7 @@ const getStatusColor = (status: string) => {
     }
 };
 
-const DetailCard = ({ label, value, icon: Icon, isProtected = false }: { label: string, value: string | number | boolean, icon: any, isProtected?: boolean }) => (
+const DetailCard = ({ label, value, icon: Icon, isProtected = false }: { label: string, value: string | number | boolean | undefined, icon: any, isProtected?: boolean }) => (
     <div className="flex items-start gap-3">
         <Icon className="text-slate-400 mt-1 flex-shrink-0" size={16} />
         <div>
@@ -23,7 +23,7 @@ const DetailCard = ({ label, value, icon: Icon, isProtected = false }: { label: 
               {label} 
               {isProtected && <span title="This data is protected and access is logged."><Lock size={10} /></span>}
             </div>
-            <div className="text-sm font-medium text-slate-800">{String(value)}</div>
+            <div className="text-sm font-medium text-slate-800">{String(value ?? '')}</div>
         </div>
     </div>
 );

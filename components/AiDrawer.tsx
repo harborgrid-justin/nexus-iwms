@@ -130,7 +130,7 @@ export const AiDrawer: React.FC<AiDrawerProps> = ({ isOpen, onClose, contextData
             </button>
           </div>
           <div className="mt-3 text-[10px] text-center text-slate-400">
-            Powered by Gemini 2.5 Flash. AI can make mistakes.
+            Powered by Gemini 3 Flash. AI can make mistakes.
           </div>
         </div>
       </div>

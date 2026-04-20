@@ -84,6 +84,8 @@ const RemisEncroachments = React.lazy(() => import('./pages/usace/RemisEncroachm
 const RemisEncroachmentDetail = React.lazy(() => import('./pages/usace/RemisEncroachmentDetail').then(module => ({ default: module.RemisEncroachmentDetail })));
 
 
+const NotFound = React.lazy(() => import('./pages/NotFound').then(module => ({ default: module.NotFound })));
+
 // --- Root Layout Component ---
 // This component manages the shared state (like the AI drawer) and renders the main layout.
 // The <Outlet/> from react-router-dom will render the matched child route.
@@ -189,6 +191,7 @@ const router = createBrowserRouter([
       { path: 'usace/solicitations/:solicitationId', element: <RemisSolicitationDetail /> },
       { path: 'usace/encroachments', element: <RemisEncroachments /> },
       { path: 'usace/encroachments/:caseId', element: <RemisEncroachmentDetail /> },
+      { path: '*', element: <NotFound /> },
     ]
   }
 ]);

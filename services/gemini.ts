@@ -14,7 +14,7 @@ export async function askNexusAI(
   contextData: unknown
 ): Promise<string> {
   // FIX: Following @google/genai Guidelines - Always use new GoogleGenAI instance with process.env.API_KEY directly before each request.
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || "" });
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
 
   // FIX: Following @google/genai Guidelines - Select gemini-3-flash-preview for basic text and simple Q&A tasks.
   const model = "gemini-3-flash-preview";

@@ -170,7 +170,7 @@ export const RemisEncroachmentDetail: React.FC = () => {
                         <div>
                             <div className="flex justify-between items-center mb-4">
                                 <h3 className="font-bold text-slate-800 flex items-center gap-2"><CheckSquare size={20}/> Tasks & Activities</h3>
-                                <button onClick={() => setTaskModalState({ open: true, mode: 'Task', task: null })} className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-xs"><Plus size={14}/> Add Task</button>
+                                <button onClick={() => setTaskModalState({ open: true, mode: 'Task', task: undefined })} className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-xs"><Plus size={14}/> Add Task</button>
                             </div>
                             
                             <div className="space-y-4">
